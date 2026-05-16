@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title">
+  <title id="title">小鸽志 Logo</title>
+  <rect width="96" height="96" rx="20" fill="#19312b"/>
+  <path d="M24 54c18-28 36-28 48 0-15-9-31-9-48 0Z" fill="#f8f1e4"/>
+  <path d="M32 61c12 9 24 9 32 0" fill="none" stroke="#d7b46a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="61" cy="39" r="5" fill="#d7b46a"/>
+</svg>

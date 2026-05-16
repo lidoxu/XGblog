@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+site/node_modules/
+
+# Build output
+dist/
+site/dist/
+.astro/
+site/.astro/
+
+# Claude local state
+.claude/settings.local.json
+.claude/worktrees/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+!.vscode/extensions.json

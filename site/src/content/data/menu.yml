@@ -1,0 +1,14 @@
+- label: 首页
+  href: /
+- label: 归档
+  href: /archives
+- label: VPS优惠
+  href: /categories/vps-discount
+- label: VPS教程
+  href: /categories/vps-tutorial
+- label: Docker
+  href: /categories/docker
+- label: AI工具
+  href: /categories/ai
+- label: 友链
+  href: /links

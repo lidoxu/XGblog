@@ -1,0 +1,6 @@
+- name: Astro
+  url: https://astro.build
+  description: 内容站和静态博客框架
+- name: Cloudflare
+  url: https://www.cloudflare.com
+  description: CDN、DNS 和 Pages/Workers 平台

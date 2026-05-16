@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">小鸽志默认封面</title>
+  <desc id="desc">带有细网格和站点文字的默认文章封面</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1e4"/>
+      <stop offset="0.55" stop-color="#e9dcc8"/>
+      <stop offset="1" stop-color="#d8e2dc"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#19312b" stroke-opacity="0.09"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect width="1200" height="675" fill="url(#grid)"/>
+  <path d="M120 510h960" stroke="#19312b" stroke-width="3" stroke-opacity="0.8"/>
+  <text x="120" y="250" font-family="Georgia, 'Times New Roman', serif" font-size="92" fill="#19312b" letter-spacing="4">小鸽志</text>
+  <text x="124" y="330" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="28" fill="#6c4f2f" letter-spacing="3">STATIC TECH JOURNAL</text>
+  <circle cx="980" cy="205" r="74" fill="none" stroke="#b8522c" stroke-width="8"/>
+  <circle cx="1028" cy="252" r="18" fill="#b8522c"/>
+</svg>

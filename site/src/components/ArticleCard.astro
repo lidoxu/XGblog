@@ -1,0 +1,25 @@
+---
+import type { Post } from '../utils/posts';
+import { getPostPath } from '../utils/posts';
+import PostMeta from './PostMeta.astro';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const cover = post.data.cover ?? '/assets/default-cover.svg';
+const href = getPostPath(post);
+---
+
+<article class="article-card">
+  <a class="card-cover" href={href} aria-label={post.data.title}>
+    <img src={cover} alt={`${post.data.title} 封面图`} loading="lazy" />
+  </a>
+  <div class="card-body">
+    {post.data.top > 0 && <span class="pin-label">置顶</span>}
+    <h2><a href={href}>{post.data.title}</a></h2>
+    <p>{post.data.description}</p>
+    <PostMeta date={post.data.date} categories={post.data.categories} tags={post.data.tags} compact />
+  </div>
+</article>

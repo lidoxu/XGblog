@@ -1,0 +1,23 @@
+---
+import { formatDate } from '../utils/date';
+import { getCategory, getTag } from '../utils/taxonomy';
+
+interface Props {
+  date: Date;
+  categories: string[];
+  tags: string[];
+  compact?: boolean;
+}
+
+const { date, categories, tags, compact = false } = Astro.props;
+const primaryCategory = getCategory(categories[0]);
+---
+
+<div class:list={["post-meta", { compact }]}>
+  <time datetime={date.toISOString()}>{formatDate(date)}</time>
+  <a class="meta-link category" href={`/categories/${primaryCategory.slug}`}>{primaryCategory.name}</a>
+  {tags.slice(0, compact ? 3 : tags.length).map((tagSlug) => {
+    const tag = getTag(tagSlug);
+    return <a class="meta-link tag" href={`/tags/${tag.slug}`}>#{tag.name}</a>;
+  })}
+</div>

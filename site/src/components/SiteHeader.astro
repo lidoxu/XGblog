@@ -1,0 +1,31 @@
+---
+import { menuData } from '../utils/data';
+import { getSite } from '../utils/seo';
+
+interface Props {
+  currentPath: string;
+}
+
+const site = getSite();
+const navItems = menuData;
+const { currentPath } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={`${site.title} 首页`}>
+      <img src={site.logo} alt={`${site.title} logo`} width="44" height="44" />
+      <span>
+        <strong>{site.title}</strong>
+        <small>Static Tech Journal</small>
+      </span>
+    </a>
+    <nav class="top-nav" aria-label="站点导航">
+      {navItems.map((item) => (
+        <a href={item.href} class:list={[{ active: currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href)) }]}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
