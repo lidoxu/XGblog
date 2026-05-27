@@ -27,5 +27,52 @@ const { currentPath } = Astro.props;
         </a>
       ))}
     </nav>
+    <button class="theme-toggle" type="button" aria-label="切换深浅色主题" data-theme-toggle>◐</button>
   </div>
 </header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+  const getStoredTheme = () => {
+    try {
+      const theme = localStorage.getItem('theme');
+      return theme === 'light' || theme === 'dark' ? theme : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const getEffectiveTheme = () => document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
+
+  const syncToggle = () => {
+    if (!toggle) return;
+    const theme = getEffectiveTheme();
+    toggle.textContent = theme === 'dark' ? '☀' : '☾';
+    toggle.setAttribute('aria-label', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+    toggle.setAttribute('title', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+  };
+
+  syncToggle();
+
+  media.addEventListener('change', () => {
+    if (!getStoredTheme()) {
+      document.documentElement.removeAttribute('data-theme');
+      syncToggle();
+      window.dispatchEvent(new CustomEvent('xg-theme-change'));
+    }
+  });
+
+  toggle?.addEventListener('click', () => {
+    const next = getEffectiveTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      // The visual switch still works for the current page.
+    }
+    syncToggle();
+    window.dispatchEvent(new CustomEvent('xg-theme-change'));
+  });
+</script>

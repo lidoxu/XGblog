@@ -22,6 +22,18 @@ const { title, description, canonical, image, type, publishedTime } = Astro.prop
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      (() => {
+        try {
+          const theme = localStorage.getItem('theme');
+          if (theme === 'light' || theme === 'dark') {
+            document.documentElement.dataset.theme = theme;
+          }
+        } catch {
+          // Keep the system preference when storage is unavailable.
+        }
+      })();
+    </script>
     <SeoHead title={title} description={description} canonical={canonical} image={image} type={type} publishedTime={publishedTime} />
   </head>
   <body>
