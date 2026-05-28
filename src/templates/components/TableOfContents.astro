@@ -15,7 +15,7 @@ const visible = headings.filter((heading) => heading.depth === 2 || heading.dept
 
 {visible.length > 0 && (
   <nav class="toc" aria-label="文章目录">
-    <h2><span class="heading-icon" aria-hidden="true">目</span>文章目录</h2>
+    <h2>文章目录</h2>
     <ol>
       {visible.map((heading) => (
         <li class={`depth-${heading.depth}`}>

@@ -1,9 +1,8 @@
 ---
 import type { Post } from '../../features/core/posts';
-import { countCategories, countTags } from '../../features/core/taxonomy';
+import { countCategories } from '../../features/core/taxonomy';
 import AuthorCard from './AuthorCard.astro';
 import CategoryList from './CategoryList.astro';
-import TagCloud from './TagCloud.astro';
 
 interface Props {
   posts: Post[];
@@ -11,11 +10,9 @@ interface Props {
 
 const { posts } = Astro.props;
 const categoryCounts = countCategories(posts);
-const tagCounts = countTags(posts);
 ---
 
-<aside class="sidebar" aria-label="博客侧边栏">
+<aside class="sidebar" aria-label="博客信息">
   <AuthorCard />
   <CategoryList counts={categoryCounts} />
-  <TagCloud counts={tagCounts} />
 </aside>
