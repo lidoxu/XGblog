@@ -1,0 +1,13 @@
+---
+import { getSite } from '../../features/core/seo';
+
+const site = getSite();
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© {year} {site.title}. Built with Astro.</p>
+    <p><a href="/rss.xml">RSS</a><span aria-hidden="true"> · </span><a href="/sitemap-index.xml">Sitemap</a></p>
+  </div>
+</footer>

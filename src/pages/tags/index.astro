@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../templates/layouts/BaseLayout.astro';
+import { getAllPosts } from '../../features/core/posts';
+import { allTags, countTags } from '../../features/core/taxonomy';
+
+const posts = await getAllPosts();
+const counts = countTags(posts);
+const sortedTags = [...allTags].sort((a, b) => (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0));
+---
+
+<BaseLayout title="标签" description="小鸽志全部文章标签。" canonical="/tags">
+  <section class="container narrow page-head">
+    <h1>标签</h1>
+    <p>用更细的关键词查找文章。</p>
+  </section>
+
+  <section class="container tag-index">
+    {sortedTags.map((tag) => (
+      <a href={`/tags/${tag.slug}`}>#{tag.name}<small>{counts.get(tag.slug) ?? 0}</small></a>
+    ))}
+  </section>
+</BaseLayout>

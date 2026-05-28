@@ -1,21 +1,38 @@
 # Dependencies
 node_modules/
-site/node_modules/
 
 # Build output
 dist/
-site/dist/
 .astro/
-site/.astro/
 
-# Claude local state
-.claude/settings.local.json
-.claude/worktrees/
+# Local app state
+.claude/
+/site/
 
 # Environment
 .env
 .env.*
 !.env.example
+
+# Local design / migration notes
+UI功能需求.md
+文章内容结构要求.md
+
+# Local YAML config
+blog/data/*.yaml
+!blog/data/example/
+!blog/data/example/*.yaml
+
+# Local article content
+blog/posts/**
+!blog/posts/
+!blog/posts/.gitkeep
+
+# Optional legacy public uploads
+blog/low/upload/**
+!blog/low/
+!blog/low/upload/
+!blog/low/upload/.gitkeep
 
 # OS / editor
 .DS_Store

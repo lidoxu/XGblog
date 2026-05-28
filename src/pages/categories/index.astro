@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../templates/layouts/BaseLayout.astro';
+import { getAllPosts } from '../../features/core/posts';
+import { allCategories, countCategories } from '../../features/core/taxonomy';
+
+const posts = await getAllPosts();
+const counts = countCategories(posts);
+---
+
+<BaseLayout title="分类目录" description="小鸽志全部文章分类目录。" canonical="/categories">
+  <section class="container narrow page-head">
+    <h1>分类目录</h1>
+    <p>按主题浏览 VPS、建站、运维和工具文章。</p>
+  </section>
+
+  <section class="container taxonomy-grid">
+    {allCategories.map((category) => (
+      <a class="taxonomy-card" href={`/categories/${category.slug}`}>
+        <span>{counts.get(category.slug) ?? 0} 篇</span>
+        <h2>{category.name}</h2>
+        <p>{category.description}</p>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

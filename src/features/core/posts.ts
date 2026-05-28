@@ -1,0 +1,99 @@
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { formatMonth } from './date';
+import { getCategory, getTag, normalizeSlug } from './taxonomy';
+
+export type Post = CollectionEntry<'posts'>;
+
+const postAssetUrls = import.meta.glob('../../../blog/posts/**/*.{avif,gif,jpeg,jpg,png,svg,webp}', {
+  eager: true,
+  import: 'default',
+  query: '?url',
+}) as Record<string, string>;
+
+export async function getAllPosts() {
+  const posts = await getCollection('posts');
+  return sortPosts(posts);
+}
+
+export function sortPosts(posts: Post[]) {
+  return [...posts].sort((a, b) => {
+    const topDiff = (b.data.top ?? 0) - (a.data.top ?? 0);
+
+    if (topDiff !== 0) {
+      return topDiff;
+    }
+
+    return b.data.date.getTime() - a.data.date.getTime();
+  });
+}
+
+export function getPostPath(post: Post) {
+  return `/archives/${post.data.slug}`;
+}
+
+function normalizePostAssetPath(path: string) {
+  return path.replace(/\\/g, '/').replace(/^\.?\//, '');
+}
+
+function getPostAssetUrl(slug: string, path: string) {
+  const key = `../../../blog/posts/${slug}/${normalizePostAssetPath(path)}`;
+  return postAssetUrls[key];
+}
+
+function getCoverFromFrontmatter(slug: string, cover: string) {
+  if (/^(https?:)?\/\//.test(cover) || cover.startsWith('data:')) {
+    return cover;
+  }
+
+  const oldPublicPrefix = `/posts/${slug}/`;
+
+  if (cover.startsWith(oldPublicPrefix)) {
+    return getPostAssetUrl(slug, cover.slice(oldPublicPrefix.length)) ?? cover;
+  }
+
+  if (cover.startsWith('/')) {
+    return cover;
+  }
+
+  return getPostAssetUrl(slug, cover) ?? cover;
+}
+
+export function getPostCover(post: Post) {
+  const slug = post.data.slug;
+
+  if (post.data.cover) {
+    return getCoverFromFrontmatter(slug, post.data.cover);
+  }
+
+  const candidates = [
+    'cover.webp',
+    'cover.png',
+    'cover.jpg',
+    `img/${slug}-1.webp`,
+    `img/${slug}-1.png`,
+    `img/${slug}-1.jpg`,
+  ];
+
+  return candidates.map((path) => getPostAssetUrl(slug, path)).find(Boolean) ?? '/default-cover.svg';
+}
+
+export function groupPostsByMonth(posts: Post[]) {
+  const groups = new Map<string, Post[]>();
+
+  for (const post of posts) {
+    const key = formatMonth(post.data.date);
+    groups.set(key, [...(groups.get(key) ?? []), post]);
+  }
+
+  return Array.from(groups.entries()).map(([month, items]) => ({ month, posts: items }));
+}
+
+export function filterPostsByCategory(posts: Post[], categorySlug: string) {
+  const normalized = getCategory(categorySlug).slug;
+  return posts.filter((post) => post.data.categories.some((slug) => normalizeSlug(slug) === normalized));
+}
+
+export function filterPostsByTag(posts: Post[], tagSlug: string) {
+  const normalized = getTag(tagSlug).slug;
+  return posts.filter((post) => post.data.tags.some((slug) => normalizeSlug(slug) === normalized));
+}

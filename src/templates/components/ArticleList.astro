@@ -1,0 +1,14 @@
+---
+import type { Post } from '../../features/core/posts';
+import ArticleCard from './ArticleCard.astro';
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+<div class="article-list">
+  {posts.map((post) => <ArticleCard post={post} />)}
+</div>

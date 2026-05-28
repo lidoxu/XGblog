@@ -1,0 +1,97 @@
+---
+import { menuData } from '../../features/core/data';
+import { getSite } from '../../features/core/seo';
+
+interface Props {
+  currentPath: string;
+}
+
+const site = getSite();
+const navItems = menuData;
+const { currentPath } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={`${site.title} 首页`}>
+      <img src={site.logo} alt={`${site.title} logo`} width="44" height="44" />
+      <span>
+        <strong>{site.title}</strong>
+        <small>{site.subtitle}</small>
+      </span>
+    </a>
+    <nav class="top-nav" aria-label="站点导航">
+      {navItems.map((item) => {
+        const hasChildren = item.children && item.children.length > 0;
+        const active =
+          currentPath === item.href ||
+          (item.href !== '/' && currentPath.startsWith(item.href)) ||
+          item.children?.some((child) => currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href)));
+
+        return (
+          <div class:list={['nav-item', { active, 'has-children': hasChildren }]}>
+            <a href={item.href} class:list={[{ active }]}>
+              {item.label}
+            </a>
+            {hasChildren && (
+              <div class="submenu">
+                {item.children!.map((child) => (
+                  <a href={child.href} class:list={[{ active: currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href)) }]}>
+                    {child.label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="切换深浅色主题" data-theme-toggle>◐</button>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+  const getStoredTheme = () => {
+    try {
+      const theme = localStorage.getItem('theme');
+      return theme === 'light' || theme === 'dark' ? theme : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const getEffectiveTheme = () => document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
+
+  const syncToggle = () => {
+    if (!toggle) return;
+    const theme = getEffectiveTheme();
+    toggle.textContent = theme === 'dark' ? '☀' : '☾';
+    toggle.setAttribute('aria-label', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+    toggle.setAttribute('title', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+  };
+
+  syncToggle();
+
+  media.addEventListener('change', () => {
+    if (!getStoredTheme()) {
+      document.documentElement.removeAttribute('data-theme');
+      syncToggle();
+      window.dispatchEvent(new CustomEvent('xg-theme-change'));
+    }
+  });
+
+  toggle?.addEventListener('click', () => {
+    const next = getEffectiveTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      // The visual switch still works for the current page.
+    }
+    syncToggle();
+    window.dispatchEvent(new CustomEvent('xg-theme-change'));
+  });
+</script>

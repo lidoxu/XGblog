@@ -1,0 +1,24 @@
+---
+import { allTags } from '../../features/core/taxonomy';
+
+interface Props {
+  counts: Map<string, number>;
+  limit?: number;
+}
+
+const { counts, limit = 20 } = Astro.props;
+const sorted = [...allTags].sort((a, b) => (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0));
+const visible = sorted.slice(0, limit);
+---
+
+<section class="sidebar-card tag-card" aria-labelledby="tag-title">
+  <div class="section-heading">
+    <h2 id="tag-title"><span class="heading-icon" aria-hidden="true">#</span>标签入口</h2>
+  </div>
+  <div class="tag-cloud">
+    {visible.map((tag) => (
+      <a href={`/tags/${tag.slug}`}>#{tag.name}<small>{counts.get(tag.slug) ?? 0}</small></a>
+    ))}
+  </div>
+  {allTags.length > limit && <a class="more-link" href="/tags">更多</a>}
+</section>

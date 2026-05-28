@@ -1,0 +1,26 @@
+---
+import ArticleList from '../../templates/components/ArticleList.astro';
+import BaseLayout from '../../templates/layouts/BaseLayout.astro';
+import { filterPostsByCategory, getAllPosts } from '../../features/core/posts';
+import { allCategories, getCategory } from '../../features/core/taxonomy';
+
+export async function getStaticPaths() {
+  return allCategories.map((category) => ({ params: { slug: category.slug } }));
+}
+
+const { slug } = Astro.params;
+const posts = await getAllPosts();
+const category = getCategory(slug!);
+const filteredPosts = filterPostsByCategory(posts, slug!);
+---
+
+<BaseLayout title={category.name} description={category.description || `${category.name} 分类下的全部文章。`} canonical={`/categories/${category.slug}`}>
+  <section class="container narrow page-head">
+    <h1>{category.name}</h1>
+    <p>{category.description}</p>
+  </section>
+
+  <section class="container narrow">
+    <ArticleList posts={filteredPosts} />
+  </section>
+</BaseLayout>
