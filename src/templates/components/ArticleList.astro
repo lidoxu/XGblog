@@ -10,5 +10,5 @@ const { posts } = Astro.props;
 ---
 
 <div class="article-list">
-  {posts.map((post) => <ArticleCard post={post} />)}
+  {posts.map((post, index) => <ArticleCard post={post} index={index} />)}
 </div>
