@@ -62,8 +62,9 @@ export type LinkItem = {
   description: string;
 };
 
-type RawSiteData = Omit<SiteData, 'subtitle' | 'logo' | 'theme' | 'author'> & {
+type RawSiteData = Omit<SiteData, 'subtitle' | 'url' | 'logo' | 'theme' | 'author'> & {
   subtitle?: string;
+  url?: string | null;
   logo?: string | null;
   theme?: {
     accent?: string | null;
@@ -144,6 +145,11 @@ function resolveThemeAccent(configured: string | null | undefined) {
   return '#6aa6c8';
 }
 
+function resolveSiteUrl(configured: string | null | undefined) {
+  const trimmed = configured?.trim();
+  return trimmed || 'https://www.xiaoge.org';
+}
+
 function resolveSiteData(data: RawSiteData): SiteData {
   const logo = resolveSiteLogo(readEnv('BLOG_LOGO') ?? data.logo);
 
@@ -151,7 +157,7 @@ function resolveSiteData(data: RawSiteData): SiteData {
     title: readEnv('BLOG_TITLE') ?? data.title,
     subtitle: readEnv('BLOG_SUBTITLE') ?? data.subtitle ?? data.description,
     description: readEnv('BLOG_DESCRIPTION') ?? data.description,
-    url: readEnv('BLOG_URL') ?? data.url,
+    url: resolveSiteUrl(readEnv('BLOG_URL') ?? data.url),
     logo,
     theme: {
       accent: resolveThemeAccent(data.theme?.accent),
