@@ -30,9 +30,7 @@ const cover = getPostCover(post);
     <div class="article-main">
       <header class="article-header">
         <h1>{post.data.title}</h1>
-        <p class="article-description">{post.data.description}</p>
         <PostMeta date={post.data.date} categories={post.data.categories} tags={post.data.tags} />
-        <img class="article-cover" src={cover} alt={`${post.data.title} 封面图`} />
       </header>
       <div class="prose">
         <Content />
@@ -42,6 +40,7 @@ const cover = getPostCover(post);
       <TableOfContents headings={headings} />
     </aside>
   </article>
+  <script src="../../features/scripts/toc-active.ts"></script>
   <script src="../../features/scripts/code-copy.ts"></script>
   <script src="../../features/scripts/image-zoom.ts"></script>
 </BaseLayout>

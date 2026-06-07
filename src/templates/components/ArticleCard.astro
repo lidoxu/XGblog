@@ -10,18 +10,23 @@ interface Props {
 const { post } = Astro.props;
 const cover = getPostCover(post);
 const href = getPostPath(post);
+const isPinned = post.data.top > 0;
 ---
 
 <article class="article-card">
   <a class="card-cover" href={href} aria-label={post.data.title}>
     <img src={cover} alt={`${post.data.title} 封面图`} loading="lazy" />
+    {isPinned && (
+      <span class="pin-label" aria-label="置顶文章" title="置顶文章">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 4.8 16.7 12h-3v6h-3.4v-6h-3L12 4.8Z" />
+        </svg>
+      </span>
+    )}
   </a>
   <div class="card-body">
-    <div class="card-title-row">
-      {post.data.top > 0 && <span class="pin-label">置顶</span>}
-      <h2><a href={href}>{post.data.title}</a></h2>
-    </div>
+    <h2><a href={href}>{post.data.title}</a></h2>
     <p>{post.data.description}</p>
-    <PostMeta date={post.data.date} categories={post.data.categories} tags={post.data.tags} compact />
+    <PostMeta date={post.data.date} categories={post.data.categories} tags={post.data.tags} compact showTags={false} />
   </div>
 </article>

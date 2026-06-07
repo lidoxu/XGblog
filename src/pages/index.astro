@@ -11,10 +11,7 @@ const site = getSite();
 
 <BaseLayout description={site.description}>
   <div class="container page-grid">
-    <section class="main-column" aria-labelledby="latest-title">
-      <div class="section-heading large">
-        <h1 id="latest-title">最新文章</h1>
-      </div>
+    <section class="main-column" aria-label="最新文章">
       <ArticleList posts={posts} />
     </section>
     <Sidebar posts={posts} />

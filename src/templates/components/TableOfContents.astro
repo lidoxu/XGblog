@@ -10,16 +10,39 @@ interface Props {
 }
 
 const { headings } = Astro.props;
-const visible = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const visible = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 4);
+let currentH2 = '';
+let currentH3 = '';
+const tocHeadings = visible.map((heading) => {
+  if (heading.depth === 2) {
+    currentH2 = heading.slug;
+    currentH3 = '';
+  }
+  if (heading.depth === 3) {
+    currentH3 = heading.slug;
+  }
+
+  return {
+    ...heading,
+    parentH2: heading.depth === 2 ? heading.slug : currentH2,
+    parentH3: heading.depth === 3 ? heading.slug : currentH3,
+  };
+});
 ---
 
-{visible.length > 0 && (
-  <nav class="toc" aria-label="文章目录">
+{tocHeadings.length > 0 && (
+  <nav class="toc" aria-label="文章目录" data-toc>
     <h2>文章目录</h2>
     <ol>
-      {visible.map((heading) => (
-        <li class={`depth-${heading.depth}`}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
+      {tocHeadings.map((heading) => (
+        <li
+          class={`depth-${heading.depth}`}
+          data-toc-item
+          data-depth={heading.depth}
+          data-parent-h2={heading.parentH2}
+          data-parent-h3={heading.parentH3}
+        >
+          <a href={`#${heading.slug}`} data-toc-link>{heading.text}</a>
         </li>
       ))}
     </ol>

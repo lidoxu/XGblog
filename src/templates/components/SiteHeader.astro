@@ -17,27 +17,40 @@ const { currentPath } = Astro.props;
       <img src={site.logo} alt={`${site.title} logo`} width="44" height="44" />
       <strong>{site.title}</strong>
     </a>
-    <nav class="top-nav" id="site-nav" aria-label="站点导航" data-site-nav>
-      {navItems.map((item) => {
+    <nav class="top-nav" id="site-nav" aria-label="站点导航" data-site-nav hidden>
+      {navItems.map((item, index) => {
         const hasChildren = item.children && item.children.length > 0;
         const active =
           currentPath === item.href ||
           (item.href !== '/' && currentPath.startsWith(item.href)) ||
           item.children?.some((child) => currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href)));
+        const submenuId = `submenu-${index}`;
 
         return (
           <div class:list={['nav-item', { active, 'has-children': hasChildren }]}>
-            <a href={item.href} class:list={[{ active }]}>
+            <a href={item.href} class:list={['nav-link', { active }]}>
               {item.label}
             </a>
             {hasChildren && (
-              <div class="submenu">
-                {item.children!.map((child) => (
-                  <a href={child.href} class:list={[{ active: currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href)) }]}>
-                    {child.label}
-                  </a>
-                ))}
-              </div>
+              <>
+                <button
+                  class="submenu-toggle"
+                  type="button"
+                  aria-label={`展开${item.label}子菜单`}
+                  aria-controls={submenuId}
+                  aria-expanded="false"
+                  data-submenu-toggle
+                >
+                  <span aria-hidden="true"></span>
+                </button>
+                <div class="submenu" id={submenuId} data-submenu>
+                  {item.children!.map((child) => (
+                    <a href={child.href} class:list={['submenu-link', { active: currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href)) }]}>
+                      {child.label}
+                    </a>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         );
@@ -59,6 +72,7 @@ const { currentPath } = Astro.props;
   const nav = header?.querySelector<HTMLElement>('[data-site-nav]');
   const navToggle = header?.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   const themeToggle = header?.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const submenuToggles = Array.from(header?.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]') ?? []);
   const media = window.matchMedia('(prefers-color-scheme: dark)');
   const mobileNav = window.matchMedia('(max-width: 720px)');
 
@@ -73,12 +87,20 @@ const { currentPath } = Astro.props;
 
   const getEffectiveTheme = () => document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
 
+  const closeSubmenus = () => {
+    submenuToggles.forEach((button) => {
+      button.setAttribute('aria-expanded', 'false');
+      button.closest('.nav-item')?.classList.remove('is-submenu-open');
+    });
+  };
+
   const closeNav = () => {
     if (!nav || !navToggle) return;
     nav.classList.remove('is-open');
     nav.hidden = mobileNav.matches;
     navToggle.setAttribute('aria-expanded', 'false');
     header?.setAttribute('data-nav-open', 'false');
+    closeSubmenus();
   };
 
   const syncNav = () => {
@@ -88,6 +110,7 @@ const { currentPath } = Astro.props;
       nav.hidden = !isOpen;
       navToggle.setAttribute('aria-expanded', String(isOpen));
       header?.setAttribute('data-nav-open', String(isOpen));
+      if (!isOpen) closeSubmenus();
       return;
     }
 
@@ -95,9 +118,10 @@ const { currentPath } = Astro.props;
     nav.classList.remove('is-open');
     navToggle.setAttribute('aria-expanded', 'false');
     header?.setAttribute('data-nav-open', 'false');
+    closeSubmenus();
   };
 
-  const syncToggle = () => {
+  const syncThemeToggle = () => {
     if (!themeToggle) return;
     const theme = getEffectiveTheme();
     themeToggle.textContent = theme === 'dark' ? '☀' : '◐';
@@ -105,13 +129,13 @@ const { currentPath } = Astro.props;
     themeToggle.setAttribute('title', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
   };
 
-  syncToggle();
+  syncThemeToggle();
   syncNav();
 
   media.addEventListener('change', () => {
     if (!getStoredTheme()) {
       document.documentElement.removeAttribute('data-theme');
-      syncToggle();
+      syncThemeToggle();
       window.dispatchEvent(new CustomEvent('xg-theme-change'));
     }
   });
@@ -133,6 +157,16 @@ const { currentPath } = Astro.props;
     });
   });
 
+  submenuToggles.forEach((button) => {
+    button.addEventListener('click', () => {
+      if (!mobileNav.matches) return;
+      const item = button.closest('.nav-item');
+      const isOpen = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!isOpen));
+      item?.classList.toggle('is-submenu-open', !isOpen);
+    });
+  });
+
   navToggle?.addEventListener('click', () => {
     if (!nav) return;
     const nextOpen = !nav.classList.contains('is-open');
@@ -140,6 +174,7 @@ const { currentPath } = Astro.props;
     nav.hidden = mobileNav.matches ? !nextOpen : false;
     navToggle.setAttribute('aria-expanded', String(nextOpen));
     header?.setAttribute('data-nav-open', String(nextOpen));
+    if (!nextOpen) closeSubmenus();
   });
 
   themeToggle?.addEventListener('click', () => {
@@ -150,7 +185,7 @@ const { currentPath } = Astro.props;
     } catch {
       // The visual switch still works for the current page.
     }
-    syncToggle();
+    syncThemeToggle();
     window.dispatchEvent(new CustomEvent('xg-theme-change'));
   });
 </script>
