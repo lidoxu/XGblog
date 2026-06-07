@@ -47,13 +47,19 @@ if (images.length > 0) {
   lightbox.setAttribute('aria-modal', 'true');
   lightbox.setAttribute('aria-label', '图片预览');
   lightbox.innerHTML = `
-    <button class="xg-lightbox-close" type="button" aria-label="关闭图片预览">×</button>
-    <button class="xg-lightbox-prev" type="button" aria-label="上一张图片">‹</button>
+    <button class="xg-lightbox-close" type="button" aria-label="关闭图片预览">
+      <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M5 5l8 8M13 5l-8 8" /></svg>
+    </button>
+    <button class="xg-lightbox-prev" type="button" aria-label="上一张图片">
+      <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M11 4 7 9l4 5" /></svg>
+    </button>
     <figure>
       <img alt="" />
       <figcaption><span class="xg-lightbox-caption"></span><span class="xg-lightbox-counter"></span></figcaption>
     </figure>
-    <button class="xg-lightbox-next" type="button" aria-label="下一张图片">›</button>
+    <button class="xg-lightbox-next" type="button" aria-label="下一张图片">
+      <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M7 4l4 5-4 5" /></svg>
+    </button>
   `;
 
   document.body.append(lightbox);

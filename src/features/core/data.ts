@@ -49,6 +49,7 @@ export type TaxonomyItem = {
 export type MenuItem = {
   label: string;
   href: string;
+  target?: '_self' | '_blank';
   children?: MenuItem[];
 };
 

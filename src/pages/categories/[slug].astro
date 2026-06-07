@@ -15,8 +15,11 @@ const filteredPosts = filterPostsByCategory(posts, slug!);
 ---
 
 <BaseLayout title={category.name} description={category.description || `${category.name} 分类下的全部文章。`} canonical={`/categories/${category.slug}`}>
-  <section class="container narrow page-head">
-    <h1>{category.name}</h1>
+  <section class="container narrow page-head category-page-head">
+    <div class="page-title-row">
+      <h1>{category.name}</h1>
+      <span>{filteredPosts.length} 篇文章</span>
+    </div>
     <p>{category.description}</p>
   </section>
 

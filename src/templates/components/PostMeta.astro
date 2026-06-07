@@ -16,7 +16,13 @@ const visibleTags = showTags ? tags.slice(0, compact ? 3 : tags.length) : [];
 ---
 
 <div class:list={['post-meta', { compact }]}>
-  <time datetime={date.toISOString()}>{formatDate(date)}</time>
+  <time datetime={date.toISOString()}>
+    <svg class="meta-date-icon" viewBox="0 0 18 18" aria-hidden="true">
+      <rect x="3.5" y="4.5" width="11" height="10" rx="2" />
+      <path d="M6 2.8v3.4M12 2.8v3.4M3.8 7.7h10.4" />
+    </svg>
+    {formatDate(date)}
+  </time>
   <a class="meta-link category" href={getCategoryPath(primaryCategory.slug)}>{primaryCategory.name}</a>
   {visibleTags.length > 0 && (
     <span class="meta-tags">

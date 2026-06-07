@@ -17,11 +17,7 @@ const isPinned = post.data.top > 0;
   <a class="card-cover" href={href} aria-label={post.data.title}>
     <img src={cover} alt={`${post.data.title} 封面图`} loading="lazy" />
     {isPinned && (
-      <span class="pin-label" aria-label="置顶文章" title="置顶文章">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 4.8 16.7 12h-3v6h-3.4v-6h-3L12 4.8Z" />
-        </svg>
-      </span>
+      <span class="pin-label" aria-label="置顶文章" title="置顶文章"></span>
     )}
   </a>
   <div class="card-body">
