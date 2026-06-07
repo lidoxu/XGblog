@@ -1,0 +1,74 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "小鸽志 首页" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "小鸽志 logo" [ref=e5]
+        - strong [ref=e6]: 小鸽志
+      - navigation "站点导航" [ref=e7]:
+        - link "首页" [ref=e9] [cursor=pointer]:
+          - /url: /
+        - link "VPS优惠" [ref=e11] [cursor=pointer]:
+          - /url: /categories/vps-discount
+        - link "VPS服务器" [ref=e13] [cursor=pointer]:
+          - /url: /categories/vps-tutorial
+        - link "Docker" [ref=e15] [cursor=pointer]:
+          - /url: /categories/docker
+        - link "Linux" [ref=e17] [cursor=pointer]:
+          - /url: /categories/linux
+        - link "AI工具" [ref=e19] [cursor=pointer]:
+          - /url: /categories/ai
+        - link "资源分享" [ref=e21] [cursor=pointer]:
+          - /url: /categories/resource
+        - link "友情链接" [ref=e23] [cursor=pointer]:
+          - /url: /links
+        - link "公益项目/更多" [ref=e25] [cursor=pointer]:
+          - /url: /about
+      - button "切换到深色主题" [ref=e27] [cursor=pointer]: ◐
+  - main [ref=e28]:
+    - generic [ref=e29]:
+      - heading "VPS教程" [level=1] [ref=e30]
+      - paragraph [ref=e31]: VPS 系统安装、网络优化与日常维护
+    - article [ref=e34]:
+      - link "给闲置 VPS 安装飞牛 fnOS 的 DD 笔记" [ref=e35] [cursor=pointer]:
+        - /url: /archives/vps-dd-fnos
+        - img "给闲置 VPS 安装飞牛 fnOS 的 DD 笔记 封面图" [ref=e36]
+      - generic [ref=e37]:
+        - heading "给闲置 VPS 安装飞牛 fnOS 的 DD 笔记" [level=2] [ref=e39]:
+          - link "给闲置 VPS 安装飞牛 fnOS 的 DD 笔记" [ref=e40] [cursor=pointer]:
+            - /url: /archives/vps-dd-fnos
+        - paragraph [ref=e41]: 基于小鸽志原文整理：使用 reinstall 脚本把 x86 VPS DD 成飞牛 fnOS，并记录硬件要求、安装命令、WebUI 初始化和端口注意事项。
+        - generic [ref=e42]:
+          - time [ref=e43]: 2025/07/28
+          - link "VPS教程" [ref=e44] [cursor=pointer]:
+            - /url: /categories/vps-tutorial
+          - link "#VPS" [ref=e45] [cursor=pointer]:
+            - /url: /tags/vps
+          - link "#NAS" [ref=e46] [cursor=pointer]:
+            - /url: /tags/nas
+          - link "#DD" [ref=e47] [cursor=pointer]:
+            - /url: /tags/dd
+  - contentinfo [ref=e48]:
+    - generic [ref=e49]:
+      - paragraph [ref=e50]: © 2026 小鸽志. Built with Astro.
+      - paragraph [ref=e51]:
+        - link "RSS" [ref=e52] [cursor=pointer]:
+          - /url: /rss.xml
+        - text: ·
+        - link "Sitemap" [ref=e53] [cursor=pointer]:
+          - /url: /sitemap-index.xml
+  - generic [ref=e56]:
+    - button "Menu" [ref=e57]:
+      - img [ref=e59]
+      - generic: Menu
+    - button "Inspect" [ref=e63]:
+      - img [ref=e65]
+      - generic: Inspect
+    - button "Audit" [ref=e67]:
+      - generic [ref=e68]:
+        - img [ref=e69]
+        - img [ref=e72]
+      - generic: Audit
+    - button "Settings" [ref=e75]:
+      - img [ref=e77]
+      - generic: Settings

@@ -8,7 +8,7 @@ const site = getSite() as ReturnType<typeof getSite> & {
 
 <section class="sidebar-card author-card" aria-labelledby="author-title">
   <img src={site.author.avatar} alt={`${site.author.name} 头像`} width="72" height="72" />
-  <div>
+  <div class="author-card-body">
     <h2 id="author-title">{site.author.name}</h2>
     <p>{site.author.description}</p>
   </div>

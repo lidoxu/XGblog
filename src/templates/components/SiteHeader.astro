@@ -11,16 +11,13 @@ const navItems = menuData;
 const { currentPath } = Astro.props;
 ---
 
-<header class="site-header">
+<header class="site-header" data-site-header>
   <div class="container header-inner">
     <a class="brand" href="/" aria-label={`${site.title} 首页`}>
       <img src={site.logo} alt={`${site.title} logo`} width="44" height="44" />
-      <span>
-        <strong>{site.title}</strong>
-        <small>{site.subtitle}</small>
-      </span>
+      <strong>{site.title}</strong>
     </a>
-    <nav class="top-nav" aria-label="站点导航">
+    <nav class="top-nav" id="site-nav" aria-label="站点导航" data-site-nav>
       {navItems.map((item) => {
         const hasChildren = item.children && item.children.length > 0;
         const active =
@@ -46,13 +43,24 @@ const { currentPath } = Astro.props;
         );
       })}
     </nav>
-    <button class="theme-toggle" type="button" aria-label="切换深浅色主题" data-theme-toggle>◐</button>
+    <div class="header-actions">
+      <button class="nav-toggle" type="button" aria-label="打开导航菜单" aria-controls="site-nav" aria-expanded="false" data-nav-toggle>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+      <button class="theme-toggle" type="button" aria-label="切换深浅色主题" data-theme-toggle>◐</button>
+    </div>
   </div>
 </header>
 
 <script>
-  const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const nav = header?.querySelector<HTMLElement>('[data-site-nav]');
+  const navToggle = header?.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const themeToggle = header?.querySelector<HTMLButtonElement>('[data-theme-toggle]');
   const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const mobileNav = window.matchMedia('(max-width: 720px)');
 
   const getStoredTheme = () => {
     try {
@@ -65,15 +73,40 @@ const { currentPath } = Astro.props;
 
   const getEffectiveTheme = () => document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
 
+  const closeNav = () => {
+    if (!nav || !navToggle) return;
+    nav.classList.remove('is-open');
+    nav.hidden = mobileNav.matches;
+    navToggle.setAttribute('aria-expanded', 'false');
+    header?.setAttribute('data-nav-open', 'false');
+  };
+
+  const syncNav = () => {
+    if (!nav || !navToggle) return;
+    if (mobileNav.matches) {
+      const isOpen = nav.classList.contains('is-open');
+      nav.hidden = !isOpen;
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+      header?.setAttribute('data-nav-open', String(isOpen));
+      return;
+    }
+
+    nav.hidden = false;
+    nav.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    header?.setAttribute('data-nav-open', 'false');
+  };
+
   const syncToggle = () => {
-    if (!toggle) return;
+    if (!themeToggle) return;
     const theme = getEffectiveTheme();
-    toggle.textContent = theme === 'dark' ? '☀' : '☾';
-    toggle.setAttribute('aria-label', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
-    toggle.setAttribute('title', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+    themeToggle.textContent = theme === 'dark' ? '☀' : '◐';
+    themeToggle.setAttribute('aria-label', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+    themeToggle.setAttribute('title', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
   };
 
   syncToggle();
+  syncNav();
 
   media.addEventListener('change', () => {
     if (!getStoredTheme()) {
@@ -83,7 +116,33 @@ const { currentPath } = Astro.props;
     }
   });
 
-  toggle?.addEventListener('click', () => {
+  mobileNav.addEventListener('change', syncNav);
+
+  document.addEventListener('click', (event) => {
+    if (!mobileNav.matches || !header || header.contains(event.target as Node)) {
+      return;
+    }
+    closeNav();
+  });
+
+  nav?.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      if (mobileNav.matches) {
+        closeNav();
+      }
+    });
+  });
+
+  navToggle?.addEventListener('click', () => {
+    if (!nav) return;
+    const nextOpen = !nav.classList.contains('is-open');
+    nav.classList.toggle('is-open', nextOpen);
+    nav.hidden = mobileNav.matches ? !nextOpen : false;
+    navToggle.setAttribute('aria-expanded', String(nextOpen));
+    header?.setAttribute('data-nav-open', String(nextOpen));
+  });
+
+  themeToggle?.addEventListener('click', () => {
     const next = getEffectiveTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
     try {

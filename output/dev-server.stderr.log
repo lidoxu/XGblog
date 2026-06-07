@@ -1,0 +1,119 @@
+[31m[1m19:08:00[22m [ERROR][39m Could not import `/src/templates/components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    at async handleInvoke (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:39026:22)[22m
+[31m[1m19:08:03[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)[22m
+[31m[1m19:08:06[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    at async handleInvoke (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:39026:22)[22m
+[31m[1m19:08:09[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:12[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:15[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:17[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:18[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:21[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:21[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:25[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:28[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:32[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:36[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m19:08:39[22m [ERROR][39m Could not import `../components/SiteHeader.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///D:/Documents/AI/xg-blog/node_modules/vite/dist/node/chunks/dep-Dq2t6Dq0.js:35730:17)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m

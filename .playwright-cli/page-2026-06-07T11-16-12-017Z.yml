@@ -1,0 +1,175 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "小鸽志 首页" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "小鸽志 logo" [ref=e5]
+        - strong [ref=e6]: 小鸽志
+      - navigation "站点导航" [ref=e7]:
+        - link "首页" [ref=e9] [cursor=pointer]:
+          - /url: /
+        - link "VPS优惠" [ref=e11] [cursor=pointer]:
+          - /url: /categories/vps-discount
+        - generic [ref=e12]:
+          - link "VPS服务器" [ref=e13] [cursor=pointer]:
+            - /url: /categories/vps-tutorial
+          - generic [ref=e149]:
+            - link "VPS教程" [ref=e150] [cursor=pointer]:
+              - /url: /categories/vps-tutorial
+            - link "VPS测评" [ref=e151] [cursor=pointer]:
+              - /url: /categories/vps-review
+            - link "VPS评测" [ref=e152] [cursor=pointer]:
+              - /url: /categories/vps-review
+            - link "VPS优惠" [ref=e153] [cursor=pointer]:
+              - /url: /categories/vps-discount
+        - link "Docker" [ref=e15] [cursor=pointer]:
+          - /url: /categories/docker
+        - link "Linux" [ref=e17] [cursor=pointer]:
+          - /url: /categories/linux
+        - link "AI工具" [ref=e19] [cursor=pointer]:
+          - /url: /categories/ai
+        - link "资源分享" [ref=e21] [cursor=pointer]:
+          - /url: /categories/resource
+        - link "友情链接" [ref=e23] [cursor=pointer]:
+          - /url: /links
+        - generic [ref=e24]:
+          - link "公益项目/更多" [ref=e25] [cursor=pointer]:
+            - /url: /about
+          - generic [ref=e154]:
+            - link "公益项目" [ref=e155] [cursor=pointer]:
+              - /url: /categories/public-service
+            - link "网盘资源下载" [ref=e156] [cursor=pointer]:
+              - /url: /categories/resource
+            - link "留言板" [ref=e157] [cursor=pointer]:
+              - /url: /links
+            - link "关于博主" [ref=e158] [cursor=pointer]:
+              - /url: /about
+      - generic [ref=e26]:
+        - button "打开导航菜单" [expanded] [active] [ref=e142] [cursor=pointer]
+        - button "切换到深色主题" [ref=e27] [cursor=pointer]: ◐
+  - main [ref=e28]:
+    - generic [ref=e29]:
+      - region "最新文章" [ref=e30]:
+        - heading "最新文章" [level=1] [ref=e32]
+        - generic [ref=e33]:
+          - article [ref=e34]:
+            - link "使用 CC Switch 统一管理 AI 工具 API" [ref=e35] [cursor=pointer]:
+              - /url: /archives/cc-switch
+              - img "使用 CC Switch 统一管理 AI 工具 API 封面图" [ref=e36]
+            - generic [ref=e37]:
+              - generic [ref=e38]:
+                - generic [ref=e39]: 置顶
+                - heading "使用 CC Switch 统一管理 AI 工具 API" [level=2] [ref=e40]:
+                  - link "使用 CC Switch 统一管理 AI 工具 API" [ref=e41] [cursor=pointer]:
+                    - /url: /archives/cc-switch
+              - paragraph [ref=e42]: 基于小鸽志原文整理：用 CC Switch 管理 Claude Desktop、Claude Code、Codex、Gemini CLI 等 AI 工具的 API Key、模型映射和本地路由。
+              - generic [ref=e43]:
+                - time [ref=e44]: 2026/05/17
+                - link "AI工具" [ref=e45] [cursor=pointer]:
+                  - /url: /categories/ai
+                - link "#Claude" [ref=e46] [cursor=pointer]:
+                  - /url: /tags/claude
+                - link "#DeepSeek" [ref=e47] [cursor=pointer]:
+                  - /url: /tags/deepseek
+                - link "#AI Agent" [ref=e48] [cursor=pointer]:
+                  - /url: /tags/ai-agent
+          - article [ref=e49]:
+            - link "Claude 桌面客户端接入自定义 API 记录" [ref=e50] [cursor=pointer]:
+              - /url: /archives/claude-desktop-api
+              - img "Claude 桌面客户端接入自定义 API 记录 封面图" [ref=e51]
+            - generic [ref=e52]:
+              - generic [ref=e53]:
+                - generic [ref=e54]: 置顶
+                - heading "Claude 桌面客户端接入自定义 API 记录" [level=2] [ref=e55]:
+                  - link "Claude 桌面客户端接入自定义 API 记录" [ref=e56] [cursor=pointer]:
+                    - /url: /archives/claude-desktop-api
+              - paragraph [ref=e57]: 基于小鸽志原文整理：记录 Claude Desktop 开启开发者模式、配置第三方推理接口，以及 DeepSeek base URL 和模型 ID 的常见坑。
+              - generic [ref=e58]:
+                - time [ref=e59]: 2026/05/04
+                - link "AI工具" [ref=e60] [cursor=pointer]:
+                  - /url: /categories/ai
+                - link "#Claude" [ref=e61] [cursor=pointer]:
+                  - /url: /tags/claude
+                - link "#DeepSeek" [ref=e62] [cursor=pointer]:
+                  - /url: /tags/deepseek
+                - link "#AI Agent" [ref=e63] [cursor=pointer]:
+                  - /url: /tags/ai-agent
+          - article [ref=e64]:
+            - link "给闲置 VPS 安装飞牛 fnOS 的 DD 笔记" [ref=e65] [cursor=pointer]:
+              - /url: /archives/vps-dd-fnos
+              - img "给闲置 VPS 安装飞牛 fnOS 的 DD 笔记 封面图" [ref=e66]
+            - generic [ref=e67]:
+              - heading "给闲置 VPS 安装飞牛 fnOS 的 DD 笔记" [level=2] [ref=e69]:
+                - link "给闲置 VPS 安装飞牛 fnOS 的 DD 笔记" [ref=e70] [cursor=pointer]:
+                  - /url: /archives/vps-dd-fnos
+              - paragraph [ref=e71]: 基于小鸽志原文整理：使用 reinstall 脚本把 x86 VPS DD 成飞牛 fnOS，并记录硬件要求、安装命令、WebUI 初始化和端口注意事项。
+              - generic [ref=e72]:
+                - time [ref=e73]: 2025/07/28
+                - link "VPS教程" [ref=e74] [cursor=pointer]:
+                  - /url: /categories/vps-tutorial
+                - link "#VPS" [ref=e75] [cursor=pointer]:
+                  - /url: /tags/vps
+                - link "#NAS" [ref=e76] [cursor=pointer]:
+                  - /url: /tags/nas
+                - link "#DD" [ref=e77] [cursor=pointer]:
+                  - /url: /tags/dd
+      - complementary "博客信息" [ref=e78]:
+        - region "文章分类" [ref=e84]:
+          - heading "文章分类" [level=2] [ref=e86]
+          - list [ref=e87]:
+            - listitem [ref=e88]:
+              - link "VPS优惠 0" [ref=e89] [cursor=pointer]:
+                - /url: /categories/vps-discount
+                - generic [ref=e90]: VPS优惠
+                - generic [ref=e91]: "0"
+            - listitem [ref=e92]:
+              - link "VPS测评 0" [ref=e93] [cursor=pointer]:
+                - /url: /categories/vps-review
+                - generic [ref=e94]: VPS测评
+                - generic [ref=e95]: "0"
+            - listitem [ref=e96]:
+              - link "VPS教程 1" [ref=e97] [cursor=pointer]:
+                - /url: /categories/vps-tutorial
+                - generic [ref=e98]: VPS教程
+                - generic [ref=e99]: "1"
+            - listitem [ref=e100]:
+              - link "Docker 0" [ref=e101] [cursor=pointer]:
+                - /url: /categories/docker
+                - generic [ref=e102]: Docker
+                - generic [ref=e103]: "0"
+            - listitem [ref=e104]:
+              - link "Linux 1" [ref=e105] [cursor=pointer]:
+                - /url: /categories/linux
+                - generic [ref=e106]: Linux
+                - generic [ref=e107]: "1"
+            - listitem [ref=e108]:
+              - link "AI工具 2" [ref=e109] [cursor=pointer]:
+                - /url: /categories/ai
+                - generic [ref=e110]: AI工具
+                - generic [ref=e111]: "2"
+          - link "更多" [ref=e112] [cursor=pointer]:
+            - /url: /categories
+  - contentinfo [ref=e113]:
+    - generic [ref=e114]:
+      - paragraph [ref=e115]: © 2026 小鸽志. Built with Astro.
+      - paragraph [ref=e116]:
+        - link "RSS" [ref=e117] [cursor=pointer]:
+          - /url: /rss.xml
+        - text: ·
+        - link "Sitemap" [ref=e118] [cursor=pointer]:
+          - /url: /sitemap-index.xml
+  - generic [ref=e121]:
+    - button "Menu" [ref=e122]:
+      - img [ref=e124]
+      - generic: Menu
+    - button "Inspect" [ref=e128]:
+      - img [ref=e130]
+      - generic: Inspect
+    - button "Audit" [ref=e132]:
+      - generic [ref=e133]:
+        - img [ref=e134]
+        - img [ref=e147]
+      - generic: Audit
+    - button "Settings" [ref=e137]:
+      - img [ref=e139]
+      - generic: Settings

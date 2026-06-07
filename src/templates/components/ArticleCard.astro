@@ -5,16 +5,14 @@ import PostMeta from './PostMeta.astro';
 
 interface Props {
   post: Post;
-  index?: number;
 }
 
-const { post, index = 0 } = Astro.props;
+const { post } = Astro.props;
 const cover = getPostCover(post);
 const href = getPostPath(post);
-const serial = String(index + 1).padStart(2, '0');
 ---
 
-<article class="article-card" data-index={serial}>
+<article class="article-card">
   <a class="card-cover" href={href} aria-label={post.data.title}>
     <img src={cover} alt={`${post.data.title} 封面图`} loading="lazy" />
   </a>
