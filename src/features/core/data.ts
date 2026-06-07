@@ -33,6 +33,9 @@ export type SiteData = {
   description: string;
   url: string;
   logo: string;
+  theme: {
+    accent: string;
+  };
   author: {
     name: string;
     avatar: string;
@@ -49,7 +52,7 @@ export type TaxonomyItem = {
 export type MenuItem = {
   label: string;
   href: string;
-  target?: '_self' | '_blank';
+  target?: 'self' | 'blank' | '_self' | '_blank' | '' | null;
   children?: MenuItem[];
 };
 
@@ -59,9 +62,12 @@ export type LinkItem = {
   description: string;
 };
 
-type RawSiteData = Omit<SiteData, 'subtitle' | 'logo' | 'author'> & {
+type RawSiteData = Omit<SiteData, 'subtitle' | 'logo' | 'theme' | 'author'> & {
   subtitle?: string;
   logo?: string | null;
+  theme?: {
+    accent?: string | null;
+  };
   author: {
     name: string;
     avatar?: string | null;
@@ -128,6 +134,16 @@ function resolveAuthorAvatar(configured: string | null | undefined, fallbackLogo
   ]) ?? fallbackLogo;
 }
 
+function resolveThemeAccent(configured: string | null | undefined) {
+  const trimmed = configured?.trim();
+
+  if (trimmed && /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(trimmed)) {
+    return trimmed;
+  }
+
+  return '#6aa6c8';
+}
+
 function resolveSiteData(data: RawSiteData): SiteData {
   const logo = resolveSiteLogo(readEnv('BLOG_LOGO') ?? data.logo);
 
@@ -137,6 +153,9 @@ function resolveSiteData(data: RawSiteData): SiteData {
     description: readEnv('BLOG_DESCRIPTION') ?? data.description,
     url: readEnv('BLOG_URL') ?? data.url,
     logo,
+    theme: {
+      accent: resolveThemeAccent(data.theme?.accent),
+    },
     author: {
       name: readEnv('BLOG_AUTHOR_NAME') ?? data.author.name,
       avatar: resolveAuthorAvatar(readEnv('BLOG_AUTHOR_AVATAR') ?? data.author.avatar, logo),

@@ -9,6 +9,8 @@ interface Props {
 const site = getSite();
 const navItems = menuData;
 const { currentPath } = Astro.props;
+
+const normalizeTarget = (target?: string | null) => (target === 'blank' || target === '_blank' ? '_blank' : undefined);
 ---
 
 <header class="site-header" data-site-header>
@@ -20,16 +22,18 @@ const { currentPath } = Astro.props;
     <nav class="top-nav" id="site-nav" aria-label="站点导航" data-site-nav hidden>
       {navItems.map((item, index) => {
         const hasChildren = item.children && item.children.length > 0;
-        const itemRel = item.target === '_blank' ? 'noopener noreferrer' : undefined;
-        const active =
+        const itemTarget = normalizeTarget(item.target);
+        const itemRel = itemTarget ? 'noopener noreferrer' : undefined;
+        const hasActiveChild = item.children?.some((child) => currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href))) ?? false;
+        const selfActive =
           currentPath === item.href ||
-          (item.href !== '/' && currentPath.startsWith(item.href)) ||
-          item.children?.some((child) => currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href)));
+          (item.href !== '/' && currentPath.startsWith(item.href));
+        const active = selfActive || hasActiveChild;
         const submenuId = `submenu-${index}`;
 
         return (
-          <div class:list={['nav-item', { active, 'has-children': hasChildren }]}>
-            <a href={item.href} target={item.target} rel={itemRel} class:list={['nav-link', { active }]}>
+          <div class:list={['nav-item', { active, 'has-children': hasChildren, 'has-active-child': hasActiveChild }]}>
+            <a href={item.href} target={itemTarget} rel={itemRel} class:list={['nav-link', { active: selfActive && !hasActiveChild }]}>
               {item.label}
             </a>
             {hasChildren && (
@@ -46,9 +50,10 @@ const { currentPath } = Astro.props;
                 </button>
                 <div class="submenu" id={submenuId} data-submenu>
                   {item.children!.map((child) => {
-                    const childRel = child.target === '_blank' ? 'noopener noreferrer' : undefined;
+                    const childTarget = normalizeTarget(child.target);
+                    const childRel = childTarget ? 'noopener noreferrer' : undefined;
                     return (
-                      <a href={child.href} target={child.target} rel={childRel} class:list={['submenu-link', { active: currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href)) }]}>
+                      <a href={child.href} target={childTarget} rel={childRel} class:list={['submenu-link', { active: currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href)) }]}>
                         {child.label}
                       </a>
                     );
@@ -59,26 +64,6 @@ const { currentPath } = Astro.props;
           </div>
         );
       })}
-      <div class="mobile-nav-links" aria-label="站点工具">
-        <a href="/rss.xml">
-          <svg viewBox="0 0 18 18" aria-hidden="true">
-            <path d="M4 4c5.5 0 10 4.5 10 10" />
-            <path d="M4 8c3.3 0 6 2.7 6 6" />
-            <circle cx="5" cy="13" r="1.2" />
-          </svg>
-          RSS
-        </a>
-        <a href="/sitemap.xml">
-          <svg viewBox="0 0 18 18" aria-hidden="true">
-            <path d="M9 4v4" />
-            <path d="M5 10h8" />
-            <rect x="6.5" y="2.5" width="5" height="3.5" rx="1" />
-            <rect x="2.5" y="10.5" width="5" height="4" rx="1" />
-            <rect x="10.5" y="10.5" width="5" height="4" rx="1" />
-          </svg>
-          Sitemap
-        </a>
-      </div>
     </nav>
     <div class="header-actions">
       <button class="nav-toggle" type="button" aria-label="打开导航菜单" aria-controls="site-nav" aria-expanded="false" data-nav-toggle>

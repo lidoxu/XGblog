@@ -3,6 +3,8 @@ subtitle: 记录与分享
 description: 这里填写站点描述，用于首页和 SEO。
 url: https://example.com
 logo:
+theme:
+  accent: "#6aa6c8"
 author:
   name: 博主昵称
   avatar:

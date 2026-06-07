@@ -10,3 +10,6 @@
   href: /links
 - label: 关于
   href: /about
+- label: 外部链接
+  href: https://example.com
+  target: blank
