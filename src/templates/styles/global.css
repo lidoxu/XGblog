@@ -907,6 +907,39 @@ main {
   font-size: 0.94rem;
 }
 
+.error-page {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  min-height: min(520px, calc(100vh - 220px));
+  padding-top: 54px;
+  padding-bottom: 64px;
+}
+
+.error-code {
+  margin: 0 0 8px;
+  color: var(--accent-strong);
+  font-family: var(--mono);
+  font-size: clamp(3.8rem, 11vw, 7rem);
+  font-weight: 850;
+  line-height: 0.95;
+}
+
+.error-page h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.72rem, 4vw, 2.42rem);
+  line-height: 1.18;
+}
+
+.error-copy {
+  max-width: 520px;
+  margin: 12px 0 0;
+  color: var(--text-soft);
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
 .archive-list,
 .taxonomy-grid,
 .tag-index {

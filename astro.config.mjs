@@ -1,4 +1,4 @@
-import { copyFile } from 'node:fs/promises';
+import { copyFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
@@ -39,10 +39,22 @@ function sitemapXmlAlias() {
   };
 }
 
+function notFoundRedirectsFile() {
+  return {
+    name: 'not-found-redirects-file',
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        const outDir = fileURLToPath(dir);
+        await writeFile(join(outDir, '_redirects'), '/* /404.html 404\n');
+      },
+    },
+  };
+}
+
 export default defineConfig({
   site,
   publicDir: './blog/site-img',
-  integrations: [sitemap(), sitemapXmlAlias()],
+  integrations: [sitemap(), sitemapXmlAlias(), notFoundRedirectsFile()],
   markdown: {
     shikiConfig: {
       themes: {

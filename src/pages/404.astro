@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../templates/layouts/BaseLayout.astro';
+
+Astro.response.status = 404;
 ---
 
-<BaseLayout title="页面不存在" description="页面不存在或已经移动。">
-  <section class="container narrow page-head not-found">
-    <p class="eyebrow">404</p>
-    <h1>页面不存在</h1>
-    <p>这个地址没有找到对应内容。可以返回首页或查看文章归档。</p>
+<BaseLayout title="页面未找到" description="页面不存在或已经移动。">
+  <section class="container narrow error-page" aria-labelledby="error-title">
+    <p class="error-code">404</p>
+    <h1 id="error-title">页面没找到</h1>
+    <p class="error-copy">没有找到对应内容，可能是失效或已经移动。</p>
     <div class="actions">
       <a class="button" href="/">返回首页</a>
       <a class="button ghost" href="/archives">查看归档</a>
