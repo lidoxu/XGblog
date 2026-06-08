@@ -1087,6 +1087,10 @@ main {
   gap: 8px;
 }
 
+.link-group .taxonomy-grid {
+  padding-bottom: 0;
+}
+
 .link-group > h2 {
   margin: 0;
   color: var(--accent-strong);
@@ -1466,6 +1470,7 @@ main {
   margin: 24px auto;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
+  overflow: hidden;
   box-shadow: var(--shadow-soft);
   clip-path: inset(0 round var(--radius-sm));
   cursor: zoom-in;
