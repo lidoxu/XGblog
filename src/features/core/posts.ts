@@ -66,12 +66,24 @@ export function getPostCover(post: Post) {
   }
 
   const candidates = [
+    'img/cover.svg',
+    'img/cover.avif',
+    'img/cover.webp',
+    'img/cover.png',
+    'img/cover.jpg',
+    'img/cover.jpeg',
+    'cover.svg',
+    'cover.avif',
     'cover.webp',
     'cover.png',
     'cover.jpg',
+    'cover.jpeg',
+    `img/${slug}-1.svg`,
+    `img/${slug}-1.avif`,
     `img/${slug}-1.webp`,
     `img/${slug}-1.png`,
     `img/${slug}-1.jpg`,
+    `img/${slug}-1.jpeg`,
   ];
 
   return candidates.map((path) => getPostAssetUrl(slug, path)).find(Boolean) ?? '/default-cover.svg';

@@ -3,28 +3,36 @@ import { join } from 'node:path';
 import YAML from 'yaml';
 
 const env = import.meta.env as unknown as Record<string, string | undefined>;
+const dataDir = join(process.cwd(), 'blog', 'data');
 
-function readYaml<T>(relativePath: string): T {
-  const dataDir = join(process.cwd(), 'blog', 'data');
+function readYamlFile<T>(relativePath: string): T | undefined {
   const filePath = join(dataDir, relativePath);
-  const examplePath = join(dataDir, 'example', relativePath);
 
   if (!existsSync(filePath)) {
-    return YAML.parse(readFileSync(examplePath, 'utf8')) as T;
+    return undefined;
   }
 
   return YAML.parse(readFileSync(filePath, 'utf8')) as T;
 }
 
-function readEnv(key: string) {
-  const value = env[key] ?? process.env[key];
+function readExampleYaml<T>(relativePath: string): T {
+  return YAML.parse(readFileSync(join(dataDir, 'example', relativePath), 'utf8')) as T;
+}
 
-  if (!value) {
-    return undefined;
+function readYaml<T>(relativePath: string): T {
+  return readYamlFile<T>(relativePath) ?? readExampleYaml<T>(relativePath);
+}
+
+function readEnv(key: string) {
+  for (const value of [process.env[key], env[key]]) {
+    const trimmed = value?.trim();
+
+    if (trimmed) {
+      return trimmed.replace(/\\n/g, '\n');
+    }
   }
 
-  const trimmed = value.trim();
-  return trimmed ? trimmed.replace(/\\n/g, '\n') : undefined;
+  return undefined;
 }
 
 export type SiteData = {
@@ -34,7 +42,7 @@ export type SiteData = {
   url: string;
   logo: string;
   theme: {
-    accent: string;
+    color: string;
   };
   author: {
     name: string;
@@ -67,6 +75,7 @@ type RawSiteData = Omit<SiteData, 'subtitle' | 'url' | 'logo' | 'theme' | 'autho
   url?: string | null;
   logo?: string | null;
   theme?: {
+    color?: string | null;
     accent?: string | null;
   };
   author: {
@@ -75,6 +84,33 @@ type RawSiteData = Omit<SiteData, 'subtitle' | 'url' | 'logo' | 'theme' | 'autho
     description: string;
   };
 };
+
+type PartialRawSiteData = Partial<Omit<RawSiteData, 'theme' | 'author'>> & {
+  theme?: RawSiteData['theme'];
+  author?: Partial<RawSiteData['author']>;
+};
+
+function readSiteYaml() {
+  const example = readExampleYaml<RawSiteData>('site.yaml');
+  const user = readYamlFile<PartialRawSiteData>('site.yaml');
+
+  if (!user) {
+    return example;
+  }
+
+  return {
+    ...example,
+    ...user,
+    theme: {
+      ...example.theme,
+      ...user.theme,
+    },
+    author: {
+      ...example.author,
+      ...user.author,
+    },
+  };
+}
 
 function publicAssetExists(path: string) {
   if (!path.startsWith('/')) {
@@ -113,11 +149,13 @@ function resolveFirstPublicAsset(candidates: string[]) {
 function resolveSiteLogo(configured?: string | null) {
   return resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
     '/logo.svg',
+    '/logo.avif',
     '/logo.webp',
     '/logo.png',
     '/logo.jpg',
     '/logo.jpeg',
     '/default-logo.svg',
+    '/default-logo.avif',
     '/default-logo.webp',
     '/default-logo.png',
     '/default-logo.jpg',
@@ -128,6 +166,7 @@ function resolveSiteLogo(configured?: string | null) {
 function resolveAuthorAvatar(configured: string | null | undefined, fallbackLogo: string) {
   return resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
     '/user.svg',
+    '/user.avif',
     '/user.webp',
     '/user.png',
     '/user.jpg',
@@ -135,7 +174,7 @@ function resolveAuthorAvatar(configured: string | null | undefined, fallbackLogo
   ]) ?? fallbackLogo;
 }
 
-function resolveThemeAccent(configured: string | null | undefined) {
+function resolveThemeColor(configured: string | null | undefined) {
   const trimmed = configured?.trim();
 
   if (trimmed && /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(trimmed)) {
@@ -160,17 +199,17 @@ function resolveSiteData(data: RawSiteData): SiteData {
     url: resolveSiteUrl(readEnv('BLOG_URL') ?? data.url),
     logo,
     theme: {
-      accent: resolveThemeAccent(data.theme?.accent),
+      color: resolveThemeColor(readEnv('THEME_COLOR') ?? data.theme?.color ?? data.theme?.accent),
     },
     author: {
-      name: readEnv('BLOG_AUTHOR_NAME') ?? data.author.name,
-      avatar: resolveAuthorAvatar(readEnv('BLOG_AUTHOR_AVATAR') ?? data.author.avatar, logo),
-      description: readEnv('BLOG_AUTHOR_DESCRIPTION') ?? data.author.description,
+      name: readEnv('BLOG_AUTHOR') ?? readEnv('BLOG_AUTHOR_NAME') ?? data.author.name,
+      avatar: resolveAuthorAvatar(readEnv('BLOG_AVATAR') ?? readEnv('BLOG_AUTHOR_AVATAR') ?? data.author.avatar, logo),
+      description: readEnv('BLOG_BIO') ?? readEnv('BLOG_AUTHOR_DESCRIPTION') ?? data.author.description,
     },
   };
 }
 
-export const siteData = resolveSiteData(readYaml<RawSiteData>('site.yaml'));
+export const siteData = resolveSiteData(readSiteYaml());
 export const categoryData = readYaml<TaxonomyItem[]>('categories.yaml');
 export const tagData = readYaml<TaxonomyItem[]>('tags.yaml');
 export const menuData = readYaml<MenuItem[]>('menu.yaml');

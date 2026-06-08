@@ -1,16 +1,23 @@
+# 站点基础信息
+# 优先级：系统/部署环境变量 > 根目录 .env > 用户 site.yaml > 本示例模板
 title: 示例博客
 subtitle: 记录与分享
 description: 这里填写站点描述，用于首页和 SEO。
+url: https://example.com
 
-# url 可不填；正式站点 URL 建议通过 .env 的 BLOG_URL 设置。
-# 自定义站点 logo 推荐放在 blog/site/logo.svg，也支持 logo.webp/png/jpg。
-logo:
+# 自定义站点 logo 推荐放在 blog/site/logo.*。
+# 也可以在 .env 中用 BLOG_LOGO 覆盖。
+logo: /default-logo.svg
 
+# 主题设置
+# 也可以在 .env 中用 THEME_COLOR 覆盖。
 theme:
-  accent: "#6aa6c8"
+  color: "#6aa6c8"
 
+# 博主信息
 author:
   name: 博主昵称
-  # 自定义作者头像推荐放在 blog/site/user.svg，也支持 user.webp/png/jpg。
-  avatar:
+  # 自定义头像推荐放在 blog/site/user.*。
+  # 也可以在 .env 中用 BLOG_AVATAR 覆盖。
+  avatar: /user.jpg
   description: 这里填写博主简介。
