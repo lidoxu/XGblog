@@ -25,7 +25,7 @@
   --zoom-backdrop: rgba(246, 247, 248, 0.94);
   --scrollbar-thumb: rgba(23, 25, 28, 0.22);
   --scrollbar-thumb-hover: rgba(23, 25, 28, 0.34);
-  --mobile-submenu-bg: color-mix(in srgb, var(--accent) 4%, #f3f6f7);
+  --mobile-submenu-bg: color-mix(in srgb, var(--accent) 2%, #f8fafb);
   --mobile-submenu-line: rgba(23, 25, 28, 0.075);
   --card-radius: 6px;
   --cover-radius: 4px;
@@ -401,14 +401,14 @@ main {
   padding: 0;
   color: var(--text);
   background: transparent;
-  border: 1px solid transparent;
+  border: 1px solid var(--line-strong);
   cursor: pointer;
-  transition: background 0.16s ease, border-color 0.16s ease;
+  transition: border-color 0.16s ease, color 0.16s ease;
 }
 
 .nav-toggle:hover {
-  background: transparent;
   border-color: var(--hover-outline);
+  color: var(--text);
 }
 
 .nav-toggle span {
@@ -440,14 +440,14 @@ main {
   height: 34px;
   color: var(--text);
   background: transparent;
-  border: 1px solid transparent;
+  border: 1px solid var(--line-strong);
   cursor: pointer;
-  transition: background 0.16s ease, border-color 0.16s ease;
+  transition: border-color 0.16s ease, color 0.16s ease;
 }
 
 .theme-toggle:hover {
-  background: transparent;
   border-color: var(--hover-outline);
+  color: var(--text);
 }
 
 .page-grid {
@@ -1556,32 +1556,13 @@ main {
 }
 
 .back-to-top-icon {
-  position: relative;
-  width: 16px;
-  height: 16px;
-}
-
-.back-to-top-icon::before,
-.back-to-top-icon::after {
-  content: "";
-  position: absolute;
-  top: 6px;
-  width: 9px;
-  height: 2px;
-  background: currentColor;
-  border-radius: 999px;
-}
-
-.back-to-top-icon::before {
-  left: 2px;
-  transform: rotate(-45deg);
-  transform-origin: right center;
-}
-
-.back-to-top-icon::after {
-  right: 2px;
-  transform: rotate(45deg);
-  transform-origin: left center;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
 }
 
 @media (max-width: 1020px) {
