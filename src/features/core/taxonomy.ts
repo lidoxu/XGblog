@@ -1,38 +1,49 @@
+import { getCollection } from 'astro:content';
 import { categoryData, tagData, type TaxonomyItem } from './data';
 
 export const normalizeSlug = (value: string) => value.trim().toLowerCase();
 
-function normalizeTaxonomyItem(item: TaxonomyItem): TaxonomyItem {
-  return {
-    ...item,
-    slug: normalizeSlug(item.slug),
+type PostTaxonomySource = {
+  data: {
+    categories: string[];
+    tags: string[];
+    date?: Date;
   };
+};
+
+function metadataMap(items: TaxonomyItem[]) {
+  return new Map(items.map((item, index) => [
+    normalizeSlug(item.slug),
+    {
+      item: {
+        ...item,
+        slug: normalizeSlug(item.slug),
+      },
+      index,
+    },
+  ]));
 }
 
-function matchesTaxonomySlug(item: TaxonomyItem, slug: string) {
-  const normalized = normalizeSlug(slug);
-  return item.slug === normalized;
-}
+const categoryMetadata = metadataMap(categoryData);
+const tagMetadata = metadataMap(tagData);
 
-export const allCategories = categoryData.map(normalizeTaxonomyItem);
-export const allTags = tagData.map(normalizeTaxonomyItem);
-
-export function getCategory(slug: string) {
+function defaultTaxonomyItem(slug: string): TaxonomyItem {
   const normalized = normalizeSlug(slug);
-  return allCategories.find((category) => matchesTaxonomySlug(category, normalized)) ?? {
+  return {
     slug: normalized,
     name: normalized,
     description: '',
   };
+}
+
+export function getCategory(slug: string) {
+  const normalized = normalizeSlug(slug);
+  return categoryMetadata.get(normalized)?.item ?? defaultTaxonomyItem(normalized);
 }
 
 export function getTag(slug: string) {
   const normalized = normalizeSlug(slug);
-  return allTags.find((tag) => matchesTaxonomySlug(tag, normalized)) ?? {
-    slug: normalized,
-    name: normalized,
-    description: '',
-  };
+  return tagMetadata.get(normalized)?.item ?? defaultTaxonomyItem(normalized);
 }
 
 export function getCategoryPath(slug: string) {
@@ -41,6 +52,47 @@ export function getCategoryPath(slug: string) {
 
 export function getTagPath(slug: string) {
   return `/tags/${getTag(slug).slug}`;
+}
+
+function sortByMetadata(items: TaxonomyItem[], metadata: Map<string, { item: TaxonomyItem; index: number }>) {
+  return [...items].sort((a, b) => {
+    const aIndex = metadata.get(a.slug)?.index ?? Number.MAX_SAFE_INTEGER;
+    const bIndex = metadata.get(b.slug)?.index ?? Number.MAX_SAFE_INTEGER;
+
+    if (aIndex !== bIndex) {
+      return aIndex - bIndex;
+    }
+
+    return a.slug.localeCompare(b.slug, 'zh-CN');
+  });
+}
+
+async function resolvePosts(posts?: PostTaxonomySource[]) {
+  return posts ?? (await getCollection('posts'));
+}
+
+export async function getAllCategories(posts?: PostTaxonomySource[]) {
+  const slugs = new Set<string>();
+
+  for (const post of await resolvePosts(posts)) {
+    for (const slug of post.data.categories) {
+      slugs.add(normalizeSlug(slug));
+    }
+  }
+
+  return sortByMetadata([...slugs].map(getCategory), categoryMetadata);
+}
+
+export async function getAllTags(posts?: PostTaxonomySource[]) {
+  const slugs = new Set<string>();
+
+  for (const post of await resolvePosts(posts)) {
+    for (const slug of post.data.tags) {
+      slugs.add(normalizeSlug(slug));
+    }
+  }
+
+  return sortByMetadata([...slugs].map(getTag), tagMetadata);
 }
 
 export function countCategories(posts: Array<{ data: { categories: string[] } }>) {

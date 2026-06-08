@@ -2,10 +2,12 @@
 import ArticleList from '../../templates/components/ArticleList.astro';
 import BaseLayout from '../../templates/layouts/BaseLayout.astro';
 import { filterPostsByTag, getAllPosts } from '../../features/core/posts';
-import { allTags, getTag } from '../../features/core/taxonomy';
+import { getAllTags, getTag } from '../../features/core/taxonomy';
 
 export async function getStaticPaths() {
-  return allTags.map((tag) => ({ params: { slug: tag.slug } }));
+  const posts = await getAllPosts();
+  const tags = await getAllTags(posts);
+  return tags.map((tag) => ({ params: { slug: tag.slug } }));
 }
 
 const { slug } = Astro.params;

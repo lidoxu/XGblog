@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Hello World article image</title>
+  <desc id="desc">A simple diagram showing TOML config, Markdown content, and build output.</desc>
+  <rect width="960" height="540" rx="20" fill="#ffffff"/>
+  <rect x="56" y="60" width="230" height="150" rx="16" fill="#f0f7fb" stroke="#6aa6c8" stroke-width="4"/>
+  <rect x="365" y="60" width="230" height="150" rx="16" fill="#fff7e6" stroke="#e0a84f" stroke-width="4"/>
+  <rect x="674" y="60" width="230" height="150" rx="16" fill="#eef8f1" stroke="#65a977" stroke-width="4"/>
+  <text x="171" y="125" text-anchor="middle" fill="#1f2937" font-family="Arial, sans-serif" font-size="26" font-weight="700">TOML</text>
+  <text x="171" y="164" text-anchor="middle" fill="#486581" font-family="Arial, sans-serif" font-size="18">blog/*.toml</text>
+  <text x="480" y="125" text-anchor="middle" fill="#1f2937" font-family="Arial, sans-serif" font-size="26" font-weight="700">Markdown</text>
+  <text x="480" y="164" text-anchor="middle" fill="#486581" font-family="Arial, sans-serif" font-size="18">posts + pages</text>
+  <text x="789" y="125" text-anchor="middle" fill="#1f2937" font-family="Arial, sans-serif" font-size="26" font-weight="700">Build</text>
+  <text x="789" y="164" text-anchor="middle" fill="#486581" font-family="Arial, sans-serif" font-size="18">static pages</text>
+  <path d="M298 135 H352" stroke="#1f2937" stroke-width="5" stroke-linecap="round"/>
+  <path d="M342 121 l18 14 l-18 14" fill="none" stroke="#1f2937" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M607 135 H661" stroke="#1f2937" stroke-width="5" stroke-linecap="round"/>
+  <path d="M651 121 l18 14 l-18 14" fill="none" stroke="#1f2937" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="164" y="300" width="632" height="122" rx="18" fill="#1f2937"/>
+  <text x="210" y="354" fill="#d9edf7" font-family="Consolas, 'Courier New', monospace" font-size="26">npm.cmd run build</text>
+  <text x="210" y="394" fill="#a7f3d0" font-family="Consolas, 'Courier New', monospace" font-size="22">/archives/hello-world</text>
+</svg>

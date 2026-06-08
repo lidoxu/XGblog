@@ -1,13 +1,16 @@
 ---
-import { allTags } from '../../features/core/taxonomy';
+import type { Post } from '../../features/core/posts';
+import { getAllTags } from '../../features/core/taxonomy';
 
 interface Props {
   counts: Map<string, number>;
+  posts: Post[];
   limit?: number;
 }
 
-const { counts, limit = 20 } = Astro.props;
-const sorted = [...allTags].sort((a, b) => {
+const { counts, posts, limit = 20 } = Astro.props;
+const tags = await getAllTags(posts);
+const sorted = [...tags].sort((a, b) => {
   const countDiff = (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0);
   return countDiff || a.name.localeCompare(b.name, 'zh-CN');
 });

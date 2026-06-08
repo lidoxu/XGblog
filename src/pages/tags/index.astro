@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../../templates/layouts/BaseLayout.astro';
 import { getAllPosts } from '../../features/core/posts';
-import { allTags, countTags } from '../../features/core/taxonomy';
+import { countTags, getAllTags } from '../../features/core/taxonomy';
 
 const posts = await getAllPosts();
 const counts = countTags(posts);
-const sortedTags = [...allTags].sort((a, b) => (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0));
+const tags = await getAllTags(posts);
+const sortedTags = [...tags].sort((a, b) => (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0));
 ---
 
 <BaseLayout title="标签" description="小鸽志全部文章标签。" canonical="/tags">

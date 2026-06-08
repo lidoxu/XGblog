@@ -19,18 +19,26 @@ output/
 # Local design / migration notes
 UI功能需求.md
 
-# Local YAML config
-blog/data/*.yaml
-!blog/data/example/
-!blog/data/example/*.yaml
+# Local TOML config
+blog/*.toml
+!blog/example/
+!blog/example/*.toml
 
 # Local article content
 blog/posts/**
 !blog/posts/
 !blog/posts/.gitkeep
+!blog/posts/hello-world/
+!blog/posts/hello-world/**
+
+# Local custom pages
+blog/pages/**
+!blog/pages/
+!blog/pages/about/
+!blog/pages/about/**
 
 # Optional legacy public uploads
-blog/site/upload/
+blog/site-img/upload/
 
 # OS / editor
 .DS_Store

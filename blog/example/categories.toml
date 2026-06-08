@@ -1,0 +1,19 @@
+[[categories]]
+slug = "website"
+name = "建站"
+description = "静态站、博客、域名、CDN 与 SEO 实践。"
+
+[[categories]]
+slug = "tech"
+name = "技术"
+description = "技术实践、工具和开发记录。"
+
+[[categories]]
+slug = "life"
+name = "生活"
+description = "日常记录和经验分享。"
+
+[[categories]]
+slug = "notes"
+name = "笔记"
+description = "零散知识、读书和资料整理。"

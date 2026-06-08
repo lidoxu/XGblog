@@ -1,11 +1,9 @@
-import { existsSync, readFileSync } from 'node:fs';
 import { copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { loadEnv } from 'vite';
-import YAML from 'yaml';
 
 const mode = process.env.NODE_ENV ?? 'production';
 const fileEnv = loadEnv(mode, process.cwd(), '');
@@ -23,29 +21,8 @@ function readEnv(key) {
   return undefined;
 }
 
-function readYaml(relativePath) {
-  const filePath = join(process.cwd(), 'blog', 'data', relativePath);
-
-  if (!existsSync(filePath)) {
-    return {};
-  }
-
-  return YAML.parse(readFileSync(filePath, 'utf8')) ?? {};
-}
-
 function readSiteUrl() {
-  const userSite = readYaml('site.yaml');
-  const exampleSite = readYaml(join('example', 'site.yaml'));
-
-  for (const value of [readEnv('BLOG_URL'), userSite.url, exampleSite.url, defaultSite]) {
-    const trimmed = typeof value === 'string' ? value.trim() : '';
-
-    if (trimmed) {
-      return trimmed;
-    }
-  }
-
-  return defaultSite;
+  return readEnv('BLOG_URL') ?? defaultSite;
 }
 
 const site = readSiteUrl();
@@ -64,7 +41,7 @@ function sitemapXmlAlias() {
 
 export default defineConfig({
   site,
-  publicDir: './blog/site',
+  publicDir: './blog/site-img',
   integrations: [sitemap(), sitemapXmlAlias()],
   markdown: {
     shikiConfig: {

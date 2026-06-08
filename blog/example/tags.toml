@@ -1,0 +1,19 @@
+[[tags]]
+slug = "hello-world"
+name = "hello-world"
+
+[[tags]]
+slug = "astro"
+name = "Astro"
+
+[[tags]]
+slug = "markdown"
+name = "Markdown"
+
+[[tags]]
+slug = "deploy"
+name = "部署"
+
+[[tags]]
+slug = "ai"
+name = "AI"

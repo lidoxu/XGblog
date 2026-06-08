@@ -1,26 +1,46 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import YAML from 'yaml';
+import { parse } from 'smol-toml';
 
 const env = import.meta.env as unknown as Record<string, string | undefined>;
-const dataDir = join(process.cwd(), 'blog', 'data');
+const blogDir = join(process.cwd(), 'blog');
 
-function readYamlFile<T>(relativePath: string): T | undefined {
-  const filePath = join(dataDir, relativePath);
+type TomlDocument = Record<string, unknown>;
+
+function readTomlFile(relativePath: string): TomlDocument | undefined {
+  const filePath = join(blogDir, relativePath);
 
   if (!existsSync(filePath)) {
     return undefined;
   }
 
-  return YAML.parse(readFileSync(filePath, 'utf8')) as T;
+  return parse(readFileSync(filePath, 'utf8')) as TomlDocument;
 }
 
-function readExampleYaml<T>(relativePath: string): T {
-  return YAML.parse(readFileSync(join(dataDir, 'example', relativePath), 'utf8')) as T;
+function readToml(relativePath: string): TomlDocument {
+  return readTomlFile(relativePath) ?? readTomlFile(join('example', relativePath)) ?? {};
 }
 
-function readYaml<T>(relativePath: string): T {
-  return readYamlFile<T>(relativePath) ?? readExampleYaml<T>(relativePath);
+function readTomlArray<T>(relativePath: string, key: string): T[] {
+  const value = readToml(relativePath)[key];
+  return Array.isArray(value) ? (value as T[]) : [];
+}
+
+function readMergedTomlArray<T extends { slug: string }>(relativePath: string, key: string): T[] {
+  const items = [
+    ...readTomlArray<T>(join('example', relativePath), key),
+    ...readTomlArray<T>(relativePath, key),
+  ];
+  const bySlug = new Map<string, T>();
+
+  for (const item of items) {
+    bySlug.set(item.slug.trim().toLowerCase(), {
+      ...item,
+      slug: item.slug.trim().toLowerCase(),
+    });
+  }
+
+  return [...bySlug.values()];
 }
 
 function readEnv(key: string) {
@@ -78,56 +98,12 @@ export type LinkGroup = {
   links: LinkItem[];
 };
 
-type RawSiteData = Omit<SiteData, 'subtitle' | 'url' | 'logo' | 'darkLogo' | 'showTitle' | 'theme' | 'author'> & {
-  subtitle?: string;
-  url?: string | null;
-  logo?: string | null;
-  darkLogo?: string | null;
-  showTitle?: boolean | string | number | null;
-  theme?: {
-    color?: string | null;
-    accent?: string | null;
-  };
-  author: {
-    name: string;
-    avatar?: string | null;
-    description: string;
-  };
-};
-
-type PartialRawSiteData = Partial<Omit<RawSiteData, 'theme' | 'author'>> & {
-  theme?: RawSiteData['theme'];
-  author?: Partial<RawSiteData['author']>;
-};
-
-function readSiteYaml() {
-  const example = readExampleYaml<RawSiteData>('site.yaml');
-  const user = readYamlFile<PartialRawSiteData>('site.yaml');
-
-  if (!user) {
-    return example;
-  }
-
-  return {
-    ...example,
-    ...user,
-    theme: {
-      ...example.theme,
-      ...user.theme,
-    },
-    author: {
-      ...example.author,
-      ...user.author,
-    },
-  };
-}
-
 function publicAssetExists(path: string) {
   if (!path.startsWith('/')) {
     return false;
   }
 
-  return existsSync(join(process.cwd(), 'blog', 'site', path.slice(1)));
+  return existsSync(join(process.cwd(), 'blog', 'site-img', path.slice(1)));
 }
 
 function resolveConfiguredAsset(path: string | null | undefined) {
@@ -181,6 +157,12 @@ function resolveAuthorAvatar(configured: string | null | undefined, fallbackLogo
     '/user.png',
     '/user.jpg',
     '/user.jpeg',
+    '/default-user.svg',
+    '/default-user.avif',
+    '/default-user.webp',
+    '/default-user.png',
+    '/default-user.jpg',
+    '/default-user.jpeg',
   ]) ?? fallbackLogo;
 }
 
@@ -217,43 +199,53 @@ function resolveBoolean(configured: string | boolean | number | null | undefined
   return !['false', '0', 'no', 'off'].includes(trimmed);
 }
 
-function resolveSiteData(data: RawSiteData): SiteData {
-  const logo = resolveSiteLogo(readEnv('BLOG_LOGO') ?? data.logo);
-  const darkLogo = resolveConfiguredAsset(readEnv('BLOG_DARK_LOGO') ?? data.darkLogo) ?? logo;
+function resolveSiteData(): SiteData {
+  const logo = resolveSiteLogo(readEnv('BLOG_LOGO'));
+  const darkLogo = resolveConfiguredAsset(readEnv('BLOG_DARK_LOGO')) ?? logo;
 
   return {
-    title: readEnv('BLOG_TITLE') ?? data.title,
-    subtitle: readEnv('BLOG_SUBTITLE') ?? data.subtitle ?? data.description,
-    description: readEnv('BLOG_DESCRIPTION') ?? data.description,
-    url: resolveSiteUrl(readEnv('BLOG_URL') ?? data.url),
+    title: readEnv('BLOG_TITLE') ?? '示例博客',
+    subtitle: readEnv('BLOG_SUBTITLE') ?? '记录与分享',
+    description: readEnv('BLOG_DESCRIPTION') ?? '这里填写站点描述，用于首页和 SEO。',
+    url: resolveSiteUrl(readEnv('BLOG_URL')),
     logo,
     darkLogo,
-    showTitle: resolveBoolean(readEnv('BLOG_SHOW_TITLE') ?? data.showTitle, true),
+    showTitle: resolveBoolean(readEnv('BLOG_SHOW_TITLE'), true),
     theme: {
-      color: resolveThemeColor(readEnv('THEME_COLOR') ?? data.theme?.color ?? data.theme?.accent),
+      color: resolveThemeColor(readEnv('THEME_COLOR')),
     },
     author: {
-      name: readEnv('BLOG_AUTHOR') ?? readEnv('BLOG_AUTHOR_NAME') ?? data.author.name,
-      avatar: resolveAuthorAvatar(readEnv('BLOG_AVATAR') ?? readEnv('BLOG_AUTHOR_AVATAR') ?? data.author.avatar, logo),
-      description: readEnv('BLOG_BIO') ?? readEnv('BLOG_AUTHOR_DESCRIPTION') ?? data.author.description,
+      name: readEnv('BLOG_AUTHOR') ?? readEnv('BLOG_AUTHOR_NAME') ?? '博主昵称',
+      avatar: resolveAuthorAvatar(readEnv('BLOG_AVATAR') ?? readEnv('BLOG_AUTHOR_AVATAR'), logo),
+      description: readEnv('BLOG_BIO') ?? readEnv('BLOG_AUTHOR_DESCRIPTION') ?? '这里填写博主简介。',
     },
   };
 }
 
-function resolveLinkGroups(data: Record<string, Record<string, Omit<LinkItem, 'name'>>>) {
-  return Object.entries(data).map(([groupName, links]) => ({
-    name: groupName,
-    links: Object.entries(links ?? {}).map(([name, link]) => ({
-      name,
-      url: link.url,
-      desc: link.desc,
-      icon: link.icon,
-    })),
-  }));
+type LinkTomlItem = LinkItem & {
+  group: string;
+};
+
+function resolveLinkGroups(items: LinkTomlItem[]) {
+  const groups = new Map<string, LinkItem[]>();
+
+  for (const item of items) {
+    groups.set(item.group, [
+      ...(groups.get(item.group) ?? []),
+      {
+        name: item.name,
+        url: item.url,
+        desc: item.desc,
+        icon: item.icon,
+      },
+    ]);
+  }
+
+  return [...groups.entries()].map(([name, links]) => ({ name, links }));
 }
 
-export const siteData = resolveSiteData(readSiteYaml());
-export const categoryData = readYaml<TaxonomyItem[]>('categories.yaml');
-export const tagData = readYaml<TaxonomyItem[]>('tags.yaml');
-export const menuData = readYaml<MenuItem[]>('menu.yaml');
-export const linkData = resolveLinkGroups(readYaml<Record<string, Record<string, Omit<LinkItem, 'name'>>>>('links.yaml'));
+export const siteData = resolveSiteData();
+export const categoryData = readMergedTomlArray<TaxonomyItem>('categories.toml', 'categories');
+export const tagData = readMergedTomlArray<TaxonomyItem>('tags.toml', 'tags');
+export const menuData = readTomlArray<MenuItem>('menu.toml', 'menu');
+export const linkData = resolveLinkGroups(readTomlArray<LinkTomlItem>('links.toml', 'links'));

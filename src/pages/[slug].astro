@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import TableOfContents from '../templates/components/TableOfContents.astro';
+import BaseLayout from '../templates/layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({
+    params: { slug: page.id.replace(/\/index(?:\.md)?$/, '').replace(/\.md$/, '') },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { slug } = Astro.params;
+const { Content, headings } = await render(page);
+---
+
+<BaseLayout title={page.data.title} description={page.data.description} canonical={`/${slug}`}>
+  <article class="container article-layout">
+    <div class="article-main">
+      <header class="article-header">
+        <h1>{page.data.title}</h1>
+        <p>{page.data.description}</p>
+      </header>
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+    <aside class="article-aside">
+      <TableOfContents headings={headings} />
+    </aside>
+  </article>
+  <script src="../features/scripts/toc-active.ts"></script>
+  <script src="../features/scripts/code-copy.ts"></script>
+  <script src="../features/scripts/image-zoom.ts"></script>
+</BaseLayout>

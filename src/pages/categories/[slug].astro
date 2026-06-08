@@ -2,10 +2,12 @@
 import ArticleList from '../../templates/components/ArticleList.astro';
 import BaseLayout from '../../templates/layouts/BaseLayout.astro';
 import { filterPostsByCategory, getAllPosts } from '../../features/core/posts';
-import { allCategories, getCategory } from '../../features/core/taxonomy';
+import { getAllCategories, getCategory } from '../../features/core/taxonomy';
 
 export async function getStaticPaths() {
-  return allCategories.map((category) => ({ params: { slug: category.slug } }));
+  const posts = await getAllPosts();
+  const categories = await getAllCategories(posts);
+  return categories.map((category) => ({ params: { slug: category.slug } }));
 }
 
 const { slug } = Astro.params;
