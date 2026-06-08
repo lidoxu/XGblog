@@ -26,6 +26,10 @@ const visibleTags = showTags ? tags.slice(0, compact ? 3 : tags.length) : [];
   <a class="meta-link category" href={getCategoryPath(primaryCategory.slug)}>{primaryCategory.name}</a>
   {visibleTags.length > 0 && (
     <span class="meta-tags">
+      <svg class="meta-tag-icon" viewBox="0 0 18 18" aria-hidden="true">
+        <path d="M3.5 9.7V4.8a1.3 1.3 0 0 1 1.3-1.3h4.9a1.6 1.6 0 0 1 1.1.5l3.4 3.4a1.5 1.5 0 0 1 0 2.1l-4.7 4.7a1.5 1.5 0 0 1-2.1 0L4 10.8a1.6 1.6 0 0 1-.5-1.1Z" />
+        <path d="M6.7 6.7h.1" />
+      </svg>
       {visibleTags.map((tagSlug) => {
         const tag = getTag(tagSlug);
         return <a class="meta-link tag" href={getTagPath(tag.slug)}>#{tag.name}</a>;

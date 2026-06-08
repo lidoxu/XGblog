@@ -108,12 +108,13 @@
 html {
   overflow-y: auto;
   scroll-behavior: smooth;
+  background: linear-gradient(180deg, var(--paper-strong) 0, var(--bg) 420px);
   scrollbar-color: var(--scrollbar-thumb) transparent;
   scrollbar-width: thin;
 }
 
 html::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 html::-webkit-scrollbar-track {
@@ -452,11 +453,11 @@ main {
 
 .page-grid {
   display: grid;
-  grid-template-columns: minmax(0, 858px) 280px;
+  grid-template-columns: minmax(0, 858px) 286px;
   justify-content: start;
-  gap: 22px;
+  gap: 16px;
   align-items: start;
-  padding: 34px 0 66px;
+  padding: 24px 0 66px;
 }
 
 .main-column {
@@ -526,7 +527,7 @@ main {
 
 .article-list {
   display: grid;
-  gap: 22px;
+  gap: 16px;
 }
 
 .article-card {
@@ -665,6 +666,18 @@ main {
 }
 
 .meta-date-icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.35;
+  opacity: 0.7;
+  flex: 0 0 auto;
+}
+
+.meta-tag-icon {
   width: 14px;
   height: 14px;
   fill: none;
@@ -962,11 +975,11 @@ main {
 
 .article-layout {
   display: grid;
-  grid-template-columns: minmax(0, 858px) 280px;
+  grid-template-columns: minmax(0, 858px) 286px;
   justify-content: start;
-  gap: 22px;
+  gap: 16px;
   align-items: start;
-  padding: 34px 0 66px;
+  padding: 24px 0 66px;
 }
 
 .article-main {
@@ -1050,6 +1063,8 @@ main {
 }
 
 .article-header .meta-link.tag {
+  padding-right: 3px;
+  padding-left: 3px;
   color: var(--text-muted);
 }
 
@@ -1057,7 +1072,9 @@ main {
   display: flex;
   flex: 0 0 100%;
   flex-wrap: wrap;
-  gap: 7px 10px;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
 }
 
 .article-aside {
@@ -1791,13 +1808,13 @@ main {
 
   .container,
   .narrow {
-    width: min(100% - 24px, 1160px);
+    width: min(calc(100vw - 24px), 1160px);
     margin-right: auto;
-    margin-left: auto;
+    margin-left: 12px;
   }
 
   .container.page-grid {
-    width: min(100% - 24px, 1160px);
+    width: min(calc(100vw - 24px), 1160px);
   }
 
   .page-grid,
