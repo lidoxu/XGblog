@@ -1,9 +1,19 @@
-- name: Astro
-  url: https://astro.build
-  description: 内容站和静态博客框架。
-  avatar: https://astro.build/favicon.svg
+My Server:
+  小鸽志:
+    url: https://www.xiaoge.org
+    desc: 分享折腾的乐趣！
+    icon: https://icon.xiaoge.org/images/website/XiaoGe.png
+  XG-Nav:
+    url: https://nav.xiaoge.de
+    desc: 纯静态导航项目
+    icon: https://icon.xiaoge.org/images/website/XiaoGe.png
 
-- name: Cloudflare
-  url: https://www.cloudflare.com
-  description: CDN、DNS 和 Pages/Workers 平台。
-  avatar: https://www.cloudflare.com/favicon.ico
+Blog:
+  DockerApps:
+    url: https://dockerapps.com
+    desc: Docker应用程序集合
+    icon: https://icon.xiaoge.org/images/website/keba.png
+  磕巴白菜:
+    url: https://hi.keba.host/
+    desc: 别管 不听 就是玩
+    icon: https://icon.xiaoge.org/images/website/keba.png

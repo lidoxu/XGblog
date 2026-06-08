@@ -8,6 +8,8 @@ url: https://example.com
 # 自定义站点 logo 推荐放在 blog/site/logo.*。
 # 也可以在 .env 中用 BLOG_LOGO 覆盖。
 logo: /default-logo.svg
+darkLogo: /default-logo.svg
+showTitle: true
 
 # 主题设置
 # 也可以在 .env 中用 THEME_COLOR 覆盖。

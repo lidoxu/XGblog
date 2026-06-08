@@ -1,18 +1,37 @@
 ---
+import type { Post } from '../../features/core/posts';
 import { allCategories } from '../../features/core/taxonomy';
 
 interface Props {
   counts: Map<string, number>;
+  posts: Post[];
   limit?: number;
 }
 
-const { counts, limit = 6 } = Astro.props;
-const visible = allCategories.slice(0, limit);
+const { counts, posts, limit = 5 } = Astro.props;
+const latestByCategory = new Map<string, number>();
+
+for (const post of posts) {
+  for (const slug of post.data.categories) {
+    latestByCategory.set(slug, Math.max(latestByCategory.get(slug) ?? 0, post.data.date.getTime()));
+  }
+}
+
+const sorted = [...allCategories].sort((a, b) => {
+  const countDiff = (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0);
+
+  if (countDiff !== 0) {
+    return countDiff;
+  }
+
+  return (latestByCategory.get(b.slug) ?? 0) - (latestByCategory.get(a.slug) ?? 0);
+});
+const visible = sorted.slice(0, limit);
 ---
 
 <section class="sidebar-card list-card" aria-labelledby="category-title">
   <div class="section-heading">
-    <h2 id="category-title">文章分类</h2>
+    <h2 id="category-title">热门分类</h2>
     {allCategories.length > limit && <a class="more-link" href="/categories">更多</a>}
   </div>
   <ul>

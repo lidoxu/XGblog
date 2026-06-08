@@ -5,20 +5,27 @@ import { linkData } from '../features/core/data';
 const allLinks = linkData;
 ---
 
-<BaseLayout title="友链" description="小鸽志友情链接和常用资源。" canonical="/links">
+<BaseLayout title="友情链接" description="小鸽志友情链接和常用资源。" canonical="/links">
   <section class="container page-head">
-    <h1>友链与资源</h1>
+    <h1>友情链接</h1>
   </section>
 
-  <section class="container taxonomy-grid">
-    {allLinks.map((link) => (
-      <a class="taxonomy-card link-card" href={link.url} target="_blank" rel="noopener noreferrer">
-        <div class="link-card-head">
-          {link.avatar && <img class="link-avatar" src={link.avatar} alt="" loading="lazy" />}
-          <h2>{link.name}</h2>
+  <section class="container link-groups">
+    {allLinks.map((group, index) => (
+      <section class="link-group" aria-labelledby={`link-group-${index}`}>
+        <h2 id={`link-group-${index}`}>{group.name}</h2>
+        <div class="taxonomy-grid">
+          {group.links.map((link) => (
+            <a class="taxonomy-card link-card" href={link.url} target="_blank" rel="noopener noreferrer">
+              <div class="link-card-head">
+                {link.icon && <img class="link-avatar" src={link.icon} alt="" loading="lazy" />}
+                <h3>{link.name}</h3>
+              </div>
+              <p>{link.desc}</p>
+            </a>
+          ))}
         </div>
-        <p>{link.description}</p>
-      </a>
+      </section>
     ))}
   </section>
 </BaseLayout>

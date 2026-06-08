@@ -41,6 +41,8 @@ export type SiteData = {
   description: string;
   url: string;
   logo: string;
+  darkLogo: string;
+  showTitle: boolean;
   theme: {
     color: string;
   };
@@ -67,14 +69,21 @@ export type MenuItem = {
 export type LinkItem = {
   name: string;
   url: string;
-  description: string;
-  avatar?: string;
+  desc: string;
+  icon?: string;
 };
 
-type RawSiteData = Omit<SiteData, 'subtitle' | 'url' | 'logo' | 'theme' | 'author'> & {
+export type LinkGroup = {
+  name: string;
+  links: LinkItem[];
+};
+
+type RawSiteData = Omit<SiteData, 'subtitle' | 'url' | 'logo' | 'darkLogo' | 'showTitle' | 'theme' | 'author'> & {
   subtitle?: string;
   url?: string | null;
   logo?: string | null;
+  darkLogo?: string | null;
+  showTitle?: boolean | string | number | null;
   theme?: {
     color?: string | null;
     accent?: string | null;
@@ -190,8 +199,27 @@ function resolveSiteUrl(configured: string | null | undefined) {
   return trimmed || 'https://www.xiaoge.org';
 }
 
+function resolveBoolean(configured: string | boolean | number | null | undefined, fallback: boolean) {
+  if (typeof configured === 'boolean') {
+    return configured;
+  }
+
+  if (typeof configured === 'number') {
+    return configured !== 0;
+  }
+
+  const trimmed = configured?.trim().toLowerCase();
+
+  if (!trimmed) {
+    return fallback;
+  }
+
+  return !['false', '0', 'no', 'off'].includes(trimmed);
+}
+
 function resolveSiteData(data: RawSiteData): SiteData {
   const logo = resolveSiteLogo(readEnv('BLOG_LOGO') ?? data.logo);
+  const darkLogo = resolveConfiguredAsset(readEnv('BLOG_DARK_LOGO') ?? data.darkLogo) ?? logo;
 
   return {
     title: readEnv('BLOG_TITLE') ?? data.title,
@@ -199,6 +227,8 @@ function resolveSiteData(data: RawSiteData): SiteData {
     description: readEnv('BLOG_DESCRIPTION') ?? data.description,
     url: resolveSiteUrl(readEnv('BLOG_URL') ?? data.url),
     logo,
+    darkLogo,
+    showTitle: resolveBoolean(readEnv('BLOG_SHOW_TITLE') ?? data.showTitle, true),
     theme: {
       color: resolveThemeColor(readEnv('THEME_COLOR') ?? data.theme?.color ?? data.theme?.accent),
     },
@@ -210,8 +240,20 @@ function resolveSiteData(data: RawSiteData): SiteData {
   };
 }
 
+function resolveLinkGroups(data: Record<string, Record<string, Omit<LinkItem, 'name'>>>) {
+  return Object.entries(data).map(([groupName, links]) => ({
+    name: groupName,
+    links: Object.entries(links ?? {}).map(([name, link]) => ({
+      name,
+      url: link.url,
+      desc: link.desc,
+      icon: link.icon,
+    })),
+  }));
+}
+
 export const siteData = resolveSiteData(readSiteYaml());
 export const categoryData = readYaml<TaxonomyItem[]>('categories.yaml');
 export const tagData = readYaml<TaxonomyItem[]>('tags.yaml');
 export const menuData = readYaml<MenuItem[]>('menu.yaml');
-export const linkData = readYaml<LinkItem[]>('links.yaml');
+export const linkData = resolveLinkGroups(readYaml<Record<string, Record<string, Omit<LinkItem, 'name'>>>>('links.yaml'));

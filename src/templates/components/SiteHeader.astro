@@ -13,11 +13,11 @@ const { currentPath } = Astro.props;
 const normalizeTarget = (target?: string | null) => (target === 'blank' || target === '_blank' ? '_blank' : undefined);
 ---
 
-<header class="site-header" data-site-header>
+<header class:list={['site-header', { 'has-icon-only-brand': !site.showTitle }]} data-site-header>
   <div class="container header-inner">
-    <a class="brand" href="/" aria-label={`${site.title} 首页`}>
-      <img src={site.logo} alt={`${site.title} logo`} width="44" height="44" />
-      <strong>{site.title}</strong>
+    <a class:list={['brand', { 'icon-only': !site.showTitle }]} href="/" aria-label={`${site.title} 首页`}>
+      <img src={site.logo} data-light-logo={site.logo} data-dark-logo={site.darkLogo} alt={`${site.title} logo`} width="44" height="44" data-brand-logo />
+      {site.showTitle && <strong>{site.title}</strong>}
     </a>
     <nav class="top-nav" id="site-nav" aria-label="站点导航" data-site-nav hidden>
       {navItems.map((item, index) => {
@@ -81,6 +81,7 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
   const nav = header?.querySelector<HTMLElement>('[data-site-nav]');
   const navToggle = header?.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   const themeToggle = header?.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const brandLogo = header?.querySelector<HTMLImageElement>('[data-brand-logo]');
   const submenuToggles = Array.from(header?.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]') ?? []);
   const media = window.matchMedia('(prefers-color-scheme: dark)');
   const mobileNav = window.matchMedia('(max-width: 720px)');
@@ -95,6 +96,17 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
   };
 
   const getEffectiveTheme = () => document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
+
+  const syncBrandLogo = () => {
+    if (!brandLogo) return;
+    const lightLogo = brandLogo.dataset.lightLogo;
+    const darkLogo = brandLogo.dataset.darkLogo || lightLogo;
+    const nextLogo = getEffectiveTheme() === 'dark' ? darkLogo : lightLogo;
+
+    if (nextLogo && brandLogo.getAttribute('src') !== nextLogo) {
+      brandLogo.setAttribute('src', nextLogo);
+    }
+  };
 
   const closeSubmenus = () => {
     submenuToggles.forEach((button) => {
@@ -138,12 +150,14 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
     themeToggle.setAttribute('title', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
   };
 
+  syncBrandLogo();
   syncThemeToggle();
   syncNav();
 
   media.addEventListener('change', () => {
     if (!getStoredTheme()) {
       document.documentElement.removeAttribute('data-theme');
+      syncBrandLogo();
       syncThemeToggle();
       window.dispatchEvent(new CustomEvent('xg-theme-change'));
     }
@@ -204,6 +218,7 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
     } catch {
       // The visual switch still works for the current page.
     }
+    syncBrandLogo();
     syncThemeToggle();
     window.dispatchEvent(new CustomEvent('xg-theme-change'));
   });
