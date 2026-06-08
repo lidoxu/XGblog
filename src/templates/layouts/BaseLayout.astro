@@ -3,7 +3,7 @@ import SeoHead from '../components/SeoHead.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { getSite } from '../../features/core/seo';
-import '../styles/global.css';
+import globalStylesheet from '../styles/global.css?url';
 
 interface Props {
   title?: string;
@@ -36,6 +36,7 @@ const site = getSite();
         }
       })();
     </script>
+    <link rel="stylesheet" href={globalStylesheet} />
     <SeoHead title={title} description={description} canonical={canonical} image={image} type={type} publishedTime={publishedTime} />
   </head>
   <body>
@@ -44,5 +45,26 @@ const site = getSite();
       <slot />
     </main>
     <SiteFooter />
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-to-top aria-hidden="true" tabindex="-1">
+      <span class="back-to-top-icon" aria-hidden="true"></span>
+    </button>
+    <script>
+      const backToTop = document.querySelector<HTMLButtonElement>('[data-back-to-top]');
+
+      if (backToTop) {
+        const syncBackToTop = () => {
+          const visible = window.scrollY > 420;
+          backToTop.classList.toggle('is-visible', visible);
+          backToTop.setAttribute('aria-hidden', String(!visible));
+          backToTop.tabIndex = visible ? 0 : -1;
+        };
+
+        backToTop.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        window.addEventListener('scroll', syncBackToTop, { passive: true });
+        syncBackToTop();
+      }
+    </script>
   </body>
 </html>

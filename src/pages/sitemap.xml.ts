@@ -1,7 +1,8 @@
 import type { APIContext } from 'astro';
+import { getSite } from '../features/core/seo';
 
 export function GET({ site }: APIContext) {
-  const base = site ?? new URL('https://www.xiaoge.org');
+  const base = site ?? new URL(getSite().url);
   const sitemapUrl = new URL('/sitemap-0.xml', base).href;
 
   return new Response(

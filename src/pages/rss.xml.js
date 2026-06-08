@@ -5,12 +5,13 @@ import { getSite } from '../features/core/seo';
 
 export async function GET(context) {
   const site = getSite();
+  const baseUrl = context.site ?? new URL(site.url);
   const posts = sortPosts(await getCollection('posts'));
 
   return rss({
     title: site.title,
     description: site.description,
-    site: context.site,
+    site: baseUrl,
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,

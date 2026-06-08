@@ -164,6 +164,13 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
     }
   });
 
+  const toggleSubmenu = (button: HTMLButtonElement) => {
+    const item = button.closest('.nav-item');
+    const isOpen = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!isOpen));
+    item?.classList.toggle('is-submenu-open', !isOpen);
+  };
+
   nav?.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
     link.addEventListener('click', () => {
       if (mobileNav.matches) {
@@ -175,10 +182,7 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
   submenuToggles.forEach((button) => {
     button.addEventListener('click', () => {
       if (!mobileNav.matches) return;
-      const item = button.closest('.nav-item');
-      const isOpen = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', String(!isOpen));
-      item?.classList.toggle('is-submenu-open', !isOpen);
+      toggleSubmenu(button);
     });
   });
 

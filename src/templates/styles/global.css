@@ -19,10 +19,14 @@
   --code-text: #f4f7fb;
   --code-muted: #aeb8c5;
   --code-line: rgba(255, 255, 255, 0.1);
-  --shadow: 0 14px 34px rgba(23, 25, 28, 0.07);
-  --shadow-soft: 0 5px 14px rgba(23, 25, 28, 0.055);
+  --shadow: 0 10px 26px rgba(23, 25, 28, 0.052);
+  --shadow-soft: 0 4px 10px rgba(23, 25, 28, 0.038);
   --shadow-footer: 0 -3px 10px rgba(23, 25, 28, 0.035);
   --zoom-backdrop: rgba(246, 247, 248, 0.94);
+  --scrollbar-thumb: rgba(23, 25, 28, 0.22);
+  --scrollbar-thumb-hover: rgba(23, 25, 28, 0.34);
+  --mobile-submenu-bg: color-mix(in srgb, var(--accent) 4%, #f3f6f7);
+  --mobile-submenu-line: rgba(23, 25, 28, 0.075);
   --card-radius: 6px;
   --cover-radius: 4px;
   --marker-width: 28px;
@@ -55,10 +59,14 @@
     --code-text: #f4f7fb;
     --code-muted: #aeb8c5;
     --code-line: rgba(255, 255, 255, 0.1);
-    --shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
-    --shadow-soft: 0 6px 16px rgba(0, 0, 0, 0.14);
+    --shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+    --shadow-soft: 0 5px 12px rgba(0, 0, 0, 0.1);
     --shadow-footer: 0 -3px 10px rgba(0, 0, 0, 0.1);
     --zoom-backdrop: rgba(37, 40, 45, 0.92);
+    --scrollbar-thumb: rgba(245, 247, 249, 0.18);
+    --scrollbar-thumb-hover: rgba(245, 247, 249, 0.28);
+    --mobile-submenu-bg: color-mix(in srgb, var(--paper-muted) 62%, var(--paper-strong));
+    --mobile-submenu-line: rgba(245, 247, 249, 0.07);
   }
 }
 
@@ -83,10 +91,14 @@
   --code-text: #f4f7fb;
   --code-muted: #aeb8c5;
   --code-line: rgba(255, 255, 255, 0.1);
-  --shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
-  --shadow-soft: 0 6px 16px rgba(0, 0, 0, 0.14);
+  --shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+  --shadow-soft: 0 5px 12px rgba(0, 0, 0, 0.1);
   --shadow-footer: 0 -3px 10px rgba(0, 0, 0, 0.1);
   --zoom-backdrop: rgba(37, 40, 45, 0.92);
+  --scrollbar-thumb: rgba(245, 247, 249, 0.18);
+  --scrollbar-thumb-hover: rgba(245, 247, 249, 0.28);
+  --mobile-submenu-bg: color-mix(in srgb, var(--paper-muted) 62%, var(--paper-strong));
+  --mobile-submenu-line: rgba(245, 247, 249, 0.07);
 }
 
 * {
@@ -96,12 +108,12 @@
 html {
   overflow-y: auto;
   scroll-behavior: smooth;
-  scrollbar-color: color-mix(in srgb, var(--accent) 48%, transparent) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
   scrollbar-width: thin;
 }
 
 html::-webkit-scrollbar {
-  width: 9px;
+  width: 6px;
 }
 
 html::-webkit-scrollbar-track {
@@ -109,16 +121,13 @@ html::-webkit-scrollbar-track {
 }
 
 html::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--accent) 36%, transparent);
-  border: 3px solid transparent;
+  background: var(--scrollbar-thumb);
+  border: 0;
   border-radius: 999px;
-  background-clip: content-box;
 }
 
 html::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--accent) 58%, transparent);
-  border: 3px solid transparent;
-  background-clip: content-box;
+  background: var(--scrollbar-thumb-hover);
 }
 
 body {
@@ -128,6 +137,7 @@ body {
   min-height: 100vh;
   min-width: 320px;
   overflow-x: hidden;
+  overflow-x: clip;
   color: var(--text);
   background: linear-gradient(180deg, var(--paper-strong) 0, var(--bg) 420px);
   font-family: var(--sans);
@@ -185,9 +195,11 @@ main {
   position: sticky;
   top: 0;
   z-index: 30;
-  background: var(--paper-strong);
+  background: color-mix(in srgb, var(--paper-strong) 86%, transparent);
   border-bottom: 0;
   box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(14px) saturate(1.06);
+  -webkit-backdrop-filter: blur(14px) saturate(1.06);
 }
 
 .header-inner {
@@ -388,15 +400,15 @@ main {
   height: 38px;
   padding: 0;
   color: var(--text);
-  background: var(--paper-strong);
-  border: 1px solid var(--line);
+  background: transparent;
+  border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.16s ease, border-color 0.16s ease;
 }
 
 .nav-toggle:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
+  background: transparent;
+  border-color: var(--hover-outline);
 }
 
 .nav-toggle span {
@@ -427,15 +439,15 @@ main {
   width: 34px;
   height: 34px;
   color: var(--text);
-  background: var(--paper-strong);
-  border: 1px solid var(--line);
+  background: transparent;
+  border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.16s ease, border-color 0.16s ease;
 }
 
 .theme-toggle:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
+  background: transparent;
+  border-color: var(--hover-outline);
 }
 
 .page-grid {
@@ -593,12 +605,12 @@ main {
   height: 20px;
   padding: 0 8px;
   color: #fff;
-  background: rgba(31, 41, 51, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: color-mix(in srgb, #e45b3e 72%, var(--accent));
+  border: 1px solid color-mix(in srgb, #e45b3e 36%, rgba(255, 255, 255, 0.5));
   border-radius: 999px;
-  box-shadow: 0 5px 12px rgba(23, 25, 28, 0.16);
+  box-shadow: 0 5px 12px color-mix(in srgb, #e45b3e 24%, rgba(23, 25, 28, 0.16));
   font-size: 0.66rem;
-  font-weight: 400;
+  font-weight: 520;
   letter-spacing: 0.02em;
   line-height: 1;
   backdrop-filter: blur(10px) saturate(1.04);
@@ -1054,6 +1066,8 @@ main {
 }
 
 .toc {
+  position: sticky;
+  top: 82px;
   display: grid;
   gap: 14px;
   padding: 22px;
@@ -1507,6 +1521,69 @@ main {
   stroke: none;
 }
 
+.back-to-top {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 28;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--paper-strong) 62%, transparent);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px) saturate(1.06);
+  -webkit-backdrop-filter: blur(12px) saturate(1.06);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.16s ease, transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+  cursor: pointer;
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  border-color: var(--hover-outline);
+}
+
+.back-to-top-icon {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+
+.back-to-top-icon::before,
+.back-to-top-icon::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  width: 9px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 999px;
+}
+
+.back-to-top-icon::before {
+  left: 2px;
+  transform: rotate(-45deg);
+  transform-origin: right center;
+}
+
+.back-to-top-icon::after {
+  right: 2px;
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
 @media (max-width: 1020px) {
   .header-inner {
     grid-template-columns: minmax(0, 1fr) auto;
@@ -1602,7 +1679,7 @@ main {
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 48px;
+    grid-template-columns: minmax(0, 1fr) 72px;
     align-items: center;
     width: var(--mobile-nav-width);
     margin-left: auto;
@@ -1640,7 +1717,7 @@ main {
     align-items: center;
     justify-content: center;
     justify-self: end;
-    width: 48px;
+    width: 72px;
     height: 50px;
     padding: 0;
     color: var(--text);
@@ -1671,7 +1748,7 @@ main {
     min-width: 0;
     margin-top: 0;
     padding: 0;
-    background: transparent;
+    background: var(--mobile-submenu-bg);
     border: 0;
     border-radius: 0;
     box-shadow: none;
@@ -1697,14 +1774,14 @@ main {
     padding: 9px 16px 9px 28px;
     color: var(--text);
     font-size: 1rem;
-    background: color-mix(in srgb, var(--paper-muted) 52%, var(--paper-strong));
-    border-top: 1px solid var(--line);
+    background: transparent;
+    border-top: 1px solid var(--mobile-submenu-line);
   }
 
   .submenu a:hover,
   .submenu a.active {
     color: var(--accent-strong);
-    background: color-mix(in srgb, var(--accent-soft) 76%, var(--paper-strong));
+    background: color-mix(in srgb, var(--accent-soft) 52%, transparent);
   }
 
   .header-actions {
@@ -1734,10 +1811,12 @@ main {
   .container,
   .narrow {
     width: min(100% - 24px, 1160px);
+    margin-right: auto;
+    margin-left: auto;
   }
 
   .container.page-grid {
-    width: min(100% - 16px, 1160px);
+    width: min(100% - 24px, 1160px);
   }
 
   .page-grid,
@@ -1762,6 +1841,10 @@ main {
     grid-template-columns: 132px minmax(0, 1fr);
     gap: 20px;
     padding: 10px;
+  }
+
+  .article-list {
+    gap: 14px;
   }
 
   .card-cover,
@@ -1857,6 +1940,13 @@ main {
 
   .footer-inner p:first-child {
     min-width: 0;
+  }
+
+  .back-to-top {
+    right: 14px;
+    bottom: 14px;
+    width: 38px;
+    height: 38px;
   }
 }
 
