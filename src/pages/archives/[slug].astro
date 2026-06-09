@@ -4,12 +4,12 @@ import ArticleInteractions from '../../templates/components/ArticleInteractions.
 import PostMeta from '../../templates/components/PostMeta.astro';
 import TableOfContents from '../../templates/components/TableOfContents.astro';
 import BaseLayout from '../../templates/layouts/BaseLayout.astro';
-import { getAllPosts, getPostCover, getPostPath } from '../../features/core/posts';
+import { getAllPosts, getPostCover, getPostPath, getPostSlug } from '../../features/core/posts';
 
 export async function getStaticPaths() {
   const posts = await getAllPosts();
   return posts.map((post) => ({
-    params: { slug: post.data.slug },
+    params: { slug: getPostSlug(post) },
     props: { post },
   }));
 }

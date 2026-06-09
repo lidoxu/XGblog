@@ -34,8 +34,8 @@ blog/posts/**
 # Local custom pages
 blog/pages/**
 !blog/pages/
-!blog/pages/about/
-!blog/pages/about/**
+!blog/pages/demo-page/
+!blog/pages/demo-page/**
 
 # Local public images
 blog/images/**

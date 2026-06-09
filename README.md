@@ -1,4 +1,4 @@
-# 小鸽志静态博客开发说明
+# XG-BLOG 静态博客
 
 这是一个根目录即项目目录的 Astro 静态博客。`blog/` 是用户内容区，`src/` 是页面模板和功能实现。
 
@@ -9,18 +9,18 @@
 ├─ blog/
 │  ├─ posts/                # 文章：每篇一个目录，包含 index.md 和 img/
 │  ├─ pages/                # 自定义一级页面：每页一个目录，包含 index.md
-│  ├─ example/              # 可提交的 TOML 模板，也作为默认 fallback
-│  ├─ images/               # 公开图片资源：默认封面、默认 logo、默认头像；用户自定义图片默认不提交
-│  ├─ menu.toml             # 本地导航菜单，默认不提交
-│  ├─ categories.toml       # 本地分类显示信息，默认不提交
-│  ├─ tags.toml             # 本地标签显示信息，默认不提交
-│  └─ links.toml            # 本地友链数据，默认不提交
+│  ├─ example/              # TOML 示例模板；没有用户配置时作为默认回退
+│  ├─ images/               # 公开图片资源：默认封面、默认 logo、默认头像，也可放站点图片
+│  ├─ menu.toml             # 从 blog/example/menu.toml 复制后修改
+│  ├─ categories.toml       # 从 blog/example/categories.toml 复制后修改
+│  ├─ tags.toml             # 从 blog/example/tags.toml 复制后修改
+│  └─ links.toml            # 从 blog/example/links.toml 复制后修改
 ├─ src/
 │  ├─ pages/                # Astro 路由入口
 │  ├─ templates/            # 布局、组件、样式
 │  ├─ features/             # 数据、SEO、文章、分类标签等功能
 │  └─ content.config.ts     # Astro Content Collection 配置
-├─ .env.example             # 站点基础环境变量示例；实际 .env 不提交
+├─ .env.example             # 复制为 .env 后修改站点环境变量
 ├─ astro.config.mjs
 ├─ package.json
 └─ tsconfig.json
@@ -28,30 +28,24 @@
 
 ## 配置规则
 
-站点基础信息只读环境变量，优先级如下：
+站点基础信息从环境变量读取：
 
-```mermaid
-flowchart LR
-  A["系统/部署环境变量"] --> B["根目录 .env"]
-  B --> C["代码默认值"]
-```
+1. 优先使用系统或部署平台提供的环境变量。
+2. 本地开发时，复制 `.env.example` 为 `.env`，再修改 `.env`。
+3. 如果没有配置对应变量，使用代码里的默认值。
 
-内容配置使用 TOML，优先级如下：
+`.env.example` 只是示例模板，程序不会直接读取它；需要复制并重命名为 `.env` 才会作为本地环境变量生效。
 
-```mermaid
-flowchart LR
-  A["blog/*.toml"] --> B["blog/example/*.toml"]
-  B --> C["文章自动收集"]
-```
+内容配置使用 TOML。想修改导航、分类、标签或友链时，先从 `blog/example/` 复制对应文件到 `blog/` 根目录，再修改复制出来的文件。
 
-| 文件 | 用途 | 读取方式 |
+| 文件 | 用途 | 使用方式 |
 | --- | --- | --- |
-| `blog/menu.toml` | 导航菜单 | 用户文件存在时整体替换 `blog/example/menu.toml` |
-| `blog/links.toml` | 友链数据 | 用户文件存在时整体替换 `blog/example/links.toml` |
-| `blog/categories.toml` | 分类名称和描述 | 只覆盖文章中已使用的同名 slug |
-| `blog/tags.toml` | 标签名称 | 只覆盖文章中已使用的同名 slug |
+| `blog/menu.toml` | 导航菜单 | 从 `blog/example/menu.toml` 复制后修改；不存在时使用示例文件 |
+| `blog/links.toml` | 友链数据 | 从 `blog/example/links.toml` 复制后修改；不存在时使用示例文件 |
+| `blog/categories.toml` | 分类名称和描述 | 从 `blog/example/categories.toml` 复制后修改；只影响文章中用到的分类 |
+| `blog/tags.toml` | 标签名称 | 从 `blog/example/tags.toml` 复制后修改；只影响文章中用到的标签 |
 
-分类和标签会先从文章 frontmatter 自动收集。TOML 中没有文章使用的分类或标签不会生成页面。
+分类和标签会先从文章属性区自动收集。TOML 主要用于改显示名称和描述；文章里没有使用的分类或标签不会生成页面。
 
 ## TOML 示例
 
@@ -72,8 +66,8 @@ label = "首页"
 href = "/"
 
 [[menu]]
-label = "关于"
-href = "/about"
+label = "示例页面"
+href = "/demo-page"
 ```
 
 ```toml
@@ -100,12 +94,12 @@ blog/posts/
       └─ hello-world-1.svg
 ```
 
-frontmatter 示例：
+Markdown 文件开头两条 `---` 之间是属性区，用来写标题、日期、分类、封面等信息。属性区后面就是文章正文。
 
 ```md
 ---
 title: "Hello World"
-slug: "hello-world"
+slug: "hello-world" # 当值为空或没有这个属性，默认使用文章文件夹名称
 description: "文章摘要。"
 date: "2026-06-09"
 categories:
@@ -116,11 +110,15 @@ cover: "./img/cover.svg"
 top: 0
 comments: false
 ---
+
+这是一篇文章正文，可以写段落、列表、表格、代码块和引用。
+
+![Hello World 示例图](./img/hello-world-1.svg)
 ```
 
 封面读取顺序：
 
-1. frontmatter 中的 `cover`。
+1. 属性区中的 `cover`。
 2. `img/cover.*`。
 3. 根目录 `cover.*`。
 4. `img/{slug}-1.*`。
@@ -136,11 +134,11 @@ comments: false
 
 ```text
 blog/pages/
-└─ about/
-   └─ index.md              # 生成 /about
+└─ demo-page/
+   └─ index.md              # 生成 /demo-page
 ```
 
-页面 frontmatter 只需要：
+页面属性区只需要：
 
 ```md
 ---
@@ -148,9 +146,28 @@ title: "关于"
 description: "关于这个站点和内容方向。"
 comments: false
 ---
+
+这里写页面正文。页面正文同样支持 Markdown。
+
+![页面示例图](./img/demo-page-1.svg)
 ```
 
 页面正文可以使用 Markdown 和相对图片，例如 `./img/example.svg`。页面不要写 `slug`、`date`、`categories`、`tags`、`cover`、`top`；这些字段只属于文章。`comments` 字段先保留，不开发评论 UI。
+
+## 站点图片
+
+`blog/images/` 是公开图片目录，构建后可直接使用根路径访问。
+
+常用命名：
+
+| 文件位置 | 使用路径 | 用途 |
+| --- | --- | --- |
+| `blog/images/logo.webp` | `/logo.webp` | 站点 logo |
+| `blog/images/logo-dark.webp` | `/logo-dark.webp` | 深色模式 logo |
+| `blog/images/user.webp` | `/user.webp` | 作者头像 |
+| `blog/images/banner.webp` | `/banner.webp` | 可复用的公开图片 |
+
+如果不放自定义图片，站点会使用 `default-logo.svg`、`default-user.svg`、`default-cover.svg` 这几个默认资源。也可以在 `.env` 中把 `BLOG_LOGO`、`BLOG_LOGO_DARK`、`BLOG_AVATAR` 设置为 `/logo.webp`、`/logo-dark.webp`、`/user.webp` 这类路径。
 
 ## 环境变量
 
@@ -169,17 +186,9 @@ comments: false
 | `BLOG_AVATAR_CIRCLE` | 是否将作者头像裁成圆形；未设置或空值时开启 |
 | `BLOG_BIO` | 作者简介 |
 
-## 发布说明
-
-1. `blog/*.toml`、`.env`、用户新增文章和页面默认不提交。
-2. `blog/example/*.toml`、`blog/posts/hello-world/**`、`blog/pages/about/**` 是可提交示例。
-3. `blog/images/` 是公开图片目录，构建后可直接用根路径访问；例如 `blog/images/banner.png` 使用 `/banner.png`。目录中仅 `default-cover.svg`、`default-logo.svg`、`default-user.svg` 提交到 Git，其余用户自定义图片默认不提交。
-4. `dist/`、`.astro/`、`output/`、`.playwright-cli/` 是运行或构建产物，不提交。
-5. `/robots.txt` 由 `src/pages/robots.txt.ts` 在构建时生成。
-
-## 验收
+## 构建和检查
 
 1. `npm.cmd run build` 成功执行。
-2. `/archives/hello-world`、`/categories/website`、`/tags/hello-world`、`/about` 可生成。
+2. `/archives/hello-world`、`/categories/website`、`/tags/hello-world`、`/demo-page` 可生成。
 3. RSS、sitemap、robots 使用正确站点 URL。
-4. Markdown 表格、代码块、引用、图片在桌面和移动端不撑破页面。
+4. `/robots.txt` 由 `src/pages/robots.txt.ts` 在构建时生成。

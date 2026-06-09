@@ -15,6 +15,12 @@ export async function getAllPosts() {
   return sortPosts(posts);
 }
 
+function getEntryFolderName(id: string) {
+  const normalized = id.replace(/\\/g, '/').replace(/\/index(?:\.md)?$/, '').replace(/\.md$/, '');
+  const segments = normalized.split('/').filter(Boolean);
+  return segments.at(-1) ?? normalized;
+}
+
 export function sortPosts(posts: Post[]) {
   return [...posts].sort((a, b) => {
     const topDiff = (b.data.top ?? 0) - (a.data.top ?? 0);
@@ -27,8 +33,12 @@ export function sortPosts(posts: Post[]) {
   });
 }
 
+export function getPostSlug(post: Post) {
+  return post.data.slug || getEntryFolderName(post.id);
+}
+
 export function getPostPath(post: Post) {
-  return `/archives/${post.data.slug}`;
+  return `/archives/${getPostSlug(post)}`;
 }
 
 function normalizePostAssetPath(path: string) {
@@ -59,7 +69,7 @@ function getCoverFromFrontmatter(slug: string, cover: string) {
 }
 
 export function getPostCover(post: Post) {
-  const slug = post.data.slug;
+  const slug = getPostSlug(post);
 
   if (post.data.cover) {
     return getCoverFromFrontmatter(slug, post.data.cover);
