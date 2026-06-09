@@ -1,3 +1,6 @@
+# 分类模板。复制为 blog/categories.toml 后可覆盖同 slug 分类的显示名称和描述。
+# slug 需与文章 frontmatter 中的 categories 一致。
+
 [[categories]]
 slug = "website"
 name = "建站"

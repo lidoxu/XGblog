@@ -69,6 +69,7 @@ export type SiteData = {
   author: {
     name: string;
     avatar: string;
+    circleMask: boolean;
     description: string;
   };
 };
@@ -228,6 +229,7 @@ function resolveSiteData(): SiteData {
     author: {
       name: readEnv('BLOG_AUTHOR') ?? readEnv('BLOG_AUTHOR_NAME') ?? '博主昵称',
       avatar: resolveAuthorAvatar(readEnv('BLOG_AVATAR') ?? readEnv('BLOG_AUTHOR_AVATAR'), logo),
+      circleMask: resolveBoolean(readEnv('BLOG_AVATAR_CIRCLE'), true),
       description: readEnv('BLOG_BIO') ?? readEnv('BLOG_AUTHOR_DESCRIPTION') ?? '这里填写博主简介。',
     },
   };

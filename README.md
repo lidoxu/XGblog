@@ -160,6 +160,7 @@ comments: false
 | `THEME_COLOR` | 主题主色调，必须是 3 位或 6 位十六进制颜色 |
 | `BLOG_AUTHOR` | 作者名称 |
 | `BLOG_AVATAR` | 作者头像；未设置或文件不存在时使用 `/default-user.svg` |
+| `BLOG_AVATAR_CIRCLE` | 是否将作者头像裁成圆形；未设置或空值时开启 |
 | `BLOG_BIO` | 作者简介 |
 
 ## 发布说明

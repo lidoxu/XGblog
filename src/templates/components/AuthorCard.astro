@@ -2,12 +2,12 @@
 import { getSite } from '../../features/core/seo';
 
 const site = getSite() as ReturnType<typeof getSite> & {
-  author: { name: string; avatar: string; description: string };
+  author: { name: string; avatar: string; circleMask: boolean; description: string };
 };
 ---
 
 <section class="sidebar-card author-card" aria-labelledby="author-title">
-  <img src={site.author.avatar} alt={`${site.author.name} 头像`} width="72" height="72" />
+  <img class:list={[{ 'is-circle-mask': site.author.circleMask }]} src={site.author.avatar} alt={`${site.author.name} 头像`} width="72" height="72" />
   <div class="author-card-body">
     <h2 id="author-title">{site.author.name}</h2>
     <p>{site.author.description}</p>

@@ -1,3 +1,6 @@
+# 友链模板。复制为 blog/links.toml 后生效；用户文件存在时会整体替换此示例。
+# group 为分组名称，name 为站点名称，url 为链接，desc 为描述，icon 为头像或图标地址。
+
 [[links]]
 group = "My Server"
 name = "小鸽志"
