@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import ArticleInteractions from '../templates/components/ArticleInteractions.astro';
 import TableOfContents from '../templates/components/TableOfContents.astro';
 import BaseLayout from '../templates/layouts/BaseLayout.astro';
 
@@ -31,7 +32,5 @@ const { Content, headings } = await render(page);
       <TableOfContents headings={headings} />
     </aside>
   </article>
-  <script src="../features/scripts/toc-active.ts"></script>
-  <script src="../features/scripts/code-copy.ts"></script>
-  <script src="../features/scripts/image-zoom.ts"></script>
+  <ArticleInteractions />
 </BaseLayout>

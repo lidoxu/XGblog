@@ -1,5 +1,6 @@
 ---
 import { render } from 'astro:content';
+import ArticleInteractions from '../../templates/components/ArticleInteractions.astro';
 import PostMeta from '../../templates/components/PostMeta.astro';
 import TableOfContents from '../../templates/components/TableOfContents.astro';
 import BaseLayout from '../../templates/layouts/BaseLayout.astro';
@@ -40,7 +41,5 @@ const cover = getPostCover(post);
       <TableOfContents headings={headings} />
     </aside>
   </article>
-  <script src="../../features/scripts/toc-active.ts"></script>
-  <script src="../../features/scripts/code-copy.ts"></script>
-  <script src="../../features/scripts/image-zoom.ts"></script>
+  <ArticleInteractions />
 </BaseLayout>
