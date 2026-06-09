@@ -22,27 +22,22 @@ UI功能需求.md
 # Local TOML config
 blog/*.toml
 !blog/example/
-!blog/example/*.toml
+!blog/example/**
 
 # Local article content
 blog/posts/**
 !blog/posts/
 !blog/posts/.gitkeep
-!blog/posts/hello-world/
-!blog/posts/hello-world/**
 
 # Local custom pages
 blog/pages/**
 !blog/pages/
-!blog/pages/demo-page/
-!blog/pages/demo-page/**
+!blog/pages/.gitkeep
 
-# Local public images
-blog/images/**
-!blog/images/
-!blog/images/default-cover.svg
-!blog/images/default-logo.svg
-!blog/images/default-user.svg
+# Local public assets
+blog/public/**
+!blog/public/
+!blog/public/.gitkeep
 
 # OS / editor
 .DS_Store

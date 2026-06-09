@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { selectActiveEntries } from './collections';
 import { categoryData, tagData, type TaxonomyItem } from './data';
 
 export const normalizeSlug = (value: string) => value.trim().toLowerCase();
@@ -68,7 +69,7 @@ function sortByMetadata(items: TaxonomyItem[], metadata: Map<string, { item: Tax
 }
 
 async function resolvePosts(posts?: PostTaxonomySource[]) {
-  return posts ?? (await getCollection('posts'));
+  return posts ?? selectActiveEntries(await getCollection('posts'), 'posts');
 }
 
 export async function getAllCategories(posts?: PostTaxonomySource[]) {

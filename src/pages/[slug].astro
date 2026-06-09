@@ -1,13 +1,14 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
+import { getAllPages, getPageSlug } from '../features/core/pages';
 import ArticleInteractions from '../templates/components/ArticleInteractions.astro';
 import TableOfContents from '../templates/components/TableOfContents.astro';
 import BaseLayout from '../templates/layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
-  const pages = await getCollection('pages');
+  const pages = await getAllPages();
   return pages.map((page) => ({
-    params: { slug: page.id.replace(/\/index(?:\.md)?$/, '').replace(/\.md$/, '') },
+    params: { slug: getPageSlug(page) },
     props: { page },
   }));
 }

@@ -8,10 +8,12 @@ href = "/"
 [[menu]]
 label = "示例文章"
 href = "/archives/hello-world"
+fallback = "posts"
 
 [[menu]]
 label = "示例页面"
 href = "/demo-page"
+fallback = "pages"
 
 [[menu]]
 label = "归档"

@@ -2,9 +2,15 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const normalizeSlug = (value: string) => value.trim().toLowerCase();
+const contentEntryId = ({ entry }: { entry: string }) =>
+  entry.replace(/\\/g, '/').replace(/\/index(?:\.md)?$/, '').replace(/\.md$/, '');
 
 const posts = defineCollection({
-  loader: glob({ pattern: '**/index.md', base: './blog/posts' }),
+  loader: glob({
+    pattern: ['posts/**/index.md', 'example/posts/**/index.md'],
+    base: './blog',
+    generateId: contentEntryId,
+  }),
   schema: z.object({
     title: z.string(),
     slug: z.string().nullish().transform((value) => value?.trim() || undefined),
@@ -19,7 +25,11 @@ const posts = defineCollection({
 });
 
 const pages = defineCollection({
-  loader: glob({ pattern: '*/index.md', base: './blog/pages' }),
+  loader: glob({
+    pattern: ['pages/*/index.md', 'example/pages/*/index.md'],
+    base: './blog',
+    generateId: contentEntryId,
+  }),
   schema: z.object({
     title: z.string(),
     description: z.string(),

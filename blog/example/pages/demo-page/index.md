@@ -16,10 +16,11 @@ comments: false
 
 - 可以使用普通段落、列表和表格。
 - 图片建议放在当前页面目录的 `img/` 里。
-- 多个页面共用的图片可以放在 `blog/images/`。
+- 多个页面共用的图片可以放在 `blog/public/`。
 
 | 项目 | 示例 |
 | --- | --- |
 | 页面路径 | `/demo-page` |
-| 文件位置 | `blog/pages/demo-page/index.md` |
+| 模板位置 | `blog/example/pages/demo-page/index.md` |
+| 用户页面位置 | `blog/pages/{slug}/index.md` |
 | 图片路径 | `./img/demo-page-1.svg` |

@@ -1,16 +1,23 @@
 # XG-BLOG 静态博客
 
-这是一个根目录即项目目录的 Astro 静态博客。`blog/` 是用户内容区，`src/` 是页面模板和功能实现。
+这是一个根目录即项目目录的 Astro 静态博客。`blog/` 是用户内容区，`blog/example/` 是模板和兜底示例区，`src/` 是页面模板和功能实现。
 
 ## 目录结构
 
 ```text
 ./
 ├─ blog/
-│  ├─ posts/                # 文章：每篇一个目录，包含 index.md 和 img/
-│  ├─ pages/                # 自定义一级页面：每页一个目录，包含 index.md
-│  ├─ example/              # TOML 示例模板；没有用户配置时作为默认回退
-│  ├─ images/               # 公开图片资源：默认封面、默认 logo、默认头像，也可放站点图片
+│  ├─ posts/                # 用户文章；每篇一个目录，包含 index.md 和 img/
+│  ├─ pages/                # 用户自定义一级页面；每页一个目录，包含 index.md
+│  ├─ public/               # 用户公开资源；构建后输出到站点根目录
+│  ├─ example/              # 模板和兜底示例
+│  │  ├─ posts/             # 用户没有文章时使用的示例文章
+│  │  ├─ pages/             # 用户没有页面时使用的示例页面
+│  │  ├─ public/default/    # 默认 logo、头像、封面等缺省资源
+│  │  ├─ menu.toml          # 导航菜单模板
+│  │  ├─ categories.toml    # 分类模板
+│  │  ├─ tags.toml          # 标签模板
+│  │  └─ links.toml         # 友链模板
 │  ├─ menu.toml             # 从 blog/example/menu.toml 复制后修改
 │  ├─ categories.toml       # 从 blog/example/categories.toml 复制后修改
 │  ├─ tags.toml             # 从 blog/example/tags.toml 复制后修改
@@ -42,10 +49,21 @@
 | --- | --- | --- |
 | `blog/menu.toml` | 导航菜单 | 从 `blog/example/menu.toml` 复制后修改；不存在时使用示例文件 |
 | `blog/links.toml` | 友链数据 | 从 `blog/example/links.toml` 复制后修改；不存在时使用示例文件 |
-| `blog/categories.toml` | 分类名称和描述 | 从 `blog/example/categories.toml` 复制后修改；只影响文章中用到的分类 |
-| `blog/tags.toml` | 标签名称 | 从 `blog/example/tags.toml` 复制后修改；只影响文章中用到的标签 |
+| `blog/categories.toml` | 分类名称和描述 | 从 `blog/example/categories.toml` 复制后修改；不存在时使用示例文件 |
+| `blog/tags.toml` | 标签名称 | 从 `blog/example/tags.toml` 复制后修改；不存在时使用示例文件 |
 
-分类和标签会先从文章属性区自动收集。TOML 主要用于改显示名称和描述；文章里没有使用的分类或标签不会生成页面。
+`blog/*.toml` 只要存在，就会完全替换 `blog/example/*.toml`。分类和标签会先从文章属性区自动收集；TOML 主要用于改显示名称和描述。
+
+## 示例内容
+
+示例文章和示例页面只在用户对应目录没有内容时启用：
+
+| 用户目录 | 兜底目录 | 规则 |
+| --- | --- | --- |
+| `blog/posts/` | `blog/example/posts/` | `blog/posts/` 没有任何 `index.md` 时，构建示例文章 |
+| `blog/pages/` | `blog/example/pages/` | `blog/pages/` 没有任何 `index.md` 时，构建示例页面 |
+
+只要用户添加自己的文章或页面，对应的示例内容就不会再生成。`blog/example/menu.toml` 中的“示例文章”“示例页面”入口也会随之隐藏，避免出现失效链接。
 
 ## TOML 示例
 
@@ -68,6 +86,7 @@ href = "/"
 [[menu]]
 label = "示例页面"
 href = "/demo-page"
+fallback = "pages"
 ```
 
 ```toml
@@ -122,9 +141,9 @@ comments: false
 2. `img/cover.*`。
 3. 根目录 `cover.*`。
 4. `img/{slug}-1.*`。
-5. `/default-cover.svg`。
+5. `/default/default-cover.svg`。
 
-默认封面文件位于 `blog/images/default-cover.svg`，构建后使用根路径 `/default-cover.svg` 访问。
+默认封面文件位于 `blog/example/public/default/default-cover.svg`，构建后使用 `/default/default-cover.svg` 访问。
 
 ## 页面结构简版
 
@@ -154,20 +173,30 @@ comments: false
 
 页面正文可以使用 Markdown 和相对图片，例如 `./img/example.svg`。页面不要写 `slug`、`date`、`categories`、`tags`、`cover`、`top`；这些字段只属于文章。`comments` 字段先保留，不开发评论 UI。
 
-## 站点图片
+## 公开资源
 
-`blog/images/` 是公开图片目录，构建后可直接使用根路径访问。
+`blog/public/` 是用户公开资源目录，构建后会输出到站点根目录，并且支持二级目录。
 
 常用命名：
 
 | 文件位置 | 使用路径 | 用途 |
 | --- | --- | --- |
-| `blog/images/logo.webp` | `/logo.webp` | 站点 logo |
-| `blog/images/logo-dark.webp` | `/logo-dark.webp` | 深色模式 logo |
-| `blog/images/user.webp` | `/user.webp` | 作者头像 |
-| `blog/images/banner.webp` | `/banner.webp` | 可复用的公开图片 |
+| `blog/public/logo.webp` | `/logo.webp` | 站点 logo |
+| `blog/public/logo-dark.webp` | `/logo-dark.webp` | 深色模式 logo |
+| `blog/public/user.webp` | `/user.webp` | 作者头像 |
+| `blog/public/assets/banner.webp` | `/assets/banner.webp` | 可复用的公开图片 |
+| `blog/public/robots.txt` | `/robots.txt` | 覆盖默认 robots |
+| `blog/public/404.html` | `/404.html` | 覆盖默认 404 页面 |
 
-如果不放自定义图片，站点会使用 `default-logo.svg`、`default-user.svg`、`default-cover.svg` 这几个默认资源。也可以在 `.env` 中把 `BLOG_LOGO`、`BLOG_LOGO_DARK`、`BLOG_AVATAR` 设置为 `/logo.webp`、`/logo-dark.webp`、`/user.webp` 这类路径。
+缺省资源放在 `blog/example/public/default/`，构建后路径如下：
+
+| 文件位置 | 使用路径 |
+| --- | --- |
+| `blog/example/public/default/default-logo.svg` | `/default/default-logo.svg` |
+| `blog/example/public/default/default-user.svg` | `/default/default-user.svg` |
+| `blog/example/public/default/default-cover.svg` | `/default/default-cover.svg` |
+
+如果不放自定义图片，站点会使用这些缺省资源。也可以在 `.env` 中把 `BLOG_LOGO`、`BLOG_LOGO_DARK`、`BLOG_AVATAR` 设置为 `/logo.webp`、`/logo-dark.webp`、`/user.webp` 这类路径。
 
 ## 环境变量
 
@@ -177,18 +206,18 @@ comments: false
 | `BLOG_SUBTITLE` | 站点副标题 |
 | `BLOG_DESCRIPTION` | SEO 描述 |
 | `BLOG_URL` | 正式站点 URL；影响 sitemap、RSS、robots |
-| `BLOG_LOGO` | logo 路径；未设置时自动读取 `/logo.*`，否则使用 `/default-logo.svg` |
+| `BLOG_LOGO` | logo 路径；未设置时自动读取 `/logo.*`，否则使用 `/default/default-logo.svg` |
 | `BLOG_LOGO_DARK` | 深色模式 logo 路径；未设置时自动读取 `/logo-dark.*`，否则使用 `BLOG_LOGO` |
 | `BLOG_SHOW_TITLE` | 是否显示站点标题 |
 | `THEME_COLOR` | 主题主色调，必须是 3 位或 6 位十六进制颜色 |
 | `BLOG_AUTHOR` | 作者名称 |
-| `BLOG_AVATAR` | 作者头像；未设置或文件不存在时使用 `/default-user.svg` |
+| `BLOG_AVATAR` | 作者头像；未设置或文件不存在时使用 `/default/default-user.svg` |
 | `BLOG_AVATAR_CIRCLE` | 是否将作者头像裁成圆形；未设置或空值时开启 |
 | `BLOG_BIO` | 作者简介 |
 
 ## 构建和检查
 
 1. `npm.cmd run build` 成功执行。
-2. `/archives/hello-world`、`/categories/website`、`/tags/hello-world`、`/demo-page` 可生成。
-3. RSS、sitemap、robots 使用正确站点 URL。
-4. `/robots.txt` 由 `src/pages/robots.txt.ts` 在构建时生成。
+2. 用户内容为空时，`/archives/hello-world`、`/categories/website`、`/tags/hello-world`、`/demo-page` 可生成。
+3. 用户添加自己的文章或页面后，对应示例内容不再生成。
+4. RSS、sitemap、robots 使用正确站点 URL。

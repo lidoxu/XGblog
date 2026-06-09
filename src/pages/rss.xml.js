@@ -1,12 +1,11 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
-import { getPostPath, sortPosts } from '../features/core/posts';
+import { getAllPosts, getPostPath } from '../features/core/posts';
 import { getSite } from '../features/core/seo';
 
 export async function GET(context) {
   const site = getSite();
   const baseUrl = context.site ?? new URL(site.url);
-  const posts = sortPosts(await getCollection('posts'));
+  const posts = await getAllPosts();
 
   return rss({
     title: site.title,

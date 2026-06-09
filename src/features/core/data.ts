@@ -1,11 +1,14 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'smol-toml';
 
 const env = import.meta.env as unknown as Record<string, string | undefined>;
 const blogDir = join(process.cwd(), 'blog');
+const userPublicDir = join(blogDir, 'public');
+const examplePublicDir = join(blogDir, 'example', 'public');
 
 type TomlDocument = Record<string, unknown>;
+type TomlSource = 'user' | 'example' | 'empty';
 
 function readTomlFile(relativePath: string): TomlDocument | undefined {
   const filePath = join(blogDir, relativePath);
@@ -17,30 +20,29 @@ function readTomlFile(relativePath: string): TomlDocument | undefined {
   return parse(readFileSync(filePath, 'utf8')) as TomlDocument;
 }
 
+function readTomlSource(relativePath: string): { source: TomlSource; document: TomlDocument } {
+  const userDocument = readTomlFile(relativePath);
+
+  if (userDocument) {
+    return { source: 'user', document: userDocument };
+  }
+
+  const exampleDocument = readTomlFile(join('example', relativePath));
+
+  if (exampleDocument) {
+    return { source: 'example', document: exampleDocument };
+  }
+
+  return { source: 'empty', document: {} };
+}
+
 function readToml(relativePath: string): TomlDocument {
-  return readTomlFile(relativePath) ?? readTomlFile(join('example', relativePath)) ?? {};
+  return readTomlSource(relativePath).document;
 }
 
 function readTomlArray<T>(relativePath: string, key: string): T[] {
   const value = readToml(relativePath)[key];
   return Array.isArray(value) ? (value as T[]) : [];
-}
-
-function readMergedTomlArray<T extends { slug: string }>(relativePath: string, key: string): T[] {
-  const items = [
-    ...readTomlArray<T>(join('example', relativePath), key),
-    ...readTomlArray<T>(relativePath, key),
-  ];
-  const bySlug = new Map<string, T>();
-
-  for (const item of items) {
-    bySlug.set(item.slug.trim().toLowerCase(), {
-      ...item,
-      slug: item.slug.trim().toLowerCase(),
-    });
-  }
-
-  return [...bySlug.values()];
 }
 
 function readEnv(key: string) {
@@ -84,6 +86,7 @@ export type MenuItem = {
   label: string;
   href: string;
   target?: 'self' | 'blank' | '_self' | '_blank' | '' | null;
+  fallback?: 'posts' | 'pages' | '' | null;
   children?: MenuItem[];
 };
 
@@ -104,7 +107,8 @@ function publicAssetExists(path: string) {
     return false;
   }
 
-  return existsSync(join(process.cwd(), 'blog', 'images', path.slice(1)));
+  const relativePath = path.slice(1);
+  return existsSync(join(userPublicDir, relativePath)) || existsSync(join(examplePublicDir, relativePath));
 }
 
 function resolveConfiguredAsset(path: string | null | undefined) {
@@ -141,13 +145,13 @@ function resolveSiteLogo(configured?: string | null) {
     '/logo.png',
     '/logo.jpg',
     '/logo.jpeg',
-    '/default-logo.svg',
-    '/default-logo.avif',
-    '/default-logo.webp',
-    '/default-logo.png',
-    '/default-logo.jpg',
-    '/default-logo.jpeg',
-  ]) ?? '/default-logo.svg';
+    '/default/default-logo.svg',
+    '/default/default-logo.avif',
+    '/default/default-logo.webp',
+    '/default/default-logo.png',
+    '/default/default-logo.jpg',
+    '/default/default-logo.jpeg',
+  ]) ?? '/default/default-logo.svg';
 }
 
 function resolveSiteDarkLogo(configured: string | null | undefined, fallbackLogo: string) {
@@ -169,12 +173,12 @@ function resolveAuthorAvatar(configured: string | null | undefined, fallbackLogo
     '/user.png',
     '/user.jpg',
     '/user.jpeg',
-    '/default-user.svg',
-    '/default-user.avif',
-    '/default-user.webp',
-    '/default-user.png',
-    '/default-user.jpg',
-    '/default-user.jpeg',
+    '/default/default-user.svg',
+    '/default/default-user.avif',
+    '/default/default-user.webp',
+    '/default/default-user.png',
+    '/default/default-user.jpg',
+    '/default/default-user.jpeg',
   ]) ?? fallbackLogo;
 }
 
@@ -257,8 +261,55 @@ function resolveLinkGroups(items: LinkTomlItem[]) {
   return [...groups.entries()].map(([name, links]) => ({ name, links }));
 }
 
+function hasIndexMarkdown(dir: string): boolean {
+  if (!existsSync(dir)) {
+    return false;
+  }
+
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const path = join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      if (hasIndexMarkdown(path)) {
+        return true;
+      }
+    } else if (entry.isFile() && entry.name.toLowerCase() === 'index.md') {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function fallbackContentEnabled(fallback: MenuItem['fallback']) {
+  if (fallback === 'posts') {
+    return !hasIndexMarkdown(join(blogDir, 'posts'));
+  }
+
+  if (fallback === 'pages') {
+    return !hasIndexMarkdown(join(blogDir, 'pages'));
+  }
+
+  return true;
+}
+
+function filterFallbackMenuItems(items: MenuItem[]): MenuItem[] {
+  return items
+    .filter((item) => fallbackContentEnabled(item.fallback))
+    .map((item) => ({
+      ...item,
+      children: item.children ? filterFallbackMenuItems(item.children) : undefined,
+    }));
+}
+
+function resolveMenuData() {
+  const { source, document } = readTomlSource('menu.toml');
+  const items = Array.isArray(document.menu) ? (document.menu as MenuItem[]) : [];
+  return source === 'example' ? filterFallbackMenuItems(items) : items;
+}
+
 export const siteData = resolveSiteData();
-export const categoryData = readMergedTomlArray<TaxonomyItem>('categories.toml', 'categories');
-export const tagData = readMergedTomlArray<TaxonomyItem>('tags.toml', 'tags');
-export const menuData = readTomlArray<MenuItem>('menu.toml', 'menu');
+export const categoryData = readTomlArray<TaxonomyItem>('categories.toml', 'categories');
+export const tagData = readTomlArray<TaxonomyItem>('tags.toml', 'tags');
+export const menuData = resolveMenuData();
 export const linkData = resolveLinkGroups(readTomlArray<LinkTomlItem>('links.toml', 'links'));
