@@ -218,7 +218,7 @@ main {
 
 .brand {
   display: inline-grid;
-  grid-template-columns: 36px minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 10px;
   min-width: 0;
@@ -226,13 +226,15 @@ main {
 }
 
 .brand.icon-only {
-  grid-template-columns: 36px;
+  grid-template-columns: auto;
   gap: 0;
 }
 
 .brand img {
-  width: 36px;
   height: 36px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
   border-radius: var(--radius-sm);
 }
 
@@ -2093,16 +2095,16 @@ main {
 
 @media (max-width: 520px) {
   .brand {
-    grid-template-columns: 34px minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr);
   }
 
   .brand.icon-only {
-    grid-template-columns: 34px;
+    grid-template-columns: auto;
   }
 
   .brand img {
-    width: 34px;
     height: 34px;
+    max-width: 120px;
   }
 
   .brand strong {
