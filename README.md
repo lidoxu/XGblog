@@ -10,7 +10,7 @@
 │  ├─ posts/                # 文章：每篇一个目录，包含 index.md 和 img/
 │  ├─ pages/                # 自定义一级页面：每页一个目录，包含 index.md
 │  ├─ example/              # 可提交的 TOML 模板，也作为默认 fallback
-│  ├─ site-img/             # 公开图片资源：logo、默认封面、默认头像、upload/
+│  ├─ site-img/             # 公开图片资源：logo、深色 logo、默认封面、默认头像、upload/
 │  ├─ menu.toml             # 本地导航菜单，默认不提交
 │  ├─ categories.toml       # 本地分类显示信息，默认不提交
 │  ├─ tags.toml             # 本地标签显示信息，默认不提交
@@ -155,7 +155,7 @@ comments: false
 | `BLOG_DESCRIPTION` | SEO 描述 |
 | `BLOG_URL` | 正式站点 URL；影响 sitemap、RSS、robots |
 | `BLOG_LOGO` | logo 路径；未设置时自动读取 `/logo.*`，否则使用 `/default-logo.svg` |
-| `BLOG_DARK_LOGO` | 深色模式 logo；未设置时使用 `BLOG_LOGO` |
+| `BLOG_LOGO_DARK` | 深色模式 logo 路径；未设置时自动读取 `/logo-dark.*`，否则使用 `BLOG_LOGO` |
 | `BLOG_SHOW_TITLE` | 是否显示站点标题 |
 | `THEME_COLOR` | 主题主色调，必须是 3 位或 6 位十六进制颜色 |
 | `BLOG_AUTHOR` | 作者名称 |
@@ -166,7 +166,7 @@ comments: false
 
 1. `blog/*.toml`、`.env`、用户新增文章和页面默认不提交。
 2. `blog/example/*.toml`、`blog/posts/hello-world/**`、`blog/pages/about/**` 是可提交示例。
-3. `blog/site-img/upload/` 可放旧站公开资源，构建后通过 `/upload/...` 访问；内容默认不提交。
+3. `blog/site-img/` 是公开图片目录，构建后可直接用根路径访问；例如 `blog/site-img/banner.png` 使用 `/banner.png`，`blog/site-img/upload/a.png` 使用 `/upload/a.png`。
 4. `dist/`、`.astro/`、`output/`、`.playwright-cli/` 是运行或构建产物，不提交。
 5. `/robots.txt` 由 `src/pages/robots.txt.ts` 在构建时生成。
 

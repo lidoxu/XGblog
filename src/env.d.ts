@@ -6,7 +6,7 @@ interface ImportMetaEnv {
   readonly BLOG_DESCRIPTION?: string;
   readonly BLOG_URL?: string;
   readonly BLOG_LOGO?: string;
-  readonly BLOG_DARK_LOGO?: string;
+  readonly BLOG_LOGO_DARK?: string;
   readonly BLOG_SHOW_TITLE?: string;
   readonly BLOG_AUTHOR?: string;
   readonly BLOG_AUTHOR_NAME?: string;

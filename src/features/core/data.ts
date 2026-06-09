@@ -149,6 +149,17 @@ function resolveSiteLogo(configured?: string | null) {
   ]) ?? '/default-logo.svg';
 }
 
+function resolveSiteDarkLogo(configured: string | null | undefined, fallbackLogo: string) {
+  return resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
+    '/logo-dark.svg',
+    '/logo-dark.avif',
+    '/logo-dark.webp',
+    '/logo-dark.png',
+    '/logo-dark.jpg',
+    '/logo-dark.jpeg',
+  ]) ?? fallbackLogo;
+}
+
 function resolveAuthorAvatar(configured: string | null | undefined, fallbackLogo: string) {
   return resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
     '/user.svg',
@@ -201,7 +212,7 @@ function resolveBoolean(configured: string | boolean | number | null | undefined
 
 function resolveSiteData(): SiteData {
   const logo = resolveSiteLogo(readEnv('BLOG_LOGO'));
-  const darkLogo = resolveConfiguredAsset(readEnv('BLOG_DARK_LOGO')) ?? logo;
+  const darkLogo = resolveSiteDarkLogo(readEnv('BLOG_LOGO_DARK'), logo);
 
   return {
     title: readEnv('BLOG_TITLE') ?? '示例博客',
