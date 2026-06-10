@@ -8,11 +8,8 @@
 ./
 ├─ blog/                         # 用户站点内容
 │  ├─ posts/                     # 用户文章；每篇文章一个文件夹
-│  │  └─ .gitkeep                # 空目录占位文件
 │  ├─ pages/                     # 用户自定义页面；每页一个文件夹
-│  │  └─ .gitkeep
 │  ├─ public/                    # 用户公开资源；构建后输出到站点根目录
-│  │  └─ .gitkeep
 │  ├─ menu.toml                  # 从 example/menu.toml 复制后修改
 │  ├─ categories.toml            # 从 example/categories.toml 复制后修改
 │  ├─ tags.toml                  # 从 example/tags.toml 复制后修改
@@ -20,7 +17,7 @@
 ├─ example/                      # 可复制模板，也作为空内容时的兜底示例
 │  ├─ posts/hello-world/
 │  ├─ pages/demo-page/
-│  ├─ public/.gitkeep
+│  ├─ public/
 │  ├─ menu.toml
 │  ├─ categories.toml
 │  ├─ tags.toml
@@ -33,14 +30,14 @@
 │     ├─ default-user.svg
 │     └─ default-cover.webp
 ├─ src/                          # Astro 路由、组件、样式和核心逻辑
-├─ .env.example                  # 复制为 .env 后修改
+├─ .env.example                  # 模板，复制为 .env 后作为用户变量自定义修改
 ├─ astro.config.mjs
 └─ package.json
 ```
 
 `.gitkeep` 只是占位文件，用来让空目录保留在项目里。写入真实文章、页面或资源后，不需要管它。
 
-如果是新站点，可以把 `example/` 复制一份并重命名为 `blog/`，再在 `blog/` 里维护自己的内容。
+如果是新站点，可以把 `example/` 复制一份并重命名为 `blog/`，再在 `blog/` 里维护自己的内容。用户资产主要是 `blog/` 和 `.env`；以后从上游同步功能更新时，尽量只让项目代码、缺省资源和示例模板变动，可以减少和用户内容的冲突。
 
 ## 配置顺序
 
@@ -74,7 +71,7 @@
 
 只要用户添加自己的文章或页面，对应的示例内容就不会再生成。`example/menu.toml` 里的示例文章、示例页面菜单项带有 `fallback` 标记，会在示例内容失效时自动隐藏。
 
-## 文章简版
+## 文章示例
 
 完整规则见 [文章内容结构要求.md](文章内容结构要求.md)。
 
@@ -122,7 +119,7 @@ comments: false
 4. `img/{slug}-1.*`。
 5. `/default/default-cover.webp`。
 
-## 页面简版
+## 页面示例
 
 完整规则见 [页面结构需求.md](页面结构需求.md)。
 
@@ -195,10 +192,10 @@ comments: false
 | `BLOG_LOGO_DARK` | 深色模式 logo 路径；未设置时自动读取 `/logo-dark.*`，否则使用 `/default/default-logo-dark.svg` |
 | `BLOG_SHOW_TITLE` | 是否显示站点标题 |
 | `THEME_COLOR` | 主题色，必须是 3 位或 6 位十六进制颜色 |
-| `BLOG_AUTHOR` | 作者名称 |
+| `BLOG_AUTHOR` | 首页作者名称 |
 | `BLOG_AVATAR` | 作者头像；未设置或文件不存在时使用 `/default/default-user.svg` |
-| `BLOG_AVATAR_CIRCLE` | 是否将作者头像裁成圆形；未设置或空值时开启 |
-| `BLOG_BIO` | 作者简介 |
+| `BLOG_AVATAR_CIRCLE` | 是否将作者头像裁成圆形；未设置或空值时开启。设置为 `false`、`0`、`no` 或 `off` 可关闭 |
+| `BLOG_BIO` | 首页作者简介 |
 
 ## 构建检查
 
