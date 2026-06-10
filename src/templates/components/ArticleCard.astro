@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import type { Post } from '../../features/core/posts';
 import { getPostCover, getPostPath } from '../../features/core/posts';
 import PostMeta from './PostMeta.astro';
@@ -11,11 +12,16 @@ const { post } = Astro.props;
 const cover = getPostCover(post);
 const href = getPostPath(post);
 const isPinned = post.data.top > 0;
+const coverAlt = `${post.data.title} 封面图`;
 ---
 
 <article class="article-card">
   <a class="card-cover" href={href} aria-label={post.data.title}>
-    <img src={cover} alt={`${post.data.title} 封面图`} loading="lazy" />
+    {typeof cover === 'string' ? (
+      <img src={cover} alt={coverAlt} loading="lazy" />
+    ) : (
+      <Image src={cover} alt={coverAlt} loading="lazy" />
+    )}
     {isPinned && (
       <span class="pin-label" aria-label="置顶文章" title="置顶文章">置顶</span>
     )}

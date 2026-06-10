@@ -1,4 +1,5 @@
 ---
+import { getImage } from 'astro:assets';
 import { render } from 'astro:content';
 import ArticleInteractions from '../../templates/components/ArticleInteractions.astro';
 import PostMeta from '../../templates/components/PostMeta.astro';
@@ -17,13 +18,14 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const cover = getPostCover(post);
+const seoImage = typeof cover === 'string' ? cover : (await getImage({ src: cover })).src;
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
   canonical={getPostPath(post)}
-  image={cover}
+  image={seoImage}
   type="article"
   publishedTime={post.data.date}
 >

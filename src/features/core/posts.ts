@@ -1,18 +1,19 @@
+import type { ImageMetadata } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { getEntryAssetDir, getEntryFolderName, selectActiveEntries } from './collections';
 import { formatMonth } from './date';
 import { getCategory, getTag, normalizeSlug } from './taxonomy';
 
 export type Post = CollectionEntry<'posts'>;
+export type PostCover = string | ImageMetadata;
 
-const postAssetUrls = import.meta.glob([
+const postAssets = import.meta.glob([
   '../../../blog/posts/**/*.{avif,gif,jpeg,jpg,png,svg,webp}',
   '../../../example/posts/**/*.{avif,gif,jpeg,jpg,png,svg,webp}',
 ], {
   eager: true,
   import: 'default',
-  query: '?url',
-}) as Record<string, string>;
+}) as Record<string, ImageMetadata>;
 
 export async function getAllPosts() {
   const posts = await getCollection('posts');
@@ -43,12 +44,12 @@ function normalizePostAssetPath(path: string) {
   return path.replace(/\\/g, '/').replace(/^\.?\//, '');
 }
 
-function getPostAssetUrl(post: Post, path: string) {
+function getPostAsset(post: Post, path: string) {
   const key = `../../../${getEntryAssetDir(post.id)}/${normalizePostAssetPath(path)}`;
-  return postAssetUrls[key];
+  return postAssets[key];
 }
 
-function getCoverFromFrontmatter(post: Post, slug: string, cover: string) {
+function getCoverFromFrontmatter(post: Post, slug: string, cover: string): PostCover {
   if (/^(https?:)?\/\//.test(cover) || cover.startsWith('data:')) {
     return cover;
   }
@@ -56,17 +57,17 @@ function getCoverFromFrontmatter(post: Post, slug: string, cover: string) {
   const oldPublicPrefix = `/posts/${slug}/`;
 
   if (cover.startsWith(oldPublicPrefix)) {
-    return getPostAssetUrl(post, cover.slice(oldPublicPrefix.length)) ?? cover;
+    return getPostAsset(post, cover.slice(oldPublicPrefix.length)) ?? cover;
   }
 
   if (cover.startsWith('/')) {
     return cover;
   }
 
-  return getPostAssetUrl(post, cover) ?? cover;
+  return getPostAsset(post, cover) ?? cover;
 }
 
-export function getPostCover(post: Post) {
+export function getPostCover(post: Post): PostCover {
   const slug = getPostSlug(post);
 
   if (post.data.cover) {
@@ -94,7 +95,7 @@ export function getPostCover(post: Post) {
     `img/${slug}-1.jpeg`,
   ];
 
-  return candidates.map((path) => getPostAssetUrl(post, path)).find(Boolean) ?? '/default/default-cover.webp';
+  return candidates.map((path) => getPostAsset(post, path)).find(Boolean) ?? '/default/default-cover.webp';
 }
 
 export function groupPostsByMonth(posts: Post[]) {
