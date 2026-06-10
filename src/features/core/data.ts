@@ -91,7 +91,7 @@ export type MenuItem = {
   href: string;
   target?: 'self' | 'blank' | '_self' | '_blank' | '' | null;
   fallback?: 'posts' | 'pages' | '' | null;
-  children?: MenuItem[];
+  sub?: MenuItem[];
 };
 
 export type LinkItem = {
@@ -341,7 +341,7 @@ function filterFallbackMenuItems(items: MenuItem[]): MenuItem[] {
     .filter((item) => fallbackContentEnabled(item.fallback))
     .map((item) => ({
       ...item,
-      children: item.children ? filterFallbackMenuItems(item.children) : undefined,
+      sub: item.sub ? filterFallbackMenuItems(item.sub) : undefined,
     }));
 }
 

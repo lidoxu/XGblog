@@ -11,6 +11,8 @@ const navItems = menuData;
 const { currentPath } = Astro.props;
 
 const normalizeTarget = (target?: string | null) => (target === 'blank' || target === '_blank' ? '_blank' : undefined);
+const normalizeHref = (href?: string | null) => href?.trim() ?? '';
+const isActiveHref = (href: string) => Boolean(href) && (currentPath === href || (href !== '/' && currentPath.startsWith(href)));
 ---
 
 <header class:list={['site-header', { 'has-icon-only-brand': !site.showTitle }]} data-site-header>
@@ -21,21 +23,38 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
     </a>
     <nav class="top-nav" id="site-nav" aria-label="站点导航" data-site-nav hidden>
       {navItems.map((item, index) => {
-        const hasChildren = item.children && item.children.length > 0;
+        const subItems = item.sub ?? [];
+        const hasChildren = subItems.length > 0;
+        const itemHref = normalizeHref(item.href);
         const itemTarget = normalizeTarget(item.target);
         const itemRel = itemTarget ? 'noopener noreferrer' : undefined;
-        const hasActiveChild = item.children?.some((child) => currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href))) ?? false;
-        const selfActive =
-          currentPath === item.href ||
-          (item.href !== '/' && currentPath.startsWith(item.href));
+        const hasActiveChild = subItems.some((child) => isActiveHref(normalizeHref(child.href)));
+        const selfActive = isActiveHref(itemHref);
         const active = selfActive || hasActiveChild;
         const submenuId = `submenu-${index}`;
 
         return (
           <div class:list={['nav-item', { active, 'has-children': hasChildren, 'has-active-child': hasActiveChild }]}>
-            <a href={item.href} target={itemTarget} rel={itemRel} class:list={['nav-link', { active: selfActive && !hasActiveChild }]}>
-              {item.label}
-            </a>
+            {itemHref ? (
+              <a href={itemHref} target={itemTarget} rel={itemRel} class:list={['nav-link', { active: selfActive && !hasActiveChild }]}>
+                {item.label}
+              </a>
+            ) : hasChildren ? (
+              <button
+                class:list={['nav-link', { active: selfActive && !hasActiveChild }]}
+                type="button"
+                aria-label={`展开${item.label}子菜单`}
+                aria-controls={submenuId}
+                aria-expanded="false"
+                data-submenu-toggle
+              >
+                {item.label}
+              </button>
+            ) : (
+              <span class:list={['nav-link', { active: selfActive && !hasActiveChild }]}>
+                {item.label}
+              </span>
+            )}
             {hasChildren && (
               <>
                 <button
@@ -49,13 +68,19 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
                   <span aria-hidden="true"></span>
                 </button>
                 <div class="submenu" id={submenuId} data-submenu>
-                  {item.children!.map((child) => {
+                  {subItems.map((child) => {
+                    const childHref = normalizeHref(child.href);
                     const childTarget = normalizeTarget(child.target);
                     const childRel = childTarget ? 'noopener noreferrer' : undefined;
-                    return (
-                      <a href={child.href} target={childTarget} rel={childRel} class:list={['submenu-link', { active: currentPath === child.href || (child.href !== '/' && currentPath.startsWith(child.href)) }]}>
+                    const childActive = isActiveHref(childHref);
+                    return childHref ? (
+                      <a href={childHref} target={childTarget} rel={childRel} class:list={['submenu-link', { active: childActive }]}>
                         {child.label}
                       </a>
+                    ) : (
+                      <span class:list={['submenu-link', { active: childActive }]}>
+                        {child.label}
+                      </span>
                     );
                   })}
                 </div>
@@ -115,12 +140,17 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
     });
   };
 
+  const setNavOpenState = (isOpen: boolean) => {
+    header?.setAttribute('data-nav-open', String(isOpen));
+    document.documentElement.toggleAttribute('data-mobile-nav-open', isOpen);
+  };
+
   const closeNav = () => {
     if (!nav || !navToggle) return;
     nav.classList.remove('is-open');
     nav.hidden = mobileNav.matches;
     navToggle.setAttribute('aria-expanded', 'false');
-    header?.setAttribute('data-nav-open', 'false');
+    setNavOpenState(false);
     closeSubmenus();
   };
 
@@ -130,7 +160,7 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
       const isOpen = nav.classList.contains('is-open');
       nav.hidden = !isOpen;
       navToggle.setAttribute('aria-expanded', String(isOpen));
-      header?.setAttribute('data-nav-open', String(isOpen));
+      setNavOpenState(isOpen);
       if (!isOpen) closeSubmenus();
       return;
     }
@@ -138,7 +168,7 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
     nav.hidden = false;
     nav.classList.remove('is-open');
     navToggle.setAttribute('aria-expanded', 'false');
-    header?.setAttribute('data-nav-open', 'false');
+    setNavOpenState(false);
     closeSubmenus();
   };
 
@@ -180,9 +210,12 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
 
   const toggleSubmenu = (button: HTMLButtonElement) => {
     const item = button.closest('.nav-item');
-    const isOpen = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', String(!isOpen));
-    item?.classList.toggle('is-submenu-open', !isOpen);
+    if (!item) return;
+    const isOpen = item.classList.contains('is-submenu-open');
+    item.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]').forEach((toggle) => {
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+    item.classList.toggle('is-submenu-open', !isOpen);
   };
 
   nav?.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
@@ -206,7 +239,7 @@ const normalizeTarget = (target?: string | null) => (target === 'blank' || targe
     nav.classList.toggle('is-open', nextOpen);
     nav.hidden = mobileNav.matches ? !nextOpen : false;
     navToggle.setAttribute('aria-expanded', String(nextOpen));
-    header?.setAttribute('data-nav-open', String(nextOpen));
+    setNavOpenState(nextOpen);
     if (!nextOpen) closeSubmenus();
   });
 

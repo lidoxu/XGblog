@@ -69,7 +69,7 @@
 | `blog/posts/` | `example/posts/` | `blog/posts/` 没有任何 `index.md` 时，构建示例文章 |
 | `blog/pages/` | `example/pages/` | `blog/pages/` 没有任何 `index.md` 时，构建示例页面 |
 
-只要用户添加自己的文章或页面，对应的示例内容就不会再生成。`example/menu.toml` 里的示例文章、示例页面菜单项带有 `fallback` 标记，会在示例内容失效时自动隐藏。
+只要用户添加自己的文章或页面，对应的示例内容就不会再生成。导航菜单可从 `example/menu.toml` 复制为 `blog/menu.toml` 后按自己的内容维护。
 
 ## 文章示例
 
