@@ -122,6 +122,11 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
 
   const getEffectiveTheme = () => document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
 
+  const syncOpenSubmenuClass = () => {
+    const hasOpenSubmenu = Boolean(nav?.querySelector('.nav-item.is-submenu-open'));
+    nav?.classList.toggle('has-open-submenu', hasOpenSubmenu);
+  };
+
   const syncBrandLogo = () => {
     if (!brandLogo) return;
     const lightLogo = brandLogo.dataset.lightLogo;
@@ -133,11 +138,14 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
     }
   };
 
-  const closeSubmenus = () => {
+  const closeSubmenus = (except?: Element | null) => {
     submenuToggles.forEach((button) => {
+      const item = button.closest('.nav-item');
+      if (item && item === except) return;
       button.setAttribute('aria-expanded', 'false');
-      button.closest('.nav-item')?.classList.remove('is-submenu-open');
+      item?.classList.remove('is-submenu-open');
     });
+    syncOpenSubmenuClass();
   };
 
   const setNavOpenState = (isOpen: boolean) => {
@@ -196,10 +204,19 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
   mobileNav.addEventListener('change', syncNav);
 
   document.addEventListener('click', (event) => {
-    if (!mobileNav.matches || !header || header.contains(event.target as Node)) {
+    if (!header) {
       return;
     }
-    closeNav();
+
+    if (mobileNav.matches) {
+      if (header.contains(event.target as Node)) return;
+      closeNav();
+      return;
+    }
+
+    if (!header.contains(event.target as Node)) {
+      closeSubmenus();
+    }
   });
 
   nav?.addEventListener('click', (event) => {
@@ -212,23 +229,30 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
     const item = button.closest('.nav-item');
     if (!item) return;
     const isOpen = item.classList.contains('is-submenu-open');
+    if (!isOpen) closeSubmenus(item);
     item.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]').forEach((toggle) => {
       toggle.setAttribute('aria-expanded', String(!isOpen));
     });
     item.classList.toggle('is-submenu-open', !isOpen);
+    syncOpenSubmenuClass();
+    if (isOpen && !mobileNav.matches) {
+      button.blur();
+    }
   };
 
   nav?.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
     link.addEventListener('click', () => {
       if (mobileNav.matches) {
         closeNav();
+        return;
       }
+      closeSubmenus();
     });
   });
 
   submenuToggles.forEach((button) => {
-    button.addEventListener('click', () => {
-      if (!mobileNav.matches) return;
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
       toggleSubmenu(button);
     });
   });

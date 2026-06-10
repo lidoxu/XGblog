@@ -261,6 +261,12 @@ main {
   display: none;
 }
 
+@media (min-width: 721px) {
+  .top-nav.has-open-submenu {
+    overflow: visible;
+  }
+}
+
 .nav-item {
   position: relative;
   flex: 0 0 auto;
@@ -383,7 +389,8 @@ button.submenu-link {
 }
 
 .nav-item:hover .submenu,
-.nav-item:focus-within .submenu {
+.nav-item:focus-within .submenu,
+.nav-item.is-submenu-open .submenu {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -745,13 +752,104 @@ button.submenu-link {
 }
 
 .author-card {
+  --author-decor-line-a: color-mix(in srgb, var(--accent) 22%, transparent);
+  --author-decor-line-b: color-mix(in srgb, var(--accent) 16%, transparent);
+  --author-decor-line-c: color-mix(in srgb, var(--accent) 10%, transparent);
+  --author-decor-dot: color-mix(in srgb, var(--accent) 38%, transparent);
+  --author-decor-dot-soft: color-mix(in srgb, var(--accent) 22%, transparent);
+  position: relative;
+  overflow: hidden;
   display: grid;
-  gap: 12px;
-  justify-items: center;
-  text-align: center;
+  grid-template-columns: 50px auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  justify-items: start;
+  padding: 16px 22px;
+  text-align: left;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .author-card {
+    --author-decor-line-a: rgba(255, 255, 255, 0.16);
+    --author-decor-line-b: rgba(255, 255, 255, 0.12);
+    --author-decor-line-c: rgba(255, 255, 255, 0.07);
+    --author-decor-dot: rgba(255, 255, 255, 0.2);
+    --author-decor-dot-soft: rgba(255, 255, 255, 0.12);
+  }
+}
+
+:root[data-theme="dark"] .author-card {
+  --author-decor-line-a: rgba(255, 255, 255, 0.16);
+  --author-decor-line-b: rgba(255, 255, 255, 0.12);
+  --author-decor-line-c: rgba(255, 255, 255, 0.07);
+  --author-decor-dot: rgba(255, 255, 255, 0.2);
+  --author-decor-dot-soft: rgba(255, 255, 255, 0.12);
+}
+
+.author-card::after {
+  content: "";
+  position: absolute;
+  right: -30px;
+  top: 10px;
+  z-index: 0;
+  width: 66px;
+  height: 66px;
+  border: 1px solid transparent;
+  border-right-color: var(--author-decor-line-c);
+  border-bottom-color: var(--author-decor-line-c);
+  border-radius: 999px;
+  pointer-events: none;
+  transform: rotate(31deg);
+}
+
+.author-card-decor {
+  position: absolute;
+  right: -72px;
+  bottom: -56px;
+  z-index: 0;
+  width: 128px;
+  height: 128px;
+  border: 1px solid transparent;
+  border-top-color: var(--author-decor-line-a);
+  border-left-color: var(--author-decor-line-a);
+  border-radius: 999px;
+  pointer-events: none;
+  transform: rotate(19deg);
+}
+
+.author-card-decor::before,
+.author-card-decor::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+}
+
+.author-card-decor::before {
+  right: 4px;
+  top: -40px;
+  width: 102px;
+  height: 102px;
+  border: 1.5px solid transparent;
+  border-bottom-color: var(--author-decor-line-b);
+  border-right-color: var(--author-decor-line-b);
+  transform: rotate(-37deg);
+}
+
+.author-card-decor::after {
+  right: 37px;
+  top: 25px;
+  width: 6px;
+  height: 6px;
+  background: var(--author-decor-dot);
+  box-shadow:
+    -18px 23px 0 -1px var(--author-decor-dot-soft),
+    18px -17px 0 -1px var(--author-decor-dot-soft),
+    30px 14px 0 -1.5px var(--author-decor-dot);
 }
 
 .author-card img {
+  position: relative;
+  z-index: 1;
   width: 50px;
   height: 50px;
   border-radius: var(--radius-sm);
@@ -762,10 +860,21 @@ button.submenu-link {
   border-radius: 999px;
 }
 
+.author-card-divider {
+  position: relative;
+  z-index: 1;
+  width: 1px;
+  height: 34px;
+  background: var(--line-strong);
+}
+
 .author-card-body {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 4px;
-  justify-items: center;
+  min-width: 0;
+  justify-items: start;
 }
 
 .author-card h2,
@@ -815,7 +924,7 @@ button.submenu-link {
   line-height: 1.48;
   opacity: 0.58;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 2;
 }
 
 .list-card ul {
@@ -1946,6 +2055,7 @@ button.submenu-link {
 
   .nav-item.is-submenu-open .submenu {
     display: grid;
+    transform: none;
   }
 
   .nav-item:hover .submenu,
