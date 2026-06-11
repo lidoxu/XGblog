@@ -752,8 +752,6 @@ button.submenu-link {
 }
 
 .author-card {
-  --author-decor-ring-a: color-mix(in srgb, var(--accent) 15%, transparent);
-  --author-decor-ring-b: color-mix(in srgb, var(--accent) 8%, transparent);
   position: relative;
   overflow: hidden;
   display: grid;
@@ -763,60 +761,6 @@ button.submenu-link {
   justify-items: start;
   padding: 16px 22px;
   text-align: left;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .author-card {
-    --author-decor-ring-a: rgba(255, 255, 255, 0.12);
-    --author-decor-ring-b: rgba(255, 255, 255, 0.07);
-  }
-}
-
-:root[data-theme="dark"] .author-card {
-  --author-decor-ring-a: rgba(255, 255, 255, 0.12);
-  --author-decor-ring-b: rgba(255, 255, 255, 0.07);
-}
-
-.author-card::after {
-  content: "";
-  position: absolute;
-  right: -142px;
-  top: 2%;
-  bottom: auto;
-  z-index: 0;
-  width: 196px;
-  height: 184px;
-  border: 2px solid var(--author-decor-ring-a);
-  border-radius: 999px;
-  pointer-events: none;
-}
-
-.author-card-decor {
-  position: absolute;
-  right: -33px;
-  top: -33px;
-  z-index: 0;
-  width: 66px;
-  height: 66px;
-  border: 1px solid var(--author-decor-ring-b);
-  border-radius: 999px;
-  pointer-events: none;
-}
-
-.author-card-decor::before,
-.author-card-decor::after {
-  content: "";
-  position: absolute;
-  border-radius: 999px;
-  pointer-events: none;
-}
-
-.author-card-decor::before {
-  content: none;
-}
-
-.author-card-decor::after {
-  content: none;
 }
 
 .author-card img {

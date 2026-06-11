@@ -7,7 +7,6 @@ const site = getSite() as ReturnType<typeof getSite> & {
 ---
 
 <section class="sidebar-card author-card" aria-labelledby="author-title">
-  <span class="author-card-decor" aria-hidden="true"></span>
   <img class:list={[{ 'is-circle-mask': site.author.circleMask }]} src={site.author.avatar} alt={`${site.author.name} 头像`} width="72" height="72" />
   <span class="author-card-divider" aria-hidden="true"></span>
   <div class="author-card-body">
