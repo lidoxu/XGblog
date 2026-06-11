@@ -15,12 +15,17 @@ const groups = groupPostsByMonth(posts);
   <section class="container narrow archive-list">
     {groups.map((group) => (
       <section class="archive-group" aria-labelledby={`archive-${group.month}`}>
-        <h2 id={`archive-${group.month}`}>{group.month}</h2>
-        <ul>
+        <header class="archive-month">
+          <h2 id={`archive-${group.month}`}>{group.month}</h2>
+          <span>{group.posts.length} 篇</span>
+        </header>
+        <ul class="archive-posts">
           {group.posts.map((post) => (
             <li>
-              <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-              <a href={getPostPath(post)}>{post.data.title}</a>
+              <a class="archive-card" href={getPostPath(post)}>
+                <span>{post.data.title}</span>
+                <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+              </a>
             </li>
           ))}
         </ul>
