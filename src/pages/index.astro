@@ -1,7 +1,9 @@
 ---
 import ArticleList from '../templates/components/ArticleList.astro';
+import HomeBanner from '../templates/components/HomeBanner.astro';
 import Sidebar from '../templates/components/Sidebar.astro';
 import BaseLayout from '../templates/layouts/BaseLayout.astro';
+import { bannerData } from '../features/core/data';
 import { getAllPosts } from '../features/core/posts';
 import { getSite } from '../features/core/seo';
 
@@ -12,6 +14,7 @@ const site = getSite();
 <BaseLayout description={site.description}>
   <div class="container page-grid">
     <section class="main-column" aria-label="最新文章">
+      <HomeBanner items={bannerData} />
       <ArticleList posts={posts} />
     </section>
     <Sidebar posts={posts} />

@@ -1,0 +1,405 @@
+---
+import type { BannerItem } from '../../features/core/data';
+
+interface Props {
+  items: BannerItem[];
+}
+
+type BannerSlide = {
+  item: BannerItem;
+  realIndex: number;
+  clone: boolean;
+};
+
+const { items } = Astro.props;
+const hasMultipleItems = items.length > 1;
+const realSlides = items.map((item, index) => ({ item, realIndex: index, clone: false }));
+const bannerSlides: BannerSlide[] = hasMultipleItems
+  ? [
+      { item: items[items.length - 1] as BannerItem, realIndex: items.length - 1, clone: true },
+      ...realSlides,
+      { item: items[0] as BannerItem, realIndex: 0, clone: true },
+    ]
+  : realSlides;
+const initialTrackOffset = hasMultipleItems ? '-100%' : '0%';
+---
+
+{
+  items.length > 0 && (
+    <section class="home-banner" aria-label="首页 banner" data-home-banner data-count={items.length}>
+      <div class="home-banner-track" data-home-banner-track style={`--home-banner-offset: ${initialTrackOffset};`}>
+        {bannerSlides.map(({ item, realIndex, clone }) => {
+          const isActive = !clone && realIndex === 0;
+          const linkTabIndex = clone || (hasMultipleItems && !isActive) ? -1 : 0;
+
+          return (
+            <div class="home-banner-slide" data-home-banner-slide data-real-index={realIndex} data-clone={clone ? 'true' : 'false'} aria-hidden={isActive ? 'false' : 'true'}>
+              {item.href ? (
+                <a href={item.href} aria-label={`查看第 ${realIndex + 1} 张 banner`} tabindex={linkTabIndex} draggable="false">
+                  <img src={item.image} alt="" loading={realIndex === 0 ? 'eager' : 'lazy'} decoding="async" draggable="false" />
+                </a>
+              ) : (
+                <img src={item.image} alt="" loading={realIndex === 0 ? 'eager' : 'lazy'} decoding="async" draggable="false" />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {hasMultipleItems && (
+        <>
+          <button class="home-banner-nav home-banner-prev" type="button" aria-label="上一张 banner" data-home-banner-prev>
+            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M11 4 7 9l4 5" /></svg>
+          </button>
+          <button class="home-banner-nav home-banner-next" type="button" aria-label="下一张 banner" data-home-banner-next>
+            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M7 4l4 5-4 5" /></svg>
+          </button>
+          <div class="home-banner-dots" aria-label="Banner 切换">
+            {items.map((_, index) => (
+              <button
+                class="home-banner-dot"
+                type="button"
+                aria-label={`切换到第 ${index + 1} 张 banner`}
+                aria-current={index === 0 ? 'true' : 'false'}
+                data-home-banner-dot
+                data-index={index}
+              >
+                <span></span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  )
+}
+
+<script is:inline>
+  (() => {
+    const banners = document.querySelectorAll('[data-home-banner]');
+
+    for (const banner of banners) {
+      const track = banner.querySelector('[data-home-banner-track]');
+      const slides = Array.from(banner.querySelectorAll('[data-home-banner-slide]'));
+      const dots = Array.from(banner.querySelectorAll('[data-home-banner-dot]'));
+      const prevButton = banner.querySelector('[data-home-banner-prev]');
+      const nextButton = banner.querySelector('[data-home-banner-next]');
+      const realCount = Number(banner.dataset.count ?? slides.length);
+
+      if (!track || realCount <= 1) {
+        continue;
+      }
+
+      const AUTO_INTERVAL = 4000;
+      const TRANSITION_MS = 360;
+      const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      const hasClones = slides.length === realCount + 2;
+      const toTrackIndex = (realIndex) => (hasClones ? realIndex + 1 : 0);
+      let activeIndex = 0;
+      let trackIndex = toTrackIndex(activeIndex);
+      let timer;
+      let transitionTimer;
+      let instantFrame;
+      let hoverPaused = false;
+      let dragging = false;
+      let transitioning = false;
+      let pointerId;
+      let pointerType = '';
+      let startX = 0;
+      let dragX = 0;
+      let moved = false;
+      let suppressClick = false;
+      let touchDotsTimer;
+
+      const isHovered = () => canHover && banner.matches(':hover');
+      const isPaused = () => hoverPaused || isHovered() || dragging || document.hidden;
+      const usesTouchDots = () => !canHover || pointerType === 'touch' || pointerType === 'pen';
+
+      const showTouchDots = () => {
+        if (touchDotsTimer) {
+          window.clearTimeout(touchDotsTimer);
+          touchDotsTimer = undefined;
+        }
+
+        banner.classList.add('is-touch-dots');
+      };
+
+      const hideTouchDots = (delay = 0) => {
+        if (touchDotsTimer) {
+          window.clearTimeout(touchDotsTimer);
+        }
+
+        touchDotsTimer = window.setTimeout(() => {
+          banner.classList.remove('is-touch-dots');
+          touchDotsTimer = undefined;
+        }, delay);
+      };
+
+      const setTrackIndex = (nextTrackIndex, animate = true) => {
+        trackIndex = nextTrackIndex;
+        if (instantFrame) {
+          window.cancelAnimationFrame(instantFrame);
+          instantFrame = undefined;
+        }
+
+        if (animate) {
+          track.classList.remove('is-instant');
+        } else {
+          track.classList.add('is-instant');
+        }
+
+        track.style.setProperty('--home-banner-offset', `${-trackIndex * 100}%`);
+
+        if (!animate) {
+          track.getBoundingClientRect();
+          instantFrame = window.requestAnimationFrame(() => {
+            track.classList.remove('is-instant');
+            instantFrame = undefined;
+          });
+        }
+      };
+
+      const syncState = () => {
+        slides.forEach((slide) => {
+          const isClone = slide.dataset.clone === 'true';
+          const isActive = !isClone && Number(slide.dataset.realIndex) === activeIndex;
+          slide.setAttribute('aria-hidden', String(!isActive));
+
+          const link = slide.querySelector('a');
+          if (link) {
+            link.tabIndex = isActive ? 0 : -1;
+          }
+        });
+
+        dots.forEach((dot, index) => {
+          dot.setAttribute('aria-current', String(index === activeIndex));
+        });
+      };
+
+      const stop = () => {
+        if (timer) {
+          window.clearInterval(timer);
+          timer = undefined;
+        }
+      };
+
+      const start = () => {
+        stop();
+
+        if (!isPaused()) {
+          timer = window.setInterval(() => move(1), AUTO_INTERVAL);
+        }
+      };
+
+      const normalizeTrackIndex = () => {
+        if (!hasClones) {
+          return;
+        }
+
+        if (trackIndex === 0) {
+          setTrackIndex(realCount, false);
+        } else if (trackIndex === realCount + 1) {
+          setTrackIndex(1, false);
+        }
+      };
+
+      const completeTransition = () => {
+        if (transitionTimer) {
+          window.clearTimeout(transitionTimer);
+          transitionTimer = undefined;
+        }
+
+        transitioning = false;
+        normalizeTrackIndex();
+        syncState();
+      };
+
+      const beginTransition = () => {
+        transitioning = true;
+
+        if (transitionTimer) {
+          window.clearTimeout(transitionTimer);
+        }
+
+        transitionTimer = window.setTimeout(completeTransition, TRANSITION_MS + 80);
+      };
+
+      const move = (step) => {
+        if (transitioning || dragging) {
+          return;
+        }
+
+        normalizeTrackIndex();
+        activeIndex = (activeIndex + step + realCount) % realCount;
+        beginTransition();
+        setTrackIndex(trackIndex + step);
+        syncState();
+      };
+
+      const goTo = (index) => {
+        if (transitioning || dragging || index === activeIndex) {
+          return;
+        }
+
+        normalizeTrackIndex();
+        activeIndex = index;
+        beginTransition();
+        setTrackIndex(toTrackIndex(index));
+        syncState();
+      };
+
+      prevButton?.addEventListener('click', (event) => {
+        event.currentTarget.blur();
+        move(-1);
+        start();
+      });
+
+      nextButton?.addEventListener('click', (event) => {
+        event.currentTarget.blur();
+        move(1);
+        start();
+      });
+
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', (event) => {
+          event.currentTarget.blur();
+          goTo(index);
+          start();
+        });
+      });
+
+      banner.addEventListener(
+        'click',
+        (event) => {
+          if (!suppressClick) {
+            return;
+          }
+
+          event.preventDefault();
+          event.stopPropagation();
+          suppressClick = false;
+        },
+        true,
+      );
+
+      banner.addEventListener('dragstart', (event) => {
+        event.preventDefault();
+      });
+
+      banner.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('button')) {
+          return;
+        }
+
+        if (transitioning) {
+          completeTransition();
+        }
+
+        event.preventDefault();
+        dragging = true;
+        pointerId = event.pointerId;
+        pointerType = event.pointerType;
+        startX = event.clientX;
+        dragX = 0;
+        moved = false;
+        stop();
+        banner.classList.add('is-dragging');
+        banner.setPointerCapture?.(pointerId);
+      });
+
+      banner.addEventListener('pointermove', (event) => {
+        if (!dragging || event.pointerId !== pointerId) {
+          return;
+        }
+
+        dragX = event.clientX - startX;
+        moved = Math.abs(dragX) > 4;
+        track.style.setProperty('--home-banner-drag', `${dragX}px`);
+
+        if (moved) {
+          if (usesTouchDots()) {
+            showTouchDots();
+          }
+
+          event.preventDefault();
+        }
+      });
+
+      const finishDrag = (event) => {
+        if (!dragging || event.pointerId !== pointerId) {
+          return;
+        }
+
+        const width = banner.clientWidth || 1;
+        const threshold = Math.max(40, width * 0.15);
+        dragging = false;
+        pointerId = undefined;
+        suppressClick = moved;
+        banner.releasePointerCapture?.(event.pointerId);
+        track.getBoundingClientRect();
+        banner.classList.remove('is-dragging');
+
+        if (moved && Math.abs(dragX) >= threshold) {
+          track.style.setProperty('--home-banner-drag', '0px');
+          move(dragX < 0 ? 1 : -1);
+        } else {
+          track.style.setProperty('--home-banner-drag', '0px');
+          setTrackIndex(trackIndex);
+        }
+
+        if (moved && usesTouchDots()) {
+          hideTouchDots(1000);
+        } else {
+          hideTouchDots();
+        }
+
+        pointerType = '';
+        start();
+      };
+
+      banner.addEventListener('pointerup', finishDrag);
+      banner.addEventListener('pointercancel', finishDrag);
+
+      const pauseHover = () => {
+        hoverPaused = true;
+        stop();
+      };
+
+      const resumeHover = () => {
+        hoverPaused = false;
+        start();
+      };
+
+      banner.addEventListener('mouseenter', pauseHover);
+      banner.addEventListener('mouseleave', resumeHover);
+      banner.addEventListener('pointerenter', (event) => {
+        if (event.pointerType === 'mouse') {
+          pauseHover();
+        }
+      });
+      banner.addEventListener('pointerleave', (event) => {
+        if (event.pointerType === 'mouse') {
+          resumeHover();
+        }
+      });
+
+      track.addEventListener('transitionend', (event) => {
+        if (event.target === track && event.propertyName === 'transform') {
+          completeTransition();
+        }
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          stop();
+        } else {
+          start();
+        }
+      });
+
+      setTrackIndex(trackIndex, false);
+      syncState();
+      start();
+    }
+  })();
+</script>

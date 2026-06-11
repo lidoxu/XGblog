@@ -13,7 +13,8 @@
 │  ├─ menu.toml                  # 从 example/menu.toml 复制后修改
 │  ├─ categories.toml            # 从 example/categories.toml 复制后修改
 │  ├─ tags.toml                  # 从 example/tags.toml 复制后修改
-│  └─ links.toml                 # 从 example/links.toml 复制后修改
+│  ├─ links.toml                 # 从 example/links.toml 复制后修改
+│  └─ banner.toml                # 从 example/banner.toml 复制后修改
 ├─ example/                      # 可复制模板，也作为空内容时的兜底示例
 │  ├─ posts/hello-world/
 │  ├─ pages/demo-page/
@@ -21,14 +22,16 @@
 │  ├─ menu.toml
 │  ├─ categories.toml
 │  ├─ tags.toml
-│  └─ links.toml
+│  ├─ links.toml
+│  └─ banner.toml
 ├─ defaults/public/              # 程序缺省公开资源，不是用户内容模板
 │  ├─ favicon.ico
 │  └─ default/
 │     ├─ default-logo.svg
 │     ├─ default-logo-dark.svg
 │     ├─ default-user.svg
-│     └─ default-cover.webp
+│     ├─ default-cover.webp
+│     └─ default-banner.webp
 ├─ src/                          # Astro 路由、组件、样式和核心逻辑
 ├─ .env.example                  # 模板，复制为 .env 后作为用户变量自定义修改
 ├─ astro.config.mjs
@@ -57,8 +60,17 @@
 | `blog/categories.toml` | 分类显示名和描述 | 从 `example/categories.toml` 复制后修改；不存在时使用示例文件 |
 | `blog/tags.toml` | 标签显示名 | 从 `example/tags.toml` 复制后修改；不存在时使用示例文件 |
 | `blog/links.toml` | 友链数据 | 从 `example/links.toml` 复制后修改；不存在时使用示例文件 |
+| `blog/banner.toml` | 首页 banner | 从 `example/banner.toml` 复制后修改；不存在时使用示例文件 |
 
 `blog/*.toml` 只要存在，就会完全替换 `example/*.toml`。分类和标签会先从文章属性区自动收集；TOML 主要用于改显示名称和描述。
+
+首页 banner 使用 `[[banner]]` 数组，图片建议放在 `blog/public/`，配置构建后的根路径：
+
+```toml
+[[banner]]
+image = "/assets/banner.webp"
+href = "/"
+```
 
 ## 示例内容
 
@@ -177,6 +189,7 @@ comments: false
 | `defaults/public/default/default-logo-dark.svg` | `/default/default-logo-dark.svg` |
 | `defaults/public/default/default-user.svg` | `/default/default-user.svg` |
 | `defaults/public/default/default-cover.webp` | `/default/default-cover.webp` |
+| `defaults/public/default/default-banner.webp` | `/default/default-banner.webp` |
 
 如果不在 `.env` 中配置 logo 或头像，站点会先按约定从 `blog/public/` 查找 `/logo.*`、`/logo-dark.*`、`/user.*`，找不到时再使用环境变量表中的默认路径。也可以在 `.env` 中把 `BLOG_LOGO`、`BLOG_LOGO_DARK`、`BLOG_AVATAR` 设置为 `/logo.png`、`/logo-dark.png`、`/user.webp` 这类路径。
 
@@ -189,7 +202,7 @@ comments: false
 | `BLOG_DESCRIPTION` | `这里填写站点描述，用于首页和 SEO。` | SEO 描述 |
 | `BLOG_URL` | `https://example.com` | 正式站点 URL；影响 sitemap、RSS、robots |
 | `BLOG_LOGO` | 先匹配 `/logo.*`，否则 `/default/default-logo.svg` | logo 路径 |
-| `BLOG_LOGO_DARK` | 先匹配 `/logo-dark.*`，否则 `/default/default-logo.svg` | 深色模式 logo 路径 |
+| `BLOG_LOGO_DARK` | 先匹配 `/logo-dark.*`，否则 `/default/default-logo-dark.svg` | 深色模式 logo 路径 |
 | `BLOG_SHOW_TITLE` | `true` | 是否显示站点标题；设置为 `false` 关闭 |
 | `THEME_COLOR` | `#2D96E4` | 主题色，必须是 3 位或 6 位十六进制颜色 |
 | `BLOG_AUTHOR` | `博主昵称` | 首页作者名称 |

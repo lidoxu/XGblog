@@ -1,0 +1,11 @@
+# 首页 banner 模板。复制为 blog/banner.toml 后生效；用户文件存在时会整体替换此示例。
+# image 为图片路径。用户图片请放在 blog/public/ 里，配置构建后的根路径，例如 /assets/banner.webp。
+# defaults/public/default/default-banner.webp 构建后的可访问路径是 /default/default-banner.webp。
+
+[[banner]]
+image = "/defaults/public/default/default-banner.webp"
+href = "/"
+
+[[banner]]
+image = "/defaults/public/default/default-banner.webp"
+href = "/"

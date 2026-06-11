@@ -106,6 +106,11 @@ export type LinkGroup = {
   links: LinkItem[];
 };
 
+export type BannerItem = {
+  image: string;
+  href?: string;
+};
+
 function publicAssetExists(path: string) {
   if (!path.startsWith('/')) {
     return false;
@@ -170,25 +175,29 @@ function resolveFirstPublicAsset(candidates: string[]) {
 }
 
 function resolveSiteLogo(configured?: string | null) {
-  return resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
+  const logo = resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
     '/logo.svg',
     '/logo.avif',
     '/logo.webp',
     '/logo.png',
     '/logo.jpg',
     '/logo.jpeg',
-  ]) ?? '/default/default-logo.svg';
+  ]);
+
+  return logo ? { logo, custom: true } : { logo: '/default/default-logo.svg', custom: false };
 }
 
-function resolveSiteDarkLogo(configured: string | null | undefined) {
-  return resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
+function resolveSiteDarkLogo(configured: string | null | undefined, fallbackLogo: string, hasCustomLogo: boolean) {
+  const darkLogo = resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
     '/logo-dark.svg',
     '/logo-dark.avif',
     '/logo-dark.webp',
     '/logo-dark.png',
     '/logo-dark.jpg',
     '/logo-dark.jpeg',
-  ]) ?? '/default/default-logo.svg';
+  ]);
+
+  return darkLogo ?? (hasCustomLogo ? fallbackLogo : '/default/default-logo-dark.svg');
 }
 
 function resolveAuthorAvatar(configured: string | null | undefined) {
@@ -232,8 +241,9 @@ function resolveFalseOnlyBoolean(configured: string | null | undefined, fallback
 }
 
 function resolveSiteData(): SiteData {
-  const logo = resolveSiteLogo(readEnv('BLOG_LOGO'));
-  const darkLogo = resolveSiteDarkLogo(readEnv('BLOG_LOGO_DARK'));
+  const logoData = resolveSiteLogo(readEnv('BLOG_LOGO'));
+  const logo = logoData.logo;
+  const darkLogo = resolveSiteDarkLogo(readEnv('BLOG_LOGO_DARK'), logo, logoData.custom);
 
   return {
     title: readEnv('BLOG_TITLE') ?? 'XG-Blog',
@@ -260,6 +270,11 @@ type LinkTomlItem = LinkItem & {
   group: string;
 };
 
+type BannerTomlItem = {
+  image?: unknown;
+  href?: unknown;
+};
+
 function resolveLinkGroups(items: LinkTomlItem[]) {
   const groups = new Map<string, LinkItem[]>();
 
@@ -276,6 +291,59 @@ function resolveLinkGroups(items: LinkTomlItem[]) {
   }
 
   return [...groups.entries()].map(([name, links]) => ({ name, links }));
+}
+
+function normalizeDefaultPublicPath(path: string) {
+  const defaultPublicPrefix = '/defaults/public/';
+
+  if (path.startsWith(defaultPublicPrefix)) {
+    return `/${path.slice(defaultPublicPrefix.length)}`;
+  }
+
+  return path;
+}
+
+function resolveBannerImage(value: unknown) {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  if (/^(https?:)?\/\//.test(trimmed) || trimmed.startsWith('data:')) {
+    return trimmed;
+  }
+
+  const publicPath = normalizeDefaultPublicPath(trimmed);
+  return publicPath.startsWith('/') && publicAssetExists(publicPath) ? publicPath : undefined;
+}
+
+function resolveBannerHref(value: unknown) {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  return trimmed || undefined;
+}
+
+function resolveBannerData(): BannerItem[] {
+  return readTomlArray<BannerTomlItem>('banner.toml', 'banner')
+    .map((item) => {
+      const image = resolveBannerImage(item.image);
+
+      if (!image) {
+        return undefined;
+      }
+
+      const href = resolveBannerHref(item.href);
+      return href ? { image, href } : { image };
+    })
+    .filter((item): item is BannerItem => Boolean(item));
 }
 
 function hasIndexMarkdown(dir: string): boolean {
@@ -330,3 +398,4 @@ export const categoryData = readTomlArray<TaxonomyItem>('categories.toml', 'cate
 export const tagData = readTomlArray<TaxonomyItem>('tags.toml', 'tags');
 export const menuData = resolveMenuData();
 export const linkData = resolveLinkGroups(readTomlArray<LinkTomlItem>('links.toml', 'links'));
+export const bannerData = resolveBannerData();
