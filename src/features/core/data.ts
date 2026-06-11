@@ -177,16 +177,10 @@ function resolveSiteLogo(configured?: string | null) {
     '/logo.png',
     '/logo.jpg',
     '/logo.jpeg',
-    '/default/default-logo.svg',
-    '/default/default-logo.avif',
-    '/default/default-logo.webp',
-    '/default/default-logo.png',
-    '/default/default-logo.jpg',
-    '/default/default-logo.jpeg',
   ]) ?? '/default/default-logo.svg';
 }
 
-function resolveSiteDarkLogo(configured: string | null | undefined, fallbackLogo: string) {
+function resolveSiteDarkLogo(configured: string | null | undefined) {
   return resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
     '/logo-dark.svg',
     '/logo-dark.avif',
@@ -194,16 +188,10 @@ function resolveSiteDarkLogo(configured: string | null | undefined, fallbackLogo
     '/logo-dark.png',
     '/logo-dark.jpg',
     '/logo-dark.jpeg',
-    '/default/default-logo-dark.svg',
-    '/default/default-logo-dark.avif',
-    '/default/default-logo-dark.webp',
-    '/default/default-logo-dark.png',
-    '/default/default-logo-dark.jpg',
-    '/default/default-logo-dark.jpeg',
-  ]) ?? fallbackLogo;
+  ]) ?? '/default/default-logo.svg';
 }
 
-function resolveAuthorAvatar(configured: string | null | undefined, fallbackLogo: string) {
+function resolveAuthorAvatar(configured: string | null | undefined) {
   return resolveConfiguredAsset(configured) ?? resolveFirstPublicAsset([
     '/user.svg',
     '/user.avif',
@@ -211,13 +199,7 @@ function resolveAuthorAvatar(configured: string | null | undefined, fallbackLogo
     '/user.png',
     '/user.jpg',
     '/user.jpeg',
-    '/default/default-user.svg',
-    '/default/default-user.avif',
-    '/default/default-user.webp',
-    '/default/default-user.png',
-    '/default/default-user.jpg',
-    '/default/default-user.jpeg',
-  ]) ?? fallbackLogo;
+  ]) ?? '/default/default-user.svg';
 }
 
 function resolveThemeColor(configured: string | null | undefined) {
@@ -232,51 +214,43 @@ function resolveThemeColor(configured: string | null | undefined) {
 
 function resolveSiteUrl(configured: string | null | undefined) {
   const trimmed = configured?.trim();
-  return trimmed || 'https://www.xiaoge.org';
+  return trimmed || 'https://example.com';
 }
 
 function resolveFavicon() {
   return findUserFavicon() ?? '/favicon.ico';
 }
 
-function resolveBoolean(configured: string | boolean | number | null | undefined, fallback: boolean) {
-  if (typeof configured === 'boolean') {
-    return configured;
-  }
-
-  if (typeof configured === 'number') {
-    return configured !== 0;
-  }
-
+function resolveFalseOnlyBoolean(configured: string | null | undefined, fallback: boolean) {
   const trimmed = configured?.trim().toLowerCase();
 
   if (!trimmed) {
     return fallback;
   }
 
-  return !['false', '0', 'no', 'off'].includes(trimmed);
+  return trimmed !== 'false';
 }
 
 function resolveSiteData(): SiteData {
   const logo = resolveSiteLogo(readEnv('BLOG_LOGO'));
-  const darkLogo = resolveSiteDarkLogo(readEnv('BLOG_LOGO_DARK'), logo);
+  const darkLogo = resolveSiteDarkLogo(readEnv('BLOG_LOGO_DARK'));
 
   return {
-    title: readEnv('BLOG_TITLE') ?? '示例博客',
-    subtitle: readEnv('BLOG_SUBTITLE') ?? '记录与分享',
+    title: readEnv('BLOG_TITLE') ?? 'XG-Blog',
+    subtitle: readEnv('BLOG_SUBTITLE') ?? '记录与分享~ 使用纯静态 XG-Blog！',
     description: readEnv('BLOG_DESCRIPTION') ?? '这里填写站点描述，用于首页和 SEO。',
     url: resolveSiteUrl(readEnv('BLOG_URL')),
     favicon: resolveFavicon(),
     logo,
     darkLogo,
-    showTitle: resolveBoolean(readEnv('BLOG_SHOW_TITLE'), true),
+    showTitle: resolveFalseOnlyBoolean(readEnv('BLOG_SHOW_TITLE'), true),
     theme: {
       color: resolveThemeColor(readEnv('THEME_COLOR')),
     },
     author: {
       name: readEnv('BLOG_AUTHOR') ?? readEnv('BLOG_AUTHOR_NAME') ?? '博主昵称',
-      avatar: resolveAuthorAvatar(readEnv('BLOG_AVATAR') ?? readEnv('BLOG_AUTHOR_AVATAR'), logo),
-      circleMask: resolveBoolean(readEnv('BLOG_AVATAR_CIRCLE'), true),
+      avatar: resolveAuthorAvatar(readEnv('BLOG_AVATAR') ?? readEnv('BLOG_AUTHOR_AVATAR')),
+      circleMask: resolveFalseOnlyBoolean(readEnv('BLOG_AVATAR_CIRCLE'), true),
       description: readEnv('BLOG_BIO') ?? readEnv('BLOG_AUTHOR_DESCRIPTION') ?? '这里填写博主简介。',
     },
   };

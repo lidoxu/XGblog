@@ -45,7 +45,7 @@
 
 1. 部署平台或系统环境变量优先。
 2. 本地开发时复制 `.env.example` 为 `.env`，再修改 `.env`。
-3. 没有配置时使用代码里的默认值。
+3. 没有配置时使用代码里的默认值，默认值见下方环境变量表。
 
 `.env.example` 只是示例文件，程序不会直接把它当作本地配置读取。
 
@@ -178,24 +178,24 @@ comments: false
 | `defaults/public/default/default-user.svg` | `/default/default-user.svg` |
 | `defaults/public/default/default-cover.webp` | `/default/default-cover.webp` |
 
-如果不放自定义 logo、头像或封面，站点会使用这些缺省资源。也可以在 `.env` 中把 `BLOG_LOGO`、`BLOG_LOGO_DARK`、`BLOG_AVATAR` 设置为 `/logo.png`、`/logo-dark.png`、`/user.webp` 这类路径。
+如果不在 `.env` 中配置 logo 或头像，站点会先按约定从 `blog/public/` 查找 `/logo.*`、`/logo-dark.*`、`/user.*`，找不到时再使用环境变量表中的默认路径。也可以在 `.env` 中把 `BLOG_LOGO`、`BLOG_LOGO_DARK`、`BLOG_AVATAR` 设置为 `/logo.png`、`/logo-dark.png`、`/user.webp` 这类路径。
 
 ## 环境变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `BLOG_TITLE` | 站点标题 |
-| `BLOG_SUBTITLE` | 站点副标题 |
-| `BLOG_DESCRIPTION` | SEO 描述 |
-| `BLOG_URL` | 正式站点 URL；影响 sitemap、RSS、robots |
-| `BLOG_LOGO` | logo 路径；未设置时自动读取 `/logo.*`，否则使用 `/default/default-logo.svg` |
-| `BLOG_LOGO_DARK` | 深色模式 logo 路径；未设置时自动读取 `/logo-dark.*`，否则使用 `/default/default-logo-dark.svg` |
-| `BLOG_SHOW_TITLE` | 是否显示站点标题 |
-| `THEME_COLOR` | 主题色，必须是 3 位或 6 位十六进制颜色 |
-| `BLOG_AUTHOR` | 首页作者名称 |
-| `BLOG_AVATAR` | 作者头像；未设置或文件不存在时使用 `/default/default-user.svg` |
-| `BLOG_AVATAR_CIRCLE` | 是否将作者头像裁成圆形；未设置或空值时开启。设置为 `false`、`0`、`no` 或 `off` 可关闭 |
-| `BLOG_BIO` | 首页作者简介 |
+| 变量 | 默认值 | 用途 |
+| --- | --- | --- |
+| `BLOG_TITLE` | `XG-Blog` | 站点标题 |
+| `BLOG_SUBTITLE` | `记录与分享~ 使用纯静态 XG-Blog！` | 站点副标题 |
+| `BLOG_DESCRIPTION` | `这里填写站点描述，用于首页和 SEO。` | SEO 描述 |
+| `BLOG_URL` | `https://example.com` | 正式站点 URL；影响 sitemap、RSS、robots |
+| `BLOG_LOGO` | 先匹配 `/logo.*`，否则 `/default/default-logo.svg` | logo 路径 |
+| `BLOG_LOGO_DARK` | 先匹配 `/logo-dark.*`，否则 `/default/default-logo.svg` | 深色模式 logo 路径 |
+| `BLOG_SHOW_TITLE` | `true` | 是否显示站点标题；设置为 `false` 关闭 |
+| `THEME_COLOR` | `#2D96E4` | 主题色，必须是 3 位或 6 位十六进制颜色 |
+| `BLOG_AUTHOR` | `博主昵称` | 首页作者名称 |
+| `BLOG_AVATAR` | 先匹配 `/user.*`，否则 `/default/default-user.svg` | 作者头像 |
+| `BLOG_AVATAR_CIRCLE` | `true` | 是否将作者头像裁成圆形；无变量或空值时开启，设置为 `false` 关闭 |
+| `BLOG_BIO` | `这里填写博主简介。` | 首页作者简介 |
 
 ## 构建检查
 

@@ -8,7 +8,7 @@ import { loadEnv } from 'vite';
 
 const mode = process.env.NODE_ENV ?? 'production';
 const fileEnv = loadEnv(mode, process.cwd(), '');
-const defaultSite = 'https://www.xiaoge.org';
+const defaultSite = 'https://example.com';
 
 function readEnv(key) {
   for (const value of [process.env[key], fileEnv[key]]) {
