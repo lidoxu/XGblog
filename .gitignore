@@ -9,6 +9,7 @@ output/
 
 # Local app state
 .claude/
+.workbuddy/
 /site/
 
 # Environment
