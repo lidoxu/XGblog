@@ -7,18 +7,13 @@ dist/
 output/
 .playwright-cli/
 
-# Local app state
-.claude/
-.workbuddy/
-/site/
+# Local agent state
+.codex/
 
 # Environment
 .env
 .env.*
 !.env.example
-
-# Local design / migration notes
-UI功能需求.md
 
 # Local TOML config
 blog/*.toml
