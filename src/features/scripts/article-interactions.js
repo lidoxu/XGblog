@@ -280,13 +280,22 @@ function initImageZoom() {
 
   const getAvailableSize = () => {
     const isMobile = window.matchMedia('(max-width: 720px)').matches;
-    const sideControls = isMobile ? 112 : 156;
+    const isPortraitMobile = window.matchMedia('(max-width: 720px) and (orientation: portrait)').matches;
+    const sideControls = isPortraitMobile ? window.innerWidth * 0.04 : isMobile ? 112 : 156;
     const verticalControls = isMobile ? 136 : 148;
 
     return {
       width: Math.max(180, window.innerWidth - sideControls),
       height: Math.max(180, window.innerHeight - verticalControls),
     };
+  };
+
+  const syncNavigationPosition = () => {
+    const lightboxRect = lightbox.getBoundingClientRect();
+    const stageRect = stage.getBoundingClientRect();
+    const navTop = stageRect.top - lightboxRect.top + stageRect.height / 2;
+
+    lightbox.style.setProperty('--xg-lightbox-nav-top', `${Math.round(navTop)}px`);
   };
 
   const updateControls = () => {
@@ -310,6 +319,7 @@ function initImageZoom() {
 
     stage.style.width = `${Math.round(isAtDefault ? naturalWidth * defaultScale : Math.min(available.width, scaledWidth))}px`;
     stage.style.height = `${Math.round(isAtDefault ? naturalHeight * defaultScale : Math.min(available.height, scaledHeight))}px`;
+    syncNavigationPosition();
   };
 
   const clampTranslate = () => {

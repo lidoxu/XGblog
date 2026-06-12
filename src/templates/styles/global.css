@@ -1819,11 +1819,19 @@ button.submenu-link {
   position: relative;
   z-index: 2;
   display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
   justify-content: center;
   gap: 10px;
+  max-width: 100%;
   color: var(--text-soft);
   font-size: 0.84rem;
   text-align: center;
+}
+
+.xg-lightbox-caption {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .xg-lightbox button {
@@ -1896,7 +1904,7 @@ button.submenu-link {
 
 .xg-lightbox button.xg-lightbox-prev,
 .xg-lightbox button.xg-lightbox-next {
-  top: 50%;
+  top: var(--xg-lightbox-nav-top, 50%);
   width: 38px;
   height: 38px;
   background: color-mix(in srgb, var(--paper-strong) 34%, transparent);
@@ -1926,9 +1934,11 @@ button.submenu-link {
 }
 
 .xg-lightbox-counter {
+  flex: 0 0 auto;
   color: var(--accent-strong);
   font-family: var(--mono);
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .actions {
@@ -2465,6 +2475,12 @@ button.submenu-link {
   .xg-lightbox figure {
     max-width: calc(100vw - 112px);
     max-height: calc(100vh - 136px);
+  }
+
+  @media (orientation: portrait) {
+    .xg-lightbox figure {
+      max-width: 96vw;
+    }
   }
 
   .xg-lightbox button {
