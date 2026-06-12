@@ -603,6 +603,10 @@ button.submenu-link {
   -webkit-user-drag: none;
 }
 
+.home-banner-slide[aria-hidden="true"] {
+  pointer-events: none;
+}
+
 .home-banner.is-dragging {
   cursor: grabbing;
 }

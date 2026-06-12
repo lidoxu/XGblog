@@ -92,6 +92,7 @@ const initialTrackOffset = hasMultipleItems ? '-100%' : '0%';
 
       const AUTO_INTERVAL = 4000;
       const TRANSITION_MS = 360;
+      const DRAG_INTENT_PX = 12;
       const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       const hasClones = slides.length === realCount + 2;
       const toTrackIndex = (realIndex) => (hasClones ? realIndex + 1 : 0);
@@ -295,35 +296,36 @@ const initialTrackOffset = hasMultipleItems ? '-100%' : '0%';
           completeTransition();
         }
 
-        event.preventDefault();
         dragging = true;
         pointerId = event.pointerId;
         pointerType = event.pointerType;
         startX = event.clientX;
         dragX = 0;
         moved = false;
+        suppressClick = false;
         stop();
-        banner.classList.add('is-dragging');
-        banner.setPointerCapture?.(pointerId);
       });
 
-      banner.addEventListener('pointermove', (event) => {
+      const updateDrag = (event) => {
         if (!dragging || event.pointerId !== pointerId) {
           return;
         }
 
         dragX = event.clientX - startX;
-        moved = Math.abs(dragX) > 4;
+        if (!moved && Math.abs(dragX) <= DRAG_INTENT_PX) {
+          return;
+        }
+
+        moved = true;
+        banner.classList.add('is-dragging');
         track.style.setProperty('--home-banner-drag', `${dragX}px`);
 
-        if (moved) {
-          if (usesTouchDots()) {
-            showTouchDots();
-          }
-
-          event.preventDefault();
+        if (usesTouchDots()) {
+          showTouchDots();
         }
-      });
+
+        event.preventDefault();
+      };
 
       const finishDrag = (event) => {
         if (!dragging || event.pointerId !== pointerId) {
@@ -335,7 +337,12 @@ const initialTrackOffset = hasMultipleItems ? '-100%' : '0%';
         dragging = false;
         pointerId = undefined;
         suppressClick = moved;
-        banner.releasePointerCapture?.(event.pointerId);
+        if (moved) {
+          window.setTimeout(() => {
+            suppressClick = false;
+          }, 250);
+        }
+
         track.getBoundingClientRect();
         banner.classList.remove('is-dragging');
 
@@ -357,8 +364,9 @@ const initialTrackOffset = hasMultipleItems ? '-100%' : '0%';
         start();
       };
 
-      banner.addEventListener('pointerup', finishDrag);
-      banner.addEventListener('pointercancel', finishDrag);
+      window.addEventListener('pointermove', updateDrag);
+      window.addEventListener('pointerup', finishDrag);
+      window.addEventListener('pointercancel', finishDrag);
 
       const pauseHover = () => {
         hoverPaused = true;
