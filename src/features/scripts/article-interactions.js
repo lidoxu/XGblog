@@ -234,7 +234,7 @@ function initImageZoom() {
       <div class="xg-lightbox-stage">
         <img alt="" />
       </div>
-      <figcaption><span class="xg-lightbox-caption"></span><span class="xg-lightbox-counter"></span></figcaption>
+      <figcaption><span class="xg-lightbox-counter"></span></figcaption>
     </figure>
     <button class="xg-lightbox-next" type="button" aria-label="下一张图片">
       <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M7 4l4 5-4 5" /></svg>
@@ -245,7 +245,6 @@ function initImageZoom() {
 
   const stage = lightbox.querySelector('.xg-lightbox-stage');
   const preview = lightbox.querySelector('img');
-  const caption = lightbox.querySelector('.xg-lightbox-caption');
   const counter = lightbox.querySelector('.xg-lightbox-counter');
   const actualButton = lightbox.querySelector('.xg-lightbox-actual');
   const fitButton = lightbox.querySelector('.xg-lightbox-fit');
@@ -259,7 +258,6 @@ function initImageZoom() {
   if (
     !stage ||
     !preview ||
-    !caption ||
     !counter ||
     !actualButton ||
     !fitButton ||
@@ -379,7 +377,6 @@ function initImageZoom() {
     preview.onload = resetView;
     preview.src = getCurrentImageSrc();
     preview.alt = label;
-    caption.textContent = label;
     counter.textContent = `${activeIndex + 1} / ${images.length}`;
 
     if (preview.complete && preview.naturalWidth) {

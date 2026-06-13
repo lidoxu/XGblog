@@ -9,50 +9,87 @@ interface Props {
 
 const { currentPage, lastPage, basePath, firstPagePath, label = '分页导航' } = Astro.props;
 const pageHref = (page: number) => (page === 1 ? firstPagePath : `${basePath}/${page}`);
-const pages = Array.from({ length: lastPage }, (_, index) => index + 1);
+type PaginationItem = number | 'ellipsis';
+
+const visiblePages = new Set<number>();
+const addPage = (page: number) => {
+  if (page >= 1 && page <= lastPage) {
+    visiblePages.add(page);
+  }
+};
+const addPageRange = (start: number, end: number) => {
+  for (let page = start; page <= end; page += 1) {
+    addPage(page);
+  }
+};
+
+if (lastPage <= 7) {
+  addPageRange(1, lastPage);
+} else if (currentPage <= 3) {
+  addPageRange(1, 4);
+  addPage(lastPage);
+} else if (currentPage >= lastPage - 2) {
+  addPage(1);
+  addPageRange(lastPage - 3, lastPage);
+} else {
+  addPage(1);
+  addPageRange(currentPage - 1, currentPage + 1);
+  addPage(lastPage);
+}
+
+const pageItems = Array.from(visiblePages)
+  .sort((left, right) => left - right)
+  .reduce<PaginationItem[]>((items, page) => {
+    const previousPageItem = items[items.length - 1];
+
+    if (typeof previousPageItem === 'number') {
+      const gap = page - previousPageItem;
+
+      if (gap > 1) {
+        items.push('ellipsis');
+      }
+    }
+
+    items.push(page);
+    return items;
+  }, []);
 const previousPage = currentPage > 1 ? currentPage - 1 : undefined;
 const nextPage = currentPage < lastPage ? currentPage + 1 : undefined;
 ---
 
 {lastPage > 1 && (
   <nav class="pagination" aria-label={label}>
-    {previousPage ? (
+    {previousPage && (
       <a class="pagination-link pagination-step" href={pageHref(previousPage)} aria-label="上一页">
-        <span aria-hidden="true">&lt;</span>
-        <span>上一页</span>
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M11 4 7 9l4 5" /></svg>
       </a>
-    ) : (
-      <span class="pagination-link pagination-step is-disabled" aria-label="上一页" aria-disabled="true">
-        <span aria-hidden="true">&lt;</span>
-        <span>上一页</span>
-      </span>
     )}
 
     <ol class="pagination-pages">
-      {pages.map((page) => (
-        <li>
-          <a
-            class:list={['pagination-link', { 'is-current': page === currentPage }]}
-            href={pageHref(page)}
-            aria-current={page === currentPage ? 'page' : undefined}
-            aria-label={`第 ${page} 页`}
-          >
-            {page}
-          </a>
-        </li>
-      ))}
+      {pageItems.map((item) =>
+        item === 'ellipsis' ? (
+          <li>
+            <span class="pagination-ellipsis" aria-hidden="true">...</span>
+          </li>
+        ) : (
+          <li>
+            <a
+              class:list={['pagination-link', { 'is-current': item === currentPage }]}
+              href={pageHref(item)}
+              aria-current={item === currentPage ? 'page' : undefined}
+              aria-label={`第 ${item} 页`}
+            >
+              {item}
+            </a>
+          </li>
+        )
+      )}
     </ol>
 
-    {nextPage ? (
+    {nextPage && (
       <a class="pagination-link pagination-step" href={pageHref(nextPage)} aria-label="下一页">
-        <span>下一页</span>
-        <span aria-hidden="true">&gt;</span>
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M7 4l4 5-4 5" /></svg>
       </a>
-    ) : (
-      <span class="pagination-link pagination-step is-disabled" aria-label="下一页" aria-disabled="true">
-        <span>下一页</span>
-        <span aria-hidden="true">&gt;</span>
-      </span>
     )}
   </nav>
 )}

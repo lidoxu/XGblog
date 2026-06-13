@@ -1371,7 +1371,19 @@ button.submenu-link {
 }
 
 .pagination-step {
-  gap: 6px;
+  width: 36px;
+  min-width: 36px;
+  padding: 0;
+}
+
+.pagination-step svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.55;
 }
 
 .pagination-link:hover {
@@ -1386,6 +1398,19 @@ button.submenu-link {
   background: var(--text);
   border-color: var(--text);
   pointer-events: none;
+}
+
+.pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 36px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .pagination-link.is-disabled {
@@ -1911,11 +1936,6 @@ button.submenu-link {
   color: var(--text-soft);
   font-size: 0.84rem;
   text-align: center;
-}
-
-.xg-lightbox-caption {
-  min-width: 0;
-  overflow-wrap: anywhere;
 }
 
 .xg-lightbox button {
