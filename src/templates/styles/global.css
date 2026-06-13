@@ -1327,7 +1327,7 @@ button.submenu-link {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   margin: 24px 0 0;
 }
 
@@ -1404,13 +1404,14 @@ button.submenu-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 24px;
-  height: 36px;
+  min-width: 16px;
+  padding-bottom: 2px;
   color: var(--text-muted);
   font-family: var(--mono);
   font-size: 0.74rem;
   font-weight: 700;
   line-height: 1;
+  transform: translateY(-1px);
 }
 
 .pagination-link.is-disabled {
@@ -2129,7 +2130,7 @@ button.submenu-link {
 .back-to-top {
   position: fixed;
   right: 22px;
-  bottom: 22px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
   z-index: 28;
   display: inline-flex;
   align-items: center;
@@ -2619,6 +2620,39 @@ button.submenu-link {
     right: 14px;
   }
 
+  .pagination {
+    gap: 4px;
+  }
+
+  .pagination-pages {
+    gap: 4px;
+  }
+
+  .pagination-link {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 9px;
+  }
+
+  .pagination-pages .pagination-link {
+    padding: 0 8px;
+  }
+
+  .pagination-step {
+    width: 34px;
+    min-width: 34px;
+  }
+
+  .pagination-step svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pagination-ellipsis {
+    min-width: 12px;
+    font-size: 0.72rem;
+  }
+
   .footer-inner {
     gap: 10px;
     font-size: 0.82rem;
@@ -2630,7 +2664,7 @@ button.submenu-link {
 
   .back-to-top {
     right: 14px;
-    bottom: 14px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 68px);
     width: 38px;
     height: 38px;
   }
