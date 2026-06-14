@@ -253,7 +253,7 @@ function resolveSiteData(): SiteData {
     favicon: resolveFavicon(),
     logo,
     darkLogo,
-    showTitle: resolveFalseOnlyBoolean(readEnv('BLOG_SHOW_TITLE'), true),
+    showTitle: resolveFalseOnlyBoolean(readEnv('BLOG_SHOW_TITLE'), false),
     theme: {
       color: resolveThemeColor(readEnv('THEME_COLOR')),
     },

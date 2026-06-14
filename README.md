@@ -241,7 +241,7 @@ comments: false
 |`BLOG_URL`|`https://example.com`|正式站点 URL；影响 sitemap、RSS、robots|
 |`BLOG_LOGO`|先匹配 `/logo.*`，否则 `/default/default-logo.svg`|logo 路径|
 |`BLOG_LOGO_DARK`|先匹配 `/logo-dark.*`，否则 `/default/default-logo-dark.svg`|深色模式 logo 路径|
-|`BLOG_SHOW_TITLE`|`true`|是否显示站点标题；设置为 `false` 关闭|
+|`BLOG_SHOW_TITLE`|`false`|是否显示站点标题；设置为 `true` 开启|
 |`THEME_COLOR`|`#2D96E4`|主题色，必须是 3 位或 6 位十六进制颜色|
 |`BLOG_AUTHOR`|`博主昵称`|首页作者名称|
 |`BLOG_AVATAR`|先匹配 `/user.*`，否则 `/default/default-user.svg`|作者头像|
