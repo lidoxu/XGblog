@@ -733,7 +733,12 @@ button.submenu-link {
   padding-left: 12px !important;
 }
 
+.search-panel .pagefind-ui .pagefind-ui__result-nested + .pagefind-ui__result-nested {
+  margin-top: 8px !important;
+}
+
 .search-panel .pagefind-ui .pagefind-ui__result-nested .pagefind-ui__result-title {
+  margin: 0 0 1px !important;
   font-size: 0.82rem !important;
   font-weight: 700 !important;
   line-height: 1.42 !important;
@@ -744,6 +749,7 @@ button.submenu-link {
 }
 
 .search-panel .pagefind-ui .pagefind-ui__result-nested .pagefind-ui__result-excerpt {
+  margin-top: 0 !important;
   font-size: 0.78rem !important;
 }
 
