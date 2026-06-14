@@ -10,17 +10,24 @@ icon = "https://icon.xiaoge.org/images/website/XiaoGe.png"
 
 [[links]]
 group = "My Server"
+name = "XG-Blog"
+url = "https://blog.xiaoge.org"
+desc = "纯静态博客"
+icon = "https://blog.xiaoge.org/favicon.ico"
+
+[[links]]
+group = "My Server"
 name = "XG-Nav"
 url = "https://nav.xiaoge.de"
 desc = "纯静态导航项目"
 icon = "https://icon.xiaoge.org/images/website/XiaoGe.png"
 
 [[links]]
-group = "Blog"
-name = "DockerApps"
-url = "https://dockerapps.com"
-desc = "Docker应用程序集合"
-icon = "https://icon.xiaoge.org/images/website/keba.png"
+group = "My Server"
+name = "XG-icons"
+url = "https://icon.xiaoge.org"
+desc = "自托管、开源高清图标库"
+icon = "https://icon.xiaoge.org/images/website/xg-icons.png"
 
 [[links]]
 group = "Blog"
@@ -28,3 +35,11 @@ name = "磕巴白菜"
 url = "https://hi.keba.host/"
 desc = "别管 不听 就是玩"
 icon = "https://icon.xiaoge.org/images/website/keba.png"
+
+[[links]]
+group = "Blog"
+name = "HuanHQ"
+url = "https://www.huanhq.com/"
+desc = "一个喜欢把想法做成产品的人。"
+icon = "https://icon.xiaoge.org/images/website/huanhq.png"
+
