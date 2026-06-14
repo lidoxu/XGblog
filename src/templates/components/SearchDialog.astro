@@ -1,37 +1,28 @@
-<div class="search-dialog" data-search-dialog hidden>
-  <button class="search-backdrop" type="button" aria-label="关闭搜索" data-search-close></button>
-  <section class="search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
-    <header class="search-panel-header">
-      <h2 id="site-search-title">搜索文章</h2>
-      <button class="search-close" type="button" aria-label="关闭搜索" data-search-close>
-        <svg viewBox="0 0 18 18" aria-hidden="true">
-          <path d="M5 5l8 8M13 5l-8 8" />
-        </svg>
-      </button>
-    </header>
-    <div id="pagefind-search" class="search-box" data-pagefind-search></div>
-    <p class="search-status" data-search-status hidden>搜索索引需构建后使用</p>
-  </section>
-</div>
+<pagefind-modal data-pagefind-modal reset-on-close></pagefind-modal>
 
 <script>
-  const searchDialog = document.querySelector<HTMLElement>('[data-search-dialog]');
-  const searchRoot = document.querySelector<HTMLElement>('[data-pagefind-search]');
-  const searchStatus = document.querySelector<HTMLElement>('[data-search-status]');
+  type PagefindModalElement = HTMLElement & {
+    open?: () => void;
+  };
+
+  const searchModal = document.querySelector<PagefindModalElement>('[data-pagefind-modal]');
   const searchOpenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-search-open]'));
-  const searchCloseButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-search-close]'));
+  const colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
   let searchReady = false;
   let searchLoading: Promise<boolean> | undefined;
 
-  type PagefindWindow = Window & {
-    PagefindUI?: new (options: Record<string, unknown>) => unknown;
-  };
+  function syncPagefindTheme() {
+    if (!searchModal) return;
 
-  function setSearchStatus(message: string) {
-    if (!searchStatus) return;
-    searchStatus.textContent = message;
-    searchStatus.hidden = false;
+    const theme = document.documentElement.dataset.theme;
+    const isDark = theme === 'dark' || (!theme && colorScheme.matches);
+
+    if (isDark) {
+      searchModal.setAttribute('data-pf-theme', 'dark');
+    } else {
+      searchModal.removeAttribute('data-pf-theme');
+    }
   }
 
   function loadScript(src: string) {
@@ -57,7 +48,7 @@
 
     if (!searchLoading) {
       searchLoading = (async () => {
-        const stylesheetHref = '/pagefind/pagefind-ui.css';
+        const stylesheetHref = '/pagefind/pagefind-component-ui.css';
         const hasStylesheet = document.querySelector(`link[href="${stylesheetHref}"]`);
 
         if (!hasStylesheet) {
@@ -67,25 +58,13 @@
           document.head.append(link);
         }
 
-        const loaded = await loadScript('/pagefind/pagefind-ui.js');
-        const PagefindUI = (window as PagefindWindow).PagefindUI;
+        const loaded = await loadScript('/pagefind/pagefind-component-ui.js');
 
-        if (!loaded || !PagefindUI || !searchRoot) {
+        if (!loaded || !searchModal) {
           return false;
         }
 
-        new PagefindUI({
-          element: '#pagefind-search',
-          showImages: false,
-          showSubResults: true,
-          pageSize: 16,
-          excerptLength: 16,
-          resetStyles: false,
-          translations: {
-            placeholder: '搜索文章',
-            clear_search: '✕',
-          },
-        });
+        await customElements.whenDefined('pagefind-modal');
 
         searchReady = true;
         return true;
@@ -95,52 +74,23 @@
     return searchLoading;
   }
 
-  function focusSearchInput() {
-    requestAnimationFrame(() => {
-      const input = searchRoot?.querySelector<HTMLInputElement>('input[type="text"], input[type="search"]');
-
-      if (input) {
-        input.placeholder = '搜索文章';
-        input.focus();
-      }
-    });
-  }
-
   async function openSearch() {
-    if (!searchDialog) return;
-    searchDialog.hidden = false;
-    document.documentElement.setAttribute('data-search-open', 'true');
-    searchStatus?.setAttribute('hidden', '');
-
     const loaded = await loadSearch();
 
-    if (loaded) {
-      focusSearchInput();
-    } else {
-      setSearchStatus('搜索索引需构建后使用');
+    if (loaded && typeof searchModal?.open === 'function') {
+      searchModal.open();
     }
-  }
-
-  function closeSearch() {
-    if (!searchDialog || searchDialog.hidden) return;
-    searchDialog.hidden = true;
-    document.documentElement.removeAttribute('data-search-open');
   }
 
   searchOpenButtons.forEach((button) => {
     button.addEventListener('click', openSearch);
   });
 
-  searchCloseButtons.forEach((button) => {
-    button.addEventListener('click', closeSearch);
-  });
+  syncPagefindTheme();
+  window.addEventListener('xg-theme-change', syncPagefindTheme);
+  colorScheme.addEventListener('change', syncPagefindTheme);
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      closeSearch();
-      return;
-    }
-
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
       event.preventDefault();
       openSearch();
