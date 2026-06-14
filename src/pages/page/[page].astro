@@ -28,7 +28,7 @@ const canonical = page.currentPage === 1 ? '/' : `/page/${page.currentPage}`;
 <BaseLayout title={title} description={site.description} canonical={canonical}>
   <div class="container page-grid">
     <section class="main-column" aria-label="最新文章">
-      {page.currentPage === 1 && <HomeBanner items={bannerData} />}
+      <HomeBanner items={bannerData} />
       <ArticleList posts={page.data} />
       <Pagination currentPage={page.currentPage} lastPage={page.lastPage} basePath="/page" firstPagePath="/" />
     </section>
