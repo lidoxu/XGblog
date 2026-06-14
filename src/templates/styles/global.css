@@ -718,6 +718,10 @@ button.submenu-link {
   pointer-events: none;
 }
 
+.home-banner.is-touch-dots .home-banner-dot {
+  pointer-events: none;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .home-banner:hover .home-banner-nav,
   .home-banner:hover .home-banner-dots {
@@ -2088,6 +2092,15 @@ button.submenu-link {
 
 .footer-inner p {
   margin: 0;
+}
+
+.footer-copyright a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer-copyright a:hover {
+  color: var(--accent-strong);
 }
 
 .footer-inner p:last-child {

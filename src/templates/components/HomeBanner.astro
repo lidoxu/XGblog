@@ -92,6 +92,7 @@ const initialTrackOffset = hasMultipleItems ? '-100%' : '0%';
 
       const AUTO_INTERVAL = 4000;
       const TRANSITION_MS = 360;
+      const TOUCH_DOTS_HIDE_MS = TRANSITION_MS + 60;
       const DRAG_INTENT_PX = 12;
       const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       const hasClones = slides.length === realCount + 2;
@@ -355,7 +356,7 @@ const initialTrackOffset = hasMultipleItems ? '-100%' : '0%';
         }
 
         if (moved && usesTouchDots()) {
-          hideTouchDots(1000);
+          hideTouchDots(TOUCH_DOTS_HIDE_MS);
         } else {
           hideTouchDots();
         }
