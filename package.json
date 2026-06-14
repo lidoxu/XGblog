@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "astro check && astro build && pagefind --site dist --glob \"archives/**/index.html\"",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "deploy": "wrangler deploy",
+    "cf:preview": "npm run build && wrangler dev"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -17,6 +19,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "pagefind": "^1.5.2"
+    "pagefind": "^1.5.2",
+    "wrangler": "^4.100.0"
   }
 }
