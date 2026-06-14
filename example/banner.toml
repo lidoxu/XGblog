@@ -4,8 +4,8 @@
 
 [[banner]]
 image = "/defaults/public/default/default-banner.webp"
-href = "/"
+href = "/demo-page"
 
 [[banner]]
 image = "/defaults/public/default/default-banner.webp"
-href = "/"
+href = "/archives/hello-world"
