@@ -82,17 +82,17 @@
 |`blog/banner.toml`|首页 banner|从 `example/banner.toml` 复制后修改；不存在时使用示例文件|
 |`blog/head.toml`|全站 `<head>` 注入|从 `example/head.toml` 复制后修改；不存在时不注入任何内容|
 
-除 `blog/head.toml` 外，`blog/\*.toml` 只要存在，就会完全替换 `example/\*.toml`。分类和标签会先从文章属性区自动收集；TOML 主要用于改显示名称和描述。
+除 `blog/head.toml` 外，`blog/*.toml` 只要存在，就会完全替换 `example/*.toml`。分类和标签会先从文章属性区自动收集；TOML 主要用于改显示名称和描述。
 
-首页 banner 使用 `\[\[banner]]` 数组，图片建议放在 `blog/public/`，配置构建后的根路径：
+首页 banner 使用 `[[banner]]` 数组，图片建议放在 `blog/public/`，配置构建后的根路径：
 
 ```toml
-\[\[banner]]
+[[banner]]
 image = "/assets/banner.webp"
 href = "/"
 ```
 
-全站 head 注入使用 `\[\[head]]` 数组，适合放 Google 站点统计、Umami、站点验证标签等可信代码。`example/head.toml` 只作为模板，不会自动注入页面；需要启用时复制为 `blog/head.toml`。
+全站 head 注入使用 `[[head]]` 数组，适合放 Google 站点统计、Umami、站点验证标签等可信代码。`example/head.toml` 只作为模板，不会自动注入页面；需要启用时复制为 `blog/head.toml`。
 
 `html` 必须写成 TOML 字符串，不能使用 Markdown 代码围栏。多行 HTML 推荐使用三引号单引号字符串，这样 HTML 属性里的双引号不需要转义：
 
@@ -158,15 +158,15 @@ comments: false
 
 正文可以继续写段落、列表、引用和代码块。
 
-!\[文章配图](./img/post-slug-1.webp)
+![文章配图](./img/post-slug-1.webp)
 ```
 
 封面读取顺序：
 
 1. 属性区里的 `cover`。
-2. `img/cover.\*`。
-3. 文章根目录的 `cover.\*`。
-4. `img/{slug}-1.\*`。
+2. `img/cover.*`。
+3. 文章根目录的 `cover.*`。
+4. `img/{slug}-1.*`。
 5. `/default/default-cover.webp`。
 
 ## 页面示例
@@ -197,7 +197,7 @@ comments: false
 
 页面和文章一样，会根据 `##`、`###`、`####` 自动生成右侧目录。
 
-!\[页面配图](./img/about-1.webp)
+![页面配图](./img/about-1.webp)
 ```
 
 页面不要写 `slug`、`categories`、`tags`、`cover`、`top`，这些字段只属于文章。
@@ -229,29 +229,29 @@ comments: false
 |`defaults/public/default/default-cover.webp`|`/default/default-cover.webp`|
 |`defaults/public/default/default-banner.webp`|`/default/default-banner.webp`|
 
-如果不在 `.env` 中配置 logo 或头像，站点会先按约定从 `blog/public/` 查找 `/logo.\*`、`/logo-dark.\*`、`/user.\*`，找不到时再使用环境变量表中的默认路径。也可以在 `.env` 中把 `BLOG\_LOGO`、`BLOG\_LOGO\_DARK`、`BLOG\_AVATAR` 设置为 `/logo.png`、`/logo-dark.png`、`/user.webp` 这类路径。
+如果不在 `.env` 中配置 logo 或头像，站点会先按约定从 `blog/public/` 查找 `/logo.*`、`/logo-dark.*`、`/user.*`，找不到时再使用环境变量表中的默认路径。也可以在 `.env` 中把 `BLOG_LOGO`、`BLOG_LOGO_DARK`、`BLOG_AVATAR` 设置为 `/logo.png`、`/logo-dark.png`、`/user.webp` 这类路径。
 
 ## 环境变量
 
 |变量|默认值|用途|
 |-|-|-|
-|`BLOG\_TITLE`|`XG-Blog`|站点标题|
-|`BLOG\_SUBTITLE`|`记录与分享\~ 使用纯静态 XG-Blog！`|站点副标题|
-|`BLOG\_DESCRIPTION`|`这里填写站点描述，用于首页和 SEO。`|SEO 描述|
-|`BLOG\_URL`|`https://example.com`|正式站点 URL；影响 sitemap、RSS、robots|
-|`BLOG\_LOGO`|先匹配 `/logo.\*`，否则 `/default/default-logo.svg`|logo 路径|
-|`BLOG\_LOGO\_DARK`|先匹配 `/logo-dark.\*`，否则 `/default/default-logo-dark.svg`|深色模式 logo 路径|
-|`BLOG\_SHOW\_TITLE`|`true`|是否显示站点标题；设置为 `false` 关闭|
-|`THEME\_COLOR`|`#2D96E4`|主题色，必须是 3 位或 6 位十六进制颜色|
-|`BLOG\_AUTHOR`|`博主昵称`|首页作者名称|
-|`BLOG\_AVATAR`|先匹配 `/user.\*`，否则 `/default/default-user.svg`|作者头像|
-|`BLOG\_AVATAR\_CIRCLE`|`true`|是否将作者头像裁成圆形；无变量或空值时开启，设置为 `false` 关闭|
-|`BLOG\_BIO`|`这里填写博主简介。`|首页作者简介|
+|`BLOG_TITLE`|`XG-Blog`|站点标题|
+|`BLOG_SUBTITLE`|`记录与分享~ 使用纯静态 XG-Blog！`|站点副标题|
+|`BLOG_DESCRIPTION`|`这里填写站点描述，用于首页和 SEO。`|SEO 描述|
+|`BLOG_URL`|`https://example.com`|正式站点 URL；影响 sitemap、RSS、robots|
+|`BLOG_LOGO`|先匹配 `/logo.*`，否则 `/default/default-logo.svg`|logo 路径|
+|`BLOG_LOGO_DARK`|先匹配 `/logo-dark.*`，否则 `/default/default-logo-dark.svg`|深色模式 logo 路径|
+|`BLOG_SHOW_TITLE`|`true`|是否显示站点标题；设置为 `false` 关闭|
+|`THEME_COLOR`|`#2D96E4`|主题色，必须是 3 位或 6 位十六进制颜色|
+|`BLOG_AUTHOR`|`博主昵称`|首页作者名称|
+|`BLOG_AVATAR`|先匹配 `/user.*`，否则 `/default/default-user.svg`|作者头像|
+|`BLOG_AVATAR_CIRCLE`|`true`|是否将作者头像裁成圆形；无变量或空值时开启，设置为 `false` 关闭|
+|`BLOG_BIO`|`这里填写博主简介。`|首页作者简介|
 
 ## 构建检查
 
-```powershell
-npm.cmd run build
+```bash
+npm run build
 ```
 
 文章 frontmatter 中的 `categories` 和 `tags` 建议统一写成带引号字符串，例如 `- "website"`、`- "astro"`，可避免纯数字 slug 被 YAML 解析成 number。
