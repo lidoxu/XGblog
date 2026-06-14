@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "astro check && astro build && pagefind --site dist --glob \"archives/**/index.html\"",
+    "build:worker": "node scripts/build-worker.mjs",
     "preview": "astro preview",
     "deploy": "wrangler deploy",
-    "cf:preview": "npm run build && wrangler dev"
+    "cf:preview": "npm run build:worker && wrangler dev"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

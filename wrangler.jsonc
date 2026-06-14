@@ -3,7 +3,7 @@
   "name": "xg-blog",
   "compatibility_date": "2026-06-15",
   "build": {
-    "command": "npm run build"
+    "command": "npm run build:worker"
   },
   "assets": {
     "directory": "./dist",

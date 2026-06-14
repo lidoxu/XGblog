@@ -1,5 +1,5 @@
 import { existsSync, readdirSync } from 'node:fs';
-import { copyFile, cp, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
+import { copyFile, cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { extname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
@@ -136,7 +136,14 @@ function notFoundRedirectsFile() {
     hooks: {
       'astro:build:done': async ({ dir }) => {
         const outDir = fileURLToPath(dir);
-        await writeFile(join(outDir, '_redirects'), '/* /404.html 404\n');
+        const redirectsFile = join(outDir, '_redirects');
+
+        if (readEnv('XG_BLOG_SKIP_NOT_FOUND_REDIRECTS') === 'true') {
+          await rm(redirectsFile, { force: true });
+          return;
+        }
+
+        await writeFile(redirectsFile, '/* /404.html 404\n');
       },
     },
   };
