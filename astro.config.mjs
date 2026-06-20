@@ -118,13 +118,23 @@ async function copyPublicAssets(outDir) {
   }
 }
 
-function sitemapXmlAlias() {
+function singleSitemapXml() {
   return {
-    name: 'sitemap-xml-alias',
+    name: 'single-sitemap-xml',
     hooks: {
       'astro:build:done': async ({ dir }) => {
         const outDir = fileURLToPath(dir);
-        await copyFile(join(outDir, 'sitemap-index.xml'), join(outDir, 'sitemap.xml'));
+        const sitemapFiles = (await readdir(outDir)).filter((file) => /^sitemap-\d+\.xml$/.test(file)).sort();
+
+        if (sitemapFiles.length !== 1 || sitemapFiles[0] !== 'sitemap-0.xml') {
+          throw new Error(
+            `Expected a single sitemap chunk (sitemap-0.xml), but found: ${sitemapFiles.join(', ') || 'none'}.`,
+          );
+        }
+
+        await copyFile(join(outDir, 'sitemap-0.xml'), join(outDir, 'sitemap.xml'));
+        await rm(join(outDir, 'sitemap-index.xml'), { force: true });
+        await rm(join(outDir, 'sitemap-0.xml'), { force: true });
       },
     },
   };
@@ -219,7 +229,7 @@ function publicAssetOverlay() {
 export default defineConfig({
   site,
   publicDir: './blog/public',
-  integrations: [sitemap(), sitemapXmlAlias(), notFoundRedirectsFile(), publicAssetOverlay()],
+  integrations: [sitemap(), singleSitemapXml(), notFoundRedirectsFile(), publicAssetOverlay()],
   markdown: {
     shikiConfig: {
       themes: {

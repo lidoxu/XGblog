@@ -956,12 +956,18 @@ pagefind-modal[data-pf-theme="dark"] {
 .sidebar-card {
   padding: 22px;
   background: var(--paper-strong);
+  border: 1px solid transparent;
   border-radius: var(--card-radius);
   box-shadow: var(--shadow-soft);
+  transition: border-color 0.18s ease;
 }
 
 .sidebar-card + .sidebar-card {
   padding-top: 22px;
+}
+
+.sidebar-card:hover {
+  border-color: var(--hover-outline);
 }
 
 .author-card {
@@ -1634,8 +1640,14 @@ pagefind-modal[data-pf-theme="dark"] {
   gap: 14px;
   padding: 22px;
   background: var(--paper-strong);
+  border: 1px solid transparent;
   border-radius: var(--card-radius);
   box-shadow: var(--shadow-soft);
+  transition: border-color 0.18s ease;
+}
+
+.toc:hover {
+  border-color: var(--hover-outline);
 }
 
 .toc h2 {
