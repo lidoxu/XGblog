@@ -5,6 +5,7 @@ import ArticleInteractions from '../../templates/components/ArticleInteractions.
 import Comments from '../../templates/components/Comments.astro';
 import PostMeta from '../../templates/components/PostMeta.astro';
 import TableOfContents from '../../templates/components/TableOfContents.astro';
+import TwikooPageViews from '../../templates/components/TwikooPageViews.astro';
 import BaseLayout from '../../templates/layouts/BaseLayout.astro';
 import { getAllPosts, getPostCover, getPostPath, getPostSlug, getReadingStats } from '../../features/core/posts';
 
@@ -21,12 +22,14 @@ const { Content, headings } = await render(post);
 const cover = getPostCover(post);
 const seoImage = typeof cover === 'string' ? cover : (await getImage({ src: cover })).src;
 const readingStats = getReadingStats(post);
+const postPath = getPostPath(post);
+const twikooEnabled = Boolean(import.meta.env.TWIKOO_ENV_ID?.trim());
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
-  canonical={getPostPath(post)}
+  canonical={postPath}
   image={seoImage}
   type="article"
   publishedTime={post.data.date}
@@ -35,12 +38,13 @@ const readingStats = getReadingStats(post);
     <div class="article-main" data-pagefind-body>
       <header class="article-header">
         <h1>{post.data.title}</h1>
-        <PostMeta date={post.data.date} categories={post.data.categories} tags={post.data.tags} readingStats={readingStats} />
+        <PostMeta date={post.data.date} categories={post.data.categories} tags={post.data.tags} readingStats={readingStats} showViews={twikooEnabled} />
       </header>
       <div class="prose">
         <Content />
       </div>
-      <Comments enabled={post.data.comments} path={getPostPath(post)} />
+      <Comments enabled={post.data.comments} path={postPath} />
+      <TwikooPageViews enabled={!post.data.comments} path={postPath} />
     </div>
     <aside class="article-aside" data-pagefind-ignore>
       <TableOfContents headings={headings} />

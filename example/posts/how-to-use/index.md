@@ -9,7 +9,7 @@ tags:
   - "xg-blog"
   - "quick-start"
 top: 0
-comments: true
+comments: false
 ---
 
 ## 先说结论

@@ -1,0 +1,62 @@
+---
+interface Props {
+  enabled?: boolean;
+  path: string;
+}
+
+const { enabled = true, path } = Astro.props;
+const twikooEnvId = import.meta.env.TWIKOO_ENV_ID?.trim();
+const twikooScriptUrl = import.meta.env.TWIKOO_JS_URL?.trim() || 'https://cdn.jsdelivr.net/npm/twikoo@1.7.12/dist/twikoo.min.js';
+const commentsPath = path || Astro.url.pathname;
+const shouldRender = enabled && Boolean(twikooEnvId);
+---
+
+{shouldRender && (
+  <>
+    <div class="twikoo-runtime" aria-hidden="true" inert data-pagefind-ignore>
+      <div id="twikoo-pageviews-runtime"></div>
+    </div>
+    <script is:inline define:vars={{ twikooEnvId, commentsPath, twikooScriptUrl }}>
+      (() => {
+        const visitorCounter = document.querySelector('#twikoo_visitors');
+        const runtimeContainer = document.querySelector('#twikoo-pageviews-runtime');
+
+        if (!visitorCounter || !runtimeContainer || !twikooEnvId) {
+          return;
+        }
+
+        const initTwikoo = () => {
+          if (!window.twikoo || runtimeContainer.dataset.twikooInitialized === 'true') {
+            return;
+          }
+
+          runtimeContainer.dataset.twikooInitialized = 'true';
+          window.twikoo.init({
+            envId: twikooEnvId,
+            el: '#twikoo-pageviews-runtime',
+            path: commentsPath,
+          });
+        };
+
+        if (window.twikoo) {
+          initTwikoo();
+          return;
+        }
+
+        const existingScript = document.querySelector('script[data-twikoo-script]');
+
+        if (existingScript) {
+          existingScript.addEventListener('load', initTwikoo, { once: true });
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = twikooScriptUrl;
+        script.async = true;
+        script.dataset.twikooScript = 'true';
+        script.addEventListener('load', initTwikoo, { once: true });
+        document.head.append(script);
+      })();
+    </script>
+  </>
+)}

@@ -932,6 +932,38 @@ pagefind-modal[data-pf-theme="dark"] {
   flex: 0 0 auto;
 }
 
+.meta-time-icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.35;
+  opacity: 0.7;
+  flex: 0 0 auto;
+}
+
+.meta-views-icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.35;
+  opacity: 0.7;
+  flex: 0 0 auto;
+}
+
+.reading-stat,
+.post-views {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
 .meta-link {
   padding: 2px 7px;
   color: var(--text-soft);
@@ -2010,6 +2042,56 @@ pagefind-modal[data-pf-theme="dark"] {
   border-color: var(--text);
 }
 
+.comments-panel #twikoo .tk-admin.__show {
+  min-height: 360px;
+}
+
+.comments-panel #twikoo .tk-admin-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  left: auto;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  padding: 12px;
+}
+
+.comments-panel #twikoo .tk-admin .tk-regist,
+.comments-panel #twikoo .tk-admin .tk-login {
+  box-sizing: border-box;
+  min-height: 320px;
+  padding: 66px min(32px, 5vw) 28px;
+}
+
+.comments-panel #twikoo .tk-admin .tk-login-title {
+  margin-top: 0;
+}
+
+.comments-panel #twikoo .tk-admin form {
+  width: min(100%, 520px);
+}
+
+.comments-panel #twikoo .tk-admin .tk-password {
+  width: 100%;
+  max-width: 100%;
+}
+
+.comments-panel #twikoo .tk-admin .el-input__inner {
+  min-width: 0;
+}
+
+.twikoo-runtime {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 .xg-lightbox {
   position: fixed;
   inset: 0;
@@ -2756,6 +2838,38 @@ pagefind-modal[data-pf-theme="dark"] {
   .comments-panel {
     margin-top: 28px;
     padding: 22px 8px 0;
+  }
+
+  .comments-panel #twikoo .tk-admin.__show {
+    min-height: 420px;
+  }
+
+  .comments-panel #twikoo .tk-admin .tk-regist,
+  .comments-panel #twikoo .tk-admin .tk-login {
+    min-height: 380px;
+    padding: 66px 12px 24px;
+  }
+
+  .comments-panel #twikoo .tk-admin form {
+    width: 100%;
+  }
+
+  .comments-panel #twikoo .tk-admin .tk-password {
+    display: flex;
+  }
+
+  .comments-panel #twikoo .tk-admin .el-input-group__prepend {
+    display: inline-flex;
+    flex: 0 0 88px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    white-space: nowrap;
+  }
+
+  .comments-panel #twikoo .tk-admin .el-input__inner {
+    flex: 1 1 auto;
+    width: 100%;
   }
 
   .prose pre,

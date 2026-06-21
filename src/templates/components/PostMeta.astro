@@ -12,9 +12,10 @@ interface Props {
     words: number;
     minutes: number;
   };
+  showViews?: boolean;
 }
 
-const { date, categories, tags, compact = false, showTags = true, readingStats } = Astro.props;
+const { date, categories, tags, compact = false, showTags = true, readingStats, showViews = false } = Astro.props;
 const primaryCategory = getCategory(categories[0]);
 const visibleTags = showTags ? tags.slice(0, compact ? 3 : tags.length) : [];
 ---
@@ -30,11 +31,29 @@ const visibleTags = showTags ? tags.slice(0, compact ? 3 : tags.length) : [];
   <a class="meta-link category" href={getCategoryPath(primaryCategory.slug)} data-pagefind-ignore>{primaryCategory.name}</a>
   {readingStats && (
     <span class="reading-stats" data-pagefind-ignore>
-      <svg class="meta-reading-icon" viewBox="0 0 18 18" aria-hidden="true">
-        <path d="M5 3.5h5.2l2.8 2.8v8.2H5z" />
-        <path d="M10.2 3.5v2.8H13M7.2 9h3.6M7.2 11.5h3.6" />
-      </svg>
-      共 {readingStats.words} 字 · 约 {readingStats.minutes} 分
+      <span class="reading-stat">
+        <svg class="meta-reading-icon" viewBox="0 0 18 18" aria-hidden="true">
+          <path d="M5 3.5h5.2l2.8 2.8v8.2H5z" />
+          <path d="M10.2 3.5v2.8H13M7.2 9h3.6M7.2 11.5h3.6" />
+        </svg>
+        <span>{readingStats.words} 字</span>
+      </span>
+      <span class="reading-stat">
+        <svg class="meta-time-icon" viewBox="0 0 18 18" aria-hidden="true">
+          <circle cx="9" cy="9" r="6" />
+          <path d="M9 5.7v3.6l2.4 1.4" />
+        </svg>
+        <span>{readingStats.minutes} 分</span>
+      </span>
+      {showViews && (
+        <span class="reading-stat post-views" aria-label="浏览量">
+          <svg class="meta-views-icon" viewBox="0 0 18 18" aria-hidden="true">
+            <path d="M2.7 9s2.4-4.1 6.3-4.1 6.3 4.1 6.3 4.1-2.4 4.1-6.3 4.1S2.7 9 2.7 9Z" />
+            <circle cx="9" cy="9" r="1.8" />
+          </svg>
+          <span id="twikoo_visitors">0</span>
+        </span>
+      )}
     </span>
   )}
   {visibleTags.length > 0 && (
