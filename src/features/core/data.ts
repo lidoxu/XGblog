@@ -64,6 +64,7 @@ export type SiteData = {
   title: string;
   subtitle: string;
   description: string;
+  keywords?: string;
   url: string;
   beian?: string;
   beianUrl?: string;
@@ -257,6 +258,7 @@ function resolveSiteData(): SiteData {
     title: readEnv('BLOG_TITLE') ?? 'XG-Blog',
     subtitle: readEnv('BLOG_SUBTITLE') ?? '记录与分享~ 使用纯静态 XG-Blog！',
     description: readEnv('BLOG_DESCRIPTION') ?? '这里填写站点描述，用于首页和 SEO。',
+    keywords: readEnv('BLOG_KEYWORDS'),
     url: resolveSiteUrl(readEnv('BLOG_URL')),
     beian,
     beianUrl: beian ? resolveBeianUrl(readEnv('BEIAN_URL')) : undefined,

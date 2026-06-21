@@ -14,11 +14,14 @@ const { title, description, canonical = Astro.url.pathname, image, type = 'websi
 const fullTitle = pageTitle(title);
 const canonicalUrl = absoluteUrl(canonical);
 const imageUrl = resolveImage(image);
-const favicon = getSite().favicon;
+const site = getSite();
+const favicon = site.favicon;
+const keywords = site.keywords;
 ---
 
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
 <link rel="canonical" href={canonicalUrl} />
 <link rel="icon" href={favicon} />
 <meta property="og:type" content={type} />
