@@ -49,6 +49,11 @@ const site = getSite();
       <slot />
     </main>
     <SiteFooter />
+    <button class="jump-to-comments" type="button" aria-label="跳转到评论区" data-jump-to-comments aria-hidden="true" tabindex="-1" hidden>
+      <svg class="jump-to-comments-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7.5 18.5 4 21v-4.2A7.5 7.5 0 0 1 2 11.6C2 7.4 6 4 11 4s9 3.4 9 7.6-4 7.6-9 7.6c-1.2 0-2.4-.2-3.5-.7Z"></path>
+      </svg>
+    </button>
     <button class="back-to-top" type="button" aria-label="返回顶部" data-back-to-top aria-hidden="true" tabindex="-1">
       <svg class="back-to-top-icon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M7 14l5-5 5 5"></path>
@@ -56,20 +61,37 @@ const site = getSite();
     </button>
     <script>
       const backToTop = document.querySelector<HTMLButtonElement>('[data-back-to-top]');
+      const jumpToComments = document.querySelector<HTMLButtonElement>('[data-jump-to-comments]');
+      const commentsPanel = document.querySelector<HTMLElement>('#comments');
+
+      if (jumpToComments && commentsPanel) {
+        jumpToComments.hidden = false;
+      }
 
       if (backToTop) {
-        const syncBackToTop = () => {
+        const syncFloatingActions = () => {
           const visible = window.scrollY > 420;
           backToTop.classList.toggle('is-visible', visible);
           backToTop.setAttribute('aria-hidden', String(!visible));
           backToTop.tabIndex = visible ? 0 : -1;
+
+          if (jumpToComments && commentsPanel) {
+            jumpToComments.classList.toggle('is-visible', visible);
+            jumpToComments.setAttribute('aria-hidden', String(!visible));
+            jumpToComments.tabIndex = visible ? 0 : -1;
+          }
         };
 
         backToTop.addEventListener('click', () => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-        window.addEventListener('scroll', syncBackToTop, { passive: true });
-        syncBackToTop();
+
+        jumpToComments?.addEventListener('click', () => {
+          commentsPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        window.addEventListener('scroll', syncFloatingActions, { passive: true });
+        syncFloatingActions();
       }
     </script>
   </body>

@@ -11,9 +11,9 @@ icon = "https://icon.xiaoge.org/images/website/XiaoGe.png"
 [[links]]
 group = "My Server"
 name = "XG-Blog"
-url = "https://blog.xiaoge.org"
+url = "https://xg-blog.xiaoge.org"
 desc = "纯静态博客"
-icon = "https://blog.xiaoge.org/favicon.ico"
+icon = "https://xg-blog.xiaoge.org/favicon.ico"
 
 [[links]]
 group = "My Server"

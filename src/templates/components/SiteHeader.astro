@@ -9,6 +9,7 @@ interface Props {
 const site = getSite();
 const navItems = menuData;
 const { currentPath } = Astro.props;
+const xgBlogVersion = 'XG-Blog v0.5.0';
 
 const normalizeTarget = (target?: string | null) => (target === 'blank' || target === '_blank' ? '_blank' : undefined);
 const normalizeHref = (href?: string | null) => href?.trim() ?? '';
@@ -114,8 +115,8 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
           href="https://github.com/verkyer/xg-blog"
           target="_blank"
           rel="noopener noreferrer"
-          title="XG-Blog v0.4.0"
-          aria-label="XG-Blog v0.4.0"
+          title={xgBlogVersion}
+          aria-label={xgBlogVersion}
           class="mobile-nav-link"
         >
           @ XG-Blog

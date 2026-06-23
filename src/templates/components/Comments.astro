@@ -6,14 +6,14 @@ interface Props {
 
 const { enabled = true, path } = Astro.props;
 const twikooEnvId = import.meta.env.TWIKOO_ENV_ID?.trim();
-const twikooScriptUrl = import.meta.env.TWIKOO_JS_URL?.trim() || 'https://cdn.jsdelivr.net/npm/twikoo@1.7.12/dist/twikoo.min.js';
+const twikooScriptUrl = import.meta.env.TWIKOO_JS_URL?.trim() || 'https://registry.npmmirror.com/twikoo/1.7.13/files/dist/twikoo.min.js';
 const commentsPath = path || Astro.url.pathname;
 const shouldRender = enabled && Boolean(twikooEnvId);
 ---
 
 {shouldRender && (
   <>
-    <section class="comments-panel" aria-labelledby="comments-title" data-pagefind-ignore>
+    <section id="comments" class="comments-panel" aria-labelledby="comments-title" data-pagefind-ignore>
       <div class="comments-head">
         <h2 id="comments-title">评论</h2>
       </div>
