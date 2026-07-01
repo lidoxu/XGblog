@@ -16,6 +16,7 @@ const canonicalUrl = absoluteUrl(canonical);
 const imageUrl = resolveImage(image);
 const site = getSite();
 const favicon = site.favicon;
+const appleTouchIcon = site.appleTouchIcon;
 const keywords = site.keywords;
 ---
 
@@ -24,6 +25,7 @@ const keywords = site.keywords;
 {keywords && <meta name="keywords" content={keywords} />}
 <link rel="canonical" href={canonicalUrl} />
 <link rel="icon" href={favicon} />
+{appleTouchIcon && <link rel="apple-touch-icon" href={appleTouchIcon} />}
 <meta property="og:type" content={type} />
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />

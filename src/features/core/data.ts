@@ -69,6 +69,7 @@ export type SiteData = {
   beian?: string;
   beianUrl?: string;
   favicon: string;
+  appleTouchIcon?: string;
   logo: string;
   darkLogo: string;
   showTitle: boolean;
@@ -238,6 +239,10 @@ function resolveFavicon() {
   return findUserFavicon() ?? '/favicon.ico';
 }
 
+function resolveAppleTouchIcon() {
+  return publicAssetExists('/apple-touch-icon.png') ? '/apple-touch-icon.png' : undefined;
+}
+
 function resolveFalseOnlyBoolean(configured: string | null | undefined, fallback: boolean) {
   const trimmed = configured?.trim().toLowerCase();
 
@@ -263,6 +268,7 @@ function resolveSiteData(): SiteData {
     beian,
     beianUrl: beian ? resolveBeianUrl(readEnv('BEIAN_URL')) : undefined,
     favicon: resolveFavicon(),
+    appleTouchIcon: resolveAppleTouchIcon(),
     logo,
     darkLogo,
     showTitle: resolveFalseOnlyBoolean(readEnv('BLOG_SHOW_TITLE'), false),

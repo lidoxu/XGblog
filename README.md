@@ -271,11 +271,14 @@ comments: false
 |`blog/public/logo-dark.png`|`/logo-dark.png`|深色模式 logo|
 |`blog/public/user.webp`|`/user.webp`|作者头像|
 |`blog/public/favicon.svg`|`/favicon.svg`|自定义 favicon|
+|`blog/public/apple-touch-icon.png`|`/apple-touch-icon.png`|Apple 设备主屏图标|
 |`blog/public/assets/banner.webp`|`/assets/banner.webp`|可复用公开图片|
 |`blog/public/robots.txt`|`/robots.txt`|覆盖默认 robots|
 |`blog/public/404.html`|`/404.html`|覆盖默认 404 页面|
 
 如果存在 `blog/public/favicon.ico`、`favicon.svg`、`favicon.png` 或 `favicon.webp`，构建时不会输出缺省 `/favicon.ico`，页面会引用用户自己的 favicon。
+
+`blog/public/apple-touch-icon.png` 是可选公开资源，存在时页面会自动引用。
 
 ---
 
