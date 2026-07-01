@@ -390,7 +390,7 @@ button.submenu-link {
 }
 
 .nav-item:hover .submenu,
-.nav-item:focus-within .submenu,
+.nav-item:has(:focus-visible) .submenu,
 .nav-item.is-submenu-open .submenu {
   opacity: 1;
   visibility: visible;

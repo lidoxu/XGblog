@@ -147,8 +147,10 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
   const themeToggle = header?.querySelector<HTMLButtonElement>('[data-theme-toggle]');
   const brandLogo = header?.querySelector<HTMLImageElement>('[data-brand-logo]');
   const submenuToggles = Array.from(header?.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]') ?? []);
+  const submenuItems = Array.from(header?.querySelectorAll<HTMLElement>('.nav-item.has-children') ?? []);
   const media = window.matchMedia('(prefers-color-scheme: dark)');
   const mobileNav = window.matchMedia('(max-width: 720px)');
+  const touchNav = window.matchMedia('(hover: none), (pointer: coarse)');
 
   const getStoredTheme = () => {
     try {
@@ -160,6 +162,7 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
   };
 
   const getEffectiveTheme = () => document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
+  const usesClickSubmenus = () => mobileNav.matches || touchNav.matches;
 
   const syncOpenSubmenuClass = () => {
     const hasOpenSubmenu = Boolean(nav?.querySelector('.nav-item.is-submenu-open'));
@@ -185,6 +188,13 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
       item?.classList.remove('is-submenu-open');
     });
     syncOpenSubmenuClass();
+  };
+
+  const blurFocusedElement = (scope?: Element | null) => {
+    const activeElement = document.activeElement;
+    if (activeElement instanceof HTMLElement && (!scope || scope.contains(activeElement))) {
+      activeElement.blur();
+    }
   };
 
   const setNavOpenState = (isOpen: boolean) => {
@@ -247,13 +257,28 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
       return;
     }
 
+    const target = event.target as Node;
+    const openItem = nav?.querySelector('.nav-item.is-submenu-open');
+
     if (mobileNav.matches) {
-      if (header.contains(event.target as Node)) return;
+      if (header.contains(target)) {
+        if (openItem && !openItem.contains(target)) {
+          closeSubmenus();
+        }
+        return;
+      }
       closeNav();
       return;
     }
 
-    if (!header.contains(event.target as Node)) {
+    if (touchNav.matches) {
+      if (openItem && !openItem.contains(target)) {
+        closeSubmenus();
+      }
+      return;
+    }
+
+    if (!header.contains(target)) {
       closeSubmenus();
     }
   });
@@ -264,9 +289,21 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
     }
   });
 
-  const toggleSubmenu = (button: HTMLButtonElement) => {
+  const toggleSubmenu = (button: HTMLButtonElement, event?: MouseEvent) => {
     const item = button.closest('.nav-item');
     if (!item) return;
+
+    if (!usesClickSubmenus()) {
+      closeSubmenus();
+      item.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]').forEach((toggle) => {
+        toggle.setAttribute('aria-expanded', 'true');
+      });
+      if ((event?.detail ?? 0) > 0) {
+        button.blur();
+      }
+      return;
+    }
+
     const isOpen = item.classList.contains('is-submenu-open');
     if (!isOpen) closeSubmenus(item);
     item.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]').forEach((toggle) => {
@@ -274,9 +311,6 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
     });
     item.classList.toggle('is-submenu-open', !isOpen);
     syncOpenSubmenuClass();
-    if (isOpen && !mobileNav.matches) {
-      button.blur();
-    }
   };
 
   nav?.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
@@ -292,8 +326,19 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
   submenuToggles.forEach((button) => {
     button.addEventListener('click', (event) => {
       event.stopPropagation();
-      toggleSubmenu(button);
+      toggleSubmenu(button, event);
     });
+  });
+
+  submenuItems.forEach((item) => {
+    const closeDesktopSubmenu = () => {
+      if (usesClickSubmenus()) return;
+      closeSubmenus();
+      blurFocusedElement(item);
+    };
+
+    item.addEventListener('mouseleave', closeDesktopSubmenu);
+    item.addEventListener('pointerleave', closeDesktopSubmenu);
   });
 
   navToggle?.addEventListener('click', () => {
