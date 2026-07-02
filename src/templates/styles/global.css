@@ -1761,8 +1761,8 @@ pagefind-modal[data-pf-theme="dark"] {
 }
 
 .prose h2 {
-  padding-top: 0.58em;
-  border-top: 1px solid var(--line-strong);
+  padding-bottom: 0.58em;
+  border-bottom: 1px solid var(--line-strong);
   font-family: var(--serif);
   font-size: 1.34rem;
 }
