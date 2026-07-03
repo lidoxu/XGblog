@@ -26,6 +26,11 @@ export async function getAllPosts() {
   return sortPosts(selectActiveEntries(posts, 'posts'));
 }
 
+export async function getAllPostsByDate() {
+  const posts = await getCollection('posts');
+  return sortPostsByDate(selectActiveEntries(posts, 'posts'));
+}
+
 export function sortPosts(posts: Post[]) {
   return [...posts].sort((a, b) => {
     const topDiff = (b.data.top ?? 0) - (a.data.top ?? 0);
@@ -36,6 +41,10 @@ export function sortPosts(posts: Post[]) {
 
     return b.data.date.getTime() - a.data.date.getTime();
   });
+}
+
+export function sortPostsByDate(posts: Post[]) {
+  return [...posts].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }
 
 export function getPostSlug(post: Post) {

@@ -3,10 +3,10 @@ import type { GetStaticPaths, Page } from 'astro';
 import BaseLayout from '../../../templates/layouts/BaseLayout.astro';
 import Pagination from '../../../templates/components/Pagination.astro';
 import { formatDate } from '../../../features/core/date';
-import { getAllPosts, getPostPath, groupPostsByMonth, type Post } from '../../../features/core/posts';
+import { getAllPostsByDate, getPostPath, groupPostsByMonth, type Post } from '../../../features/core/posts';
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const posts = await getAllPosts();
+  const posts = await getAllPostsByDate();
   return paginate(posts, { pageSize: 20 });
 }) satisfies GetStaticPaths;
 

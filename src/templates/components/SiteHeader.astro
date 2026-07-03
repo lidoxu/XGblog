@@ -9,7 +9,7 @@ interface Props {
 const site = getSite();
 const navItems = menuData;
 const { currentPath } = Astro.props;
-const xgBlogVersion = 'XG-Blog v0.5.1';
+const xgBlogVersion = 'XG-Blog v0.5.2';
 
 const normalizeTarget = (target?: string | null) => (target === 'blank' || target === '_blank' ? '_blank' : undefined);
 const normalizeHref = (href?: string | null) => href?.trim() ?? '';
@@ -294,10 +294,13 @@ const isActiveHref = (href: string) => Boolean(href) && (currentPath === href ||
     if (!item) return;
 
     if (!usesClickSubmenus()) {
-      closeSubmenus();
+      const isOpen = item.classList.contains('is-submenu-open');
+      if (!isOpen) closeSubmenus(item);
       item.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]').forEach((toggle) => {
-        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-expanded', String(!isOpen));
       });
+      item.classList.toggle('is-submenu-open', !isOpen);
+      syncOpenSubmenuClass();
       if ((event?.detail ?? 0) > 0) {
         button.blur();
       }
