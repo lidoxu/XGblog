@@ -24,6 +24,8 @@ const seoImage = typeof cover === 'string' ? cover : (await getImage({ src: cove
 const readingStats = getReadingStats(post);
 const postPath = getPostPath(post);
 const twikooEnabled = Boolean(import.meta.env.TWIKOO_ENV_ID?.trim());
+const pagefindSortTop = Math.max(0, Math.trunc(post.data.top ?? 0));
+const pagefindSortKey = `t${String(pagefindSortTop).padStart(6, '0')}-${post.data.date.toISOString()}`;
 ---
 
 <BaseLayout
@@ -36,6 +38,7 @@ const twikooEnabled = Boolean(import.meta.env.TWIKOO_ENV_ID?.trim());
 >
   <article class="container article-layout">
     <div class="article-main" data-pagefind-body>
+      <span data-pagefind-sort={`xg-order:${pagefindSortKey}`}></span>
       <header class="article-header">
         <h1>{post.data.title}</h1>
         <PostMeta date={post.data.date} categories={post.data.categories} tags={post.data.tags} readingStats={readingStats} showViews={twikooEnabled} />

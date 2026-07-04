@@ -277,14 +277,16 @@ function initImageZoom() {
   };
 
   const getAvailableSize = () => {
+    const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+    const viewportHeight = document.documentElement.clientHeight || window.innerHeight;
     const isMobile = window.matchMedia('(max-width: 720px)').matches;
     const isPortraitMobile = window.matchMedia('(max-width: 720px) and (orientation: portrait)').matches;
-    const sideControls = isPortraitMobile ? window.innerWidth * 0.04 : isMobile ? 112 : 156;
+    const sideControls = isPortraitMobile ? 32 : isMobile ? 112 : 156;
     const verticalControls = isMobile ? 136 : 148;
 
     return {
-      width: Math.max(180, window.innerWidth - sideControls),
-      height: Math.max(180, window.innerHeight - verticalControls),
+      width: Math.max(180, viewportWidth - sideControls),
+      height: Math.max(180, viewportHeight - verticalControls),
     };
   };
 

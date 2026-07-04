@@ -4,10 +4,27 @@
   type PagefindModalElement = HTMLElement & {
     open?: () => void;
   };
+  type PagefindSearchOptions = {
+    sort?: Record<string, 'asc' | 'desc'>;
+    [key: string]: unknown;
+  };
+  type PagefindSearch = (term: string | null, options?: PagefindSearchOptions) => Promise<unknown>;
+  type PagefindInstance = {
+    search?: PagefindSearch;
+  };
+  type PagefindComponentsApi = {
+    getInstanceManager?: () => {
+      getInstance?: (name?: string) => PagefindInstance;
+    };
+  };
+  type WindowWithPagefind = Window & {
+    PagefindComponents?: PagefindComponentsApi;
+  };
 
   const searchModal = document.querySelector<PagefindModalElement>('[data-pagefind-modal]');
   const searchOpenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-search-open]'));
   const colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+  const pagefindSort = { 'xg-order': 'desc' } as const;
 
   let searchReady = false;
   let searchLoading: Promise<boolean> | undefined;
@@ -43,6 +60,18 @@
     });
   }
 
+  function applyPagefindSort() {
+    const pagefind = (window as WindowWithPagefind).PagefindComponents;
+    const instance = pagefind?.getInstanceManager?.().getInstance?.();
+    const search = instance?.search;
+
+    if (!instance || !search || search.name === 'sortedSearch') return;
+
+    instance.search = async function sortedSearch(term, options = {}) {
+      return search.call(instance, term, { ...options, sort: pagefindSort });
+    };
+  }
+
   async function loadSearch() {
     if (searchReady) return true;
 
@@ -65,6 +94,7 @@
         }
 
         await customElements.whenDefined('pagefind-modal');
+        applyPagefindSort();
 
         searchReady = true;
         return true;

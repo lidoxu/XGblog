@@ -2915,7 +2915,7 @@ pagefind-modal[data-pf-theme="dark"] {
 
   @media (orientation: portrait) {
     .xg-lightbox figure {
-      max-width: 96vw;
+      max-width: 100%;
     }
   }
 
