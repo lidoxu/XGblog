@@ -9,8 +9,18 @@
     [key: string]: unknown;
   };
   type PagefindSearch = (term: string | null, options?: PagefindSearchOptions) => Promise<unknown>;
+  type SortablePagefindSearch = PagefindSearch & {
+    xgSorted?: true;
+  };
+  type PagefindRuntime = {
+    search?: SortablePagefindSearch;
+  };
+  type PagefindLoad = (() => Promise<void>) & {
+    xgSorted?: true;
+  };
   type PagefindInstance = {
-    search?: PagefindSearch;
+    __load__?: PagefindLoad;
+    __pagefind__?: PagefindRuntime;
   };
   type PagefindComponentsApi = {
     getInstanceManager?: () => {
@@ -63,13 +73,36 @@
   function applyPagefindSort() {
     const pagefind = (window as WindowWithPagefind).PagefindComponents;
     const instance = pagefind?.getInstanceManager?.().getInstance?.();
-    const search = instance?.search;
 
-    if (!instance || !search || search.name === 'sortedSearch') return;
+    if (!instance) return;
 
-    instance.search = async function sortedSearch(term, options = {}) {
-      return search.call(instance, term, { ...options, sort: pagefindSort });
+    const wrapRuntimeSearch = () => {
+      const runtime = instance.__pagefind__;
+      const search = runtime?.search;
+
+      if (!runtime || !search || search.xgSorted) return;
+
+      const sortedSearch: SortablePagefindSearch = async function xgSortedSearch(term, options = {}) {
+        return search.call(runtime, term, { ...options, sort: pagefindSort });
+      };
+
+      sortedSearch.xgSorted = true;
+      runtime.search = sortedSearch;
     };
+
+    wrapRuntimeSearch();
+
+    const load = instance.__load__;
+
+    if (!load || load.xgSorted) return;
+
+    const sortedLoad: PagefindLoad = async function xgSortedLoad() {
+      await load.call(instance);
+      wrapRuntimeSearch();
+    };
+
+    sortedLoad.xgSorted = true;
+    instance.__load__ = sortedLoad;
   }
 
   async function loadSearch() {
